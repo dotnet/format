@@ -6,7 +6,7 @@
     <LangVersion>7.3</LangVersion> 
     <RootNamespace>Microsoft.CodeAnalysis.Tools.CodeFormatter</RootNamespace>
     <Description>Command line tool for formatting C# and Visual Basic code files based on .editorconfig settings.</Description>
-
+    <NoWarn>$(NoWarn);NU5125</NoWarn>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
