@@ -5,6 +5,7 @@ using System.CommandLine;
 using System.CommandLine.Builder;
 using System.CommandLine.Invocation;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Tools.Logging;
@@ -62,8 +63,10 @@ namespace Microsoft.CodeAnalysis.Tools.CodeFormatter
                 // workspace, use its directory as our working directory which will take into account
                 // a global.json if present.
                 var workspaceDirectory = Path.GetDirectoryName(workspacePath);
-                MSBuildEnvironment.ApplyEnvironmentVariables(workspaceDirectory);
-                MSBuildCoreLoader.LoadDotnetInstance(workspaceDirectory);
+
+                // Find and register MSBuild 
+                var msBuildInstance = Build.Locator.MSBuildLocator.QueryVisualStudioInstances().First();
+                Build.Locator.MSBuildLocator.RegisterInstance(msBuildInstance);
 
                 return await CodeFormatter.FormatWorkspaceAsync(
                     logger,
