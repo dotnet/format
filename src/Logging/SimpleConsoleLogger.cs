@@ -10,6 +10,39 @@ using Microsoft.Extensions.Logging.Abstractions.Internal;
 
 namespace Microsoft.CodeAnalysis.Tools.Logging
 {
+    internal class SimpleTerminal : ITerminal
+    {
+        public ConsoleColor BackgroundColor { get; set; } = ConsoleColor.Black;
+        public ConsoleColor ForegroundColor { get; set; } = ConsoleColor.White;
+        public int CursorLeft { get; set; } = 0;
+        public int CursorTop { get; set; } = 0;
+
+        public IStandardStreamWriter Out => StandardStreamWriter.Create(Console.Out);
+
+        public bool IsOutputRedirected => true;
+
+        public IStandardStreamWriter Error => StandardStreamWriter.Create(Console.Error);
+
+        public bool IsErrorRedirected => true;
+
+        public bool IsInputRedirected => true;
+
+        public void Clear()
+        {
+        }
+
+        public void ResetColor()
+        {
+            BackgroundColor = ConsoleColor.Black;
+            ForegroundColor = ConsoleColor.White;
+        }
+
+        public void SetCursorPosition(int left, int top)
+        {
+            CursorLeft = left;
+            CursorTop = top;
+        }
+    }
     internal class SimpleConsoleLogger : ILogger
     {
         private readonly ITerminal _terminal;
@@ -28,7 +61,7 @@ namespace Microsoft.CodeAnalysis.Tools.Logging
 
         public SimpleConsoleLogger(IConsole console, LogLevel logLevel)
         {
-            _terminal = console.GetTerminal();
+            _terminal = console.GetTerminal() ?? new SimpleTerminal();
             _logLevel = logLevel;
         }
 
