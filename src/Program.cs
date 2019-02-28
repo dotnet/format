@@ -64,7 +64,8 @@ namespace Microsoft.CodeAnalysis.Tools.CodeFormatter
                 // a global.json if present.
                 var workspaceDirectory = Path.GetDirectoryName(workspacePath);
 
-                // Find and register MSBuild 
+                // Since we are running as a dotnet tool we should be able to find an instance of
+                // MSBuild in a .NET Core SDK.
                 var msBuildInstance = Build.Locator.MSBuildLocator.QueryVisualStudioInstances().First();
                 Build.Locator.MSBuildLocator.RegisterInstance(msBuildInstance);
 
