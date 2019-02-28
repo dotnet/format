@@ -10,41 +10,9 @@ using Microsoft.Extensions.Logging.Abstractions.Internal;
 
 namespace Microsoft.CodeAnalysis.Tools.Logging
 {
-    internal class SimpleTerminal : ITerminal
-    {
-        public ConsoleColor BackgroundColor { get; set; } = ConsoleColor.Black;
-        public ConsoleColor ForegroundColor { get; set; } = ConsoleColor.White;
-        public int CursorLeft { get; set; } = 0;
-        public int CursorTop { get; set; } = 0;
-
-        public IStandardStreamWriter Out => StandardStreamWriter.Create(Console.Out);
-
-        public bool IsOutputRedirected => true;
-
-        public IStandardStreamWriter Error => StandardStreamWriter.Create(Console.Error);
-
-        public bool IsErrorRedirected => true;
-
-        public bool IsInputRedirected => true;
-
-        public void Clear()
-        {
-        }
-
-        public void ResetColor()
-        {
-            BackgroundColor = ConsoleColor.Black;
-            ForegroundColor = ConsoleColor.White;
-        }
-
-        public void SetCursorPosition(int left, int top)
-        {
-            CursorLeft = left;
-            CursorTop = top;
-        }
-    }
     internal class SimpleConsoleLogger : ILogger
     {
+        private readonly IConsole _console;
         private readonly ITerminal _terminal;
         private readonly LogLevel _logLevel;
 
@@ -61,7 +29,8 @@ namespace Microsoft.CodeAnalysis.Tools.Logging
 
         public SimpleConsoleLogger(IConsole console, LogLevel logLevel)
         {
-            _terminal = console.GetTerminal() ?? new SimpleTerminal();
+            _terminal = console.GetTerminal();
+            _console = console;
             _logLevel = logLevel;
         }
 
@@ -72,14 +41,21 @@ namespace Microsoft.CodeAnalysis.Tools.Logging
                 return;
             }
 
-            var messageColor = _logLevelColorMap[logLevel];
-            _terminal.ForegroundColor = messageColor;
-
             var message = formatter(state, exception);
-            _terminal.Out.WriteLine($"  {message}");
-
-            _terminal.ResetColor();
+            if (_terminal is null)
+            {
+                _console.Out.WriteLine($"  {message}");
+            }
+            else
+            {
+                var messageColor = _logLevelColorMap[logLevel];
+                _terminal.ForegroundColor = messageColor;
+                _terminal.Out.WriteLine($"  {message}");
+                _terminal.ResetColor();
+            }
         }
+
+
 
         public bool IsEnabled(LogLevel logLevel)
         {
