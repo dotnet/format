@@ -44,18 +44,13 @@ namespace Microsoft.CodeAnalysis.Tools.Logging
             var message = formatter(state, exception);
             if (_terminal is null)
             {
-                _console.Out.WriteLine($"  {message}");
+                LogToConsole(message);
             }
             else
             {
-                var messageColor = _logLevelColorMap[logLevel];
-                _terminal.ForegroundColor = messageColor;
-                _terminal.Out.WriteLine($"  {message}");
-                _terminal.ResetColor();
+                LogToTerminal(message, logLevel);
             }
         }
-
-
 
         public bool IsEnabled(LogLevel logLevel)
         {
@@ -65,6 +60,19 @@ namespace Microsoft.CodeAnalysis.Tools.Logging
         public IDisposable BeginScope<TState>(TState state)
         {
             return NullScope.Instance;
+        }
+
+        void LogToTerminal(string message, LogLevel logLevel)
+        {
+            var messageColor = _logLevelColorMap[logLevel];
+            _terminal.ForegroundColor = messageColor;
+            _terminal.Out.WriteLine($"  {message}");
+            _terminal.ResetColor();
+        }
+
+        void LogToConsole(string message)
+        {
+            _console.Out.WriteLine($"  {message}");
         }
     }
 }
