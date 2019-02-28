@@ -58,6 +58,8 @@ namespace Microsoft.CodeAnalysis.Tools.CodeFormatter
 
             try
             {
+                currentDirectory = Environment.CurrentDirectory;
+
                 var workingDirectory = Directory.GetCurrentDirectory();
                 var (isSolution, workspacePath) = MSBuildWorkspaceFinder.FindWorkspace(workingDirectory, workspace);
 
