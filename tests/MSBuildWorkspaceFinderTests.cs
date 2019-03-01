@@ -12,10 +12,10 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
         private static string SolutionPath => Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.Parent.FullName;
 
         [Theory]
-        [InlineData("Could not find a MSBuild project file or solution file in ", @"tests\projects\for_workspace_finder\no_project_or_solution\")]
-        [InlineData("Multiple MSBuild project files found in ", @"tests\projects\for_workspace_finder\multiple_projects\")]
-        [InlineData("Multiple MSBuild solution files found in ", @"tests\projects\for_workspace_finder\multiple_solutions\")]
-        [InlineData("Both a MSBuild project file and solution file found in ", @"tests\projects\for_workspace_finder\project_and_solution\")]
+        [InlineData("Could not find a MSBuild project file or solution file in ", "tests/projects/for_workspace_finder/no_project_or_solution/")]
+        [InlineData("Multiple MSBuild project files found in ", "tests/projects/for_workspace_finder/multiple_projects/")]
+        [InlineData("Multiple MSBuild solution files found in ", "tests/projects/for_workspace_finder/multiple_solutions/")]
+        [InlineData("Both a MSBuild project file and solution file found in ", "tests/projects/for_workspace_finder/project_and_solution/")]
         public void ThrowsExceptions(string exceptionMessageStart, string workspacePath)
         {
             var exception = Assert.Throws<FileNotFoundException>(() => MSBuildWorkspaceFinder.FindWorkspace(SolutionPath, workspacePath));
@@ -26,7 +26,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
         [Fact]
         public void FindsSolutionByFolder()
         {
-            const string Path = @"tests\projects\for_workspace_finder\single_solution\";
+            const string Path = "tests/projects/for_workspace_finder/single_solution/";
 
             var (isSolution, workspacePath) = MSBuildWorkspaceFinder.FindWorkspace(SolutionPath, Path);
 
@@ -38,7 +38,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
         [Fact]
         public void FindsSolutionByFilePath()
         {
-            const string Path = @"tests\projects\for_workspace_finder\multiple_solutions\solution_b.sln";
+            const string Path = "tests/projects/for_workspace_finder/multiple_solutions/solution_b.sln";
 
             var (isSolution, workspacePath) = MSBuildWorkspaceFinder.FindWorkspace(SolutionPath, Path);
 
@@ -50,7 +50,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
         [Fact]
         public void FindsProjectByFolder()
         {
-            const string Path = @"tests\projects\for_workspace_finder\single_project\";
+            const string Path = "tests/projects/for_workspace_finder/single_project/";
 
             var (isSolution, workspacePath) = MSBuildWorkspaceFinder.FindWorkspace(SolutionPath, Path);
 
@@ -62,7 +62,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
         [Fact]
         public void FindsProjectByFilePath()
         {
-            const string Path = @"tests\projects\for_workspace_finder\multiple_projects\project_b.csproj";
+            const string Path = "tests/projects/for_workspace_finder/multiple_projects/project_b.csproj";
 
             var (isSolution, workspacePath) = MSBuildWorkspaceFinder.FindWorkspace(SolutionPath, Path);
 
