@@ -82,13 +82,14 @@ namespace Microsoft.CodeAnalysis.Tools
 
                 Build.Locator.MSBuildLocator.RegisterInstance(msBuildInstance);
 
-                return await CodeFormatter.FormatWorkspaceAsync(
+                var formatResult = await CodeFormatter.FormatWorkspaceAsync(
                     logger,
                     workspacePath,
                     isSolution,
                     logAllWorkspaceWarnings: logLevel == LogLevel.Trace,
                     saveFormattedFiles: !dryRun,
                     cancellationTokenSource.Token).ConfigureAwait(false);
+                return !check ? formatResult.ExitCode : (formatResult.FilesFormatted == 0 ? 0 : 1);
             }
             catch (FileNotFoundException fex)
             {
