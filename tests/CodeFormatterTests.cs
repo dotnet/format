@@ -30,7 +30,10 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
 
             Assert.True(match.Success, log);
             Assert.Equal("0", match.Groups[1].Value);
+
             Assert.Equal(0, formatResult.ExitCode);
+            Assert.Equal(0, formatResult.FilesFormatted);
+            Assert.Equal(3, formatResult.FileCount);
         }
 
         [Fact]
@@ -46,6 +49,9 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             var match = filesFormatted.Match(log);
 
             Assert.Equal(0, formatResult.ExitCode);
+            Assert.Equal(0, formatResult.FilesFormatted);
+            Assert.Equal(3, formatResult.FileCount);
+
             Assert.True(match.Success, log);
             Assert.Equal("0", match.Groups[1].Value);
         }
@@ -64,7 +70,10 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
 
             Assert.True(match.Success, log);
             Assert.Equal("1", match.Groups[1].Value);
+
             Assert.Equal(0, formatResult.ExitCode);
+            Assert.Equal(1, formatResult.FilesFormatted);
+            Assert.Equal(3, formatResult.FileCount);
         }
 
         [Fact]
@@ -80,6 +89,9 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             var match = filesFormatted.Match(log);
 
             Assert.Equal(0, formatResult.ExitCode);
+            Assert.Equal(1, formatResult.FilesFormatted);
+            Assert.Equal(3, formatResult.FileCount);
+
             Assert.True(match.Success, log);
             Assert.Equal("1", match.Groups[1].Value);
         }
@@ -97,7 +109,10 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             var actualErrorMessage = logLines[2];
             var expectedErrorMessage = string.Format(Resources.Could_not_format_0_Format_currently_supports_only_CSharp_and_Visual_Basic_projects, path);
             Assert.Equal(expectedErrorMessage, actualErrorMessage);
+
             Assert.Equal(1, formatResult.ExitCode);
+            Assert.Equal(0, formatResult.FilesFormatted);
+            Assert.Equal(0, formatResult.FileCount);
         }
     }
 }
