@@ -89,7 +89,8 @@ namespace Microsoft.CodeAnalysis.Tools
                     logAllWorkspaceWarnings: logLevel == LogLevel.Trace,
                     saveFormattedFiles: !dryRun,
                     cancellationTokenSource.Token).ConfigureAwait(false);
-                return !check ? formatResult.ExitCode : (formatResult.FilesFormatted == 0 ? 0 : 1);
+
+                return GetExitCode(formatResult, check);
             }
             catch (FileNotFoundException fex)
             {
@@ -108,6 +109,9 @@ namespace Microsoft.CodeAnalysis.Tools
                 }
             }
         }
+
+        public static int GetExitCode(WorkspaceFormatResult formatResult, bool check) =>
+            !check ? formatResult.ExitCode : (formatResult.FilesFormatted == 0 ? 0 : 1);
 
         private static LogLevel GetLogLevel(string verbosity)
         {
