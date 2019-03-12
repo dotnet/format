@@ -11,7 +11,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             {
                 FilesFormatted = 1
             };
-            var exitCode = Program.GetExitCode(formatResult, true);
+            var exitCode = Program.GetExitCode(formatResult, check: true);
 
             Assert.Equal(1, exitCode);
         }
@@ -24,7 +24,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
                 ExitCode = 42,
                 FilesFormatted = 0
             };
-            var exitCode = Program.GetExitCode(formatResult, true);
+            var exitCode = Program.GetExitCode(formatResult, check: true);
 
             Assert.Equal(0, exitCode);
         }
@@ -36,7 +36,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             {
                 ExitCode = 42
             };
-            var exitCode = Program.GetExitCode(formatResult, false);
+            var exitCode = Program.GetExitCode(formatResult, check: false);
 
             Assert.Equal(formatResult.ExitCode, exitCode);
         }
