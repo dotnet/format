@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
 using System;
 using System.CommandLine;
@@ -83,6 +83,8 @@ namespace Microsoft.CodeAnalysis.Tools
 
                 Build.Locator.MSBuildLocator.RegisterInstance(msBuildInstance);
 
+                var fileList = GetFileList(files);
+
                 var formatResult = await CodeFormatter.FormatWorkspaceAsync(
                     logger,
                     workspacePath,
@@ -142,6 +144,11 @@ namespace Microsoft.CodeAnalysis.Tools
         {
             serviceCollection.AddSingleton(new LoggerFactory().AddSimpleConsole(console, logLevel));
             serviceCollection.AddLogging();
+        }
+        
+        private static string[] GetFileList(string files)
+        {
+            return files.Split(',');
         }
     }
 }
