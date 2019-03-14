@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -113,6 +113,27 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             Assert.Equal(1, formatResult.ExitCode);
             Assert.Equal(0, formatResult.FilesFormatted);
             Assert.Equal(0, formatResult.FileCount);
+        }
+
+       [Fact]
+        public async Task OnlyFormatFilesFromList()
+        {
+            var logger = new TestLogger();
+            var path = Path.GetFullPath("tests/projects/for_code_formatter/unformatted_project_with_more_files/unformatted_project.csproj", SolutionPath);
+
+            var files = new[] {"other_items/OtherClass.cs"};
+            var formatResult = await CodeFormatter.FormatWorkspaceAsync(logger, path, isSolution: false, logAllWorkspaceWarnings: false, saveFormattedFiles: false, filesToFormat: files, cancellationToken: CancellationToken.None);
+            var log = logger.GetLog();
+            var pattern = string.Format(Resources.Formatted_0_of_1_files_in_2_ms, "(\\d+)", "\\d+", "\\d+");
+            var filesFormatted = new Regex(pattern, RegexOptions.Multiline);
+            var match = filesFormatted.Match(log);
+
+            Assert.True(match.Success, log);
+            Assert.Equal("1", match.Groups[1].Value);
+
+            Assert.Equal(0, formatResult.ExitCode);
+            Assert.Equal(1, formatResult.FilesFormatted);
+            Assert.Equal(4, formatResult.FileCount);
         }
     }
 }
