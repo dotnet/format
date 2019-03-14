@@ -157,6 +157,23 @@ namespace Microsoft.CodeAnalysis.Tools
                     continue;
                 }
 
+                if (filesToFormat != null)
+                {
+                    var fileInArgumentList = false;
+                    foreach (var path in filesToFormat)
+                    {
+                        if (document.FilePath.EndsWith(path))
+                        {
+                            fileInArgumentList = true;
+                        }
+                    }
+
+                    if (!fileInArgumentList)
+                    {
+                        continue;
+                    }
+                }
+
                 var formatTask = Task.Run(async () =>
                 {
                     var syntaxTree = await document.GetSyntaxTreeAsync(cancellationToken).ConfigureAwait(false);
