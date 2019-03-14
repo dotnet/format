@@ -92,11 +92,6 @@
         <target state="translated">Die Datei "{0}" ist weder ein gültiges Projekt noch eine Projektmappendatei.</target>
         <note />
       </trans-unit>
-      <trans-unit id="The_files_to_operate_on_If_none_specified_all_files_in_workspace_will_be_operated_on">
-        <source>The files to operate on. If none specified, all files in workspace will be operated on.</source>
-        <target state="new">The files to operate on. If none specified, all files in workspace will be operated on.</target>
-        <note />
-      </trans-unit>
       <trans-unit id="The_project_file_0_does_not_exist">
         <source>The project file '{0}' does not exist.</source>
         <target state="translated">Die Projektdatei "{0}" ist nicht vorhanden.</target>

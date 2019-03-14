@@ -92,11 +92,6 @@
         <target state="translated">Файл "{0}" не является допустимым файлом проекта или решения.</target>
         <note />
       </trans-unit>
-      <trans-unit id="The_files_to_operate_on_If_none_specified_all_files_in_workspace_will_be_operated_on">
-        <source>The files to operate on. If none specified, all files in workspace will be operated on.</source>
-        <target state="new">The files to operate on. If none specified, all files in workspace will be operated on.</target>
-        <note />
-      </trans-unit>
       <trans-unit id="The_project_file_0_does_not_exist">
         <source>The project file '{0}' does not exist.</source>
         <target state="translated">Файл проекта "{0}" не существует.</target>
@@ -120,6 +115,11 @@
       <trans-unit id="Workspace_loaded_in_0_ms">
         <source>Workspace loaded in {0}ms.</source>
         <target state="translated">Рабочая область загружена за {0} мс.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="The_files_to_operate_on_If_none_specified_all_files_in_workspace_will_be_operated_on">
+        <source>The files to operate on. If none specified, all files in workspace will be operated on.</source>
+        <target state="new">The files to operate on. If none specified, all files in workspace will be operated on.</target>
         <note />
       </trans-unit>
     </body>
