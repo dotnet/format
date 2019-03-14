@@ -71,6 +71,8 @@ namespace Microsoft.CodeAnalysis.Tools
                 var workspaceDirectory = Path.GetDirectoryName(workspacePath);
                 Environment.CurrentDirectory = workingDirectory;
 
+                var fileList = GetFileList(files);
+
                 // Since we are running as a dotnet tool we should be able to find an instance of
                 // MSBuild in a .NET Core SDK.
                 var msBuildInstance = Build.Locator.MSBuildLocator.QueryVisualStudioInstances().First();
@@ -82,8 +84,6 @@ namespace Microsoft.CodeAnalysis.Tools
                 LooseVersionAssemblyLoader.Register(msBuildInstance.MSBuildPath);
 
                 Build.Locator.MSBuildLocator.RegisterInstance(msBuildInstance);
-
-                var fileList = GetFileList(files);
 
                 var formatResult = await CodeFormatter.FormatWorkspaceAsync(
                     logger,
