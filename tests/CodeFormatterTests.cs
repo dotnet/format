@@ -69,11 +69,11 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             var match = filesFormatted.Match(log);
 
             Assert.True(match.Success, log);
-            Assert.Equal("1", match.Groups[1].Value);
+            Assert.Equal("2", match.Groups[1].Value);
 
             Assert.Equal(0, formatResult.ExitCode);
-            Assert.Equal(1, formatResult.FilesFormatted);
-            Assert.Equal(3, formatResult.FileCount);
+            Assert.Equal(2, formatResult.FilesFormatted);
+            Assert.Equal(4, formatResult.FileCount);
         }
 
         [Fact]
@@ -89,11 +89,11 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             var match = filesFormatted.Match(log);
 
             Assert.Equal(0, formatResult.ExitCode);
-            Assert.Equal(1, formatResult.FilesFormatted);
-            Assert.Equal(3, formatResult.FileCount);
+            Assert.Equal(2, formatResult.FilesFormatted);
+            Assert.Equal(4, formatResult.FileCount);
 
             Assert.True(match.Success, log);
-            Assert.Equal("1", match.Groups[1].Value);
+            Assert.Equal("2", match.Groups[1].Value);
         }
 
         [Fact]
