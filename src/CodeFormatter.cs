@@ -165,6 +165,7 @@ namespace Microsoft.CodeAnalysis.Tools
                         if (document.FilePath.EndsWith(path, StringComparison.OrdinalIgnoreCase))
                         {
                             fileInArgumentList = true;
+                            break;
                         }
                     }
 
