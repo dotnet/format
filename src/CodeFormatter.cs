@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
@@ -162,7 +162,7 @@ namespace Microsoft.CodeAnalysis.Tools
                     var fileInArgumentList = false;
                     foreach (var path in filesToFormat)
                     {
-                        if (document.FilePath.EndsWith(path))
+                        if (document.FilePath.EndsWith(path, StringComparison.OrdinalIgnoreCase))
                         {
                             fileInArgumentList = true;
                         }
