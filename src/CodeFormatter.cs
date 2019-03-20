@@ -1,10 +1,11 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.CodeStyle;
@@ -159,15 +160,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
                 if (filesToFormat != null)
                 {
-                    var fileInArgumentList = false;
-                    foreach (var path in filesToFormat)
-                    {
-                        if (document.FilePath.EndsWith(path, StringComparison.OrdinalIgnoreCase))
-                        {
-                            fileInArgumentList = true;
-                            break;
-                        }
-                    }
+                    var fileInArgumentList = filesToFormat.Any(path => document.FilePath.EndsWith(path, StringComparison.OrdinalIgnoreCase));
 
                     if (!fileInArgumentList)
                     {
