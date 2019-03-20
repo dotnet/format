@@ -119,7 +119,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
         public async Task OnlyFormatFilesFromList()
         {
             var logger = new TestLogger();
-            var path = Path.GetFullPath("tests/projects/for_code_formatter/unformatted_project_with_more_files/unformatted_project.csproj", SolutionPath);
+            var path = Path.GetFullPath("tests/projects/for_code_formatter/unformatted_project/unformatted_project.csproj", SolutionPath);
 
             var files = new[] {"other_items/OtherClass.cs"};
             var formatResult = await CodeFormatter.FormatWorkspaceAsync(logger, path, isSolution: false, logAllWorkspaceWarnings: false, saveFormattedFiles: false, filesToFormat: files, cancellationToken: CancellationToken.None);
