@@ -156,5 +156,22 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             Assert.Equal(0, formatResult.FilesFormatted);
             Assert.Equal(4, formatResult.FileCount);
         }
+
+        [Fact]
+        public async Task FilesFormattedDirectorySeparatorInsensitive()
+        {
+            var logger = new TestLogger();
+            var path = Path.GetFullPath("tests/projects/for_code_formatter/unformatted_project/unformatted_project.csproj", SolutionPath);
+
+            var filePath = $"other_items{Path.DirectorySeparatorChar}OtherClass.cs";
+            var files = new[] {filePath};
+            var formatResult = await CodeFormatter.FormatWorkspaceAsync(logger, path, isSolution: false, logAllWorkspaceWarnings: false, saveFormattedFiles: false, filesToFormat: files, cancellationToken: CancellationToken.None);
+
+            var filePathAlt = $"other_items{Path.AltDirectorySeparatorChar}OtherClass.cs";
+            var filesAlt = new[] {filePathAlt};
+            var formatResultAlt = await CodeFormatter.FormatWorkspaceAsync(logger, path, isSolution: false, logAllWorkspaceWarnings: false, saveFormattedFiles: false, filesToFormat: filesAlt, cancellationToken: CancellationToken.None);
+
+            Assert.True(formatResult.FilesFormatted == formatResultAlt.FilesFormatted);
+        }
     }
 }
