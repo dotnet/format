@@ -147,7 +147,7 @@ namespace Microsoft.CodeAnalysis.Tools
             serviceCollection.AddLogging();
         }
         
-        private static string[] GetFileList(string files)
+        internal static string[] GetFileList(string files)
         {
             return files?.Split(',').Select(path => Path.GetRelativePath(Environment.CurrentDirectory, path)).ToArray();
         }
