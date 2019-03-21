@@ -160,9 +160,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
                 if (filesToFormat != null)
                 {
-                    var fileInArgumentList = filesToFormat
-                        .Select(path => Path.GetRelativePath(Environment.CurrentDirectory, path))
-                        .Any(relativePath => document.FilePath.EndsWith(relativePath, StringComparison.OrdinalIgnoreCase));
+                    var fileInArgumentList = filesToFormat.Any(relativePath => document.FilePath.EndsWith(relativePath, StringComparison.OrdinalIgnoreCase));
 
                     if (!fileInArgumentList)
                     {

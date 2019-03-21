@@ -149,7 +149,7 @@ namespace Microsoft.CodeAnalysis.Tools
         
         private static string[] GetFileList(string files)
         {
-            return files?.Split(',');
+            return files?.Split(',').Select(path => Path.GetRelativePath(Environment.CurrentDirectory, path)).ToArray();
         }
     }
 }
