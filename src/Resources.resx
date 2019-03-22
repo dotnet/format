@@ -190,6 +190,6 @@
     <value>The files to operate on. If none specified, all files in workspace will be operated on.</value>
   </data>
   <data name="Formatted_code_file_0" xml:space="preserve">
-    <value>Formatted '{0}'.</value>
+    <value>Formatted code file '{0}'.</value>
   </data>
 </root>

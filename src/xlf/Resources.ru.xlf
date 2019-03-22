@@ -123,8 +123,8 @@
         <note />
       </trans-unit>
       <trans-unit id="Formatted_code_file_0">
-        <source>Formatted '{0}'.</source>
-        <target state="new">Formatted code file {0}.</target>
+        <source>Formatted code file '{0}'.</source>
+        <target state="new">Formatted code file '{0}'.</target>
         <note />
       </trans-unit>
     </body>
