@@ -167,11 +167,12 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             var formatResult = await CodeFormatter.FormatWorkspaceAsync(logger, path, isSolution: true, logAllWorkspaceWarnings: false, saveFormattedFiles: false, filesToFormat: files, cancellationToken: CancellationToken.None);
             var log = logger.GetLog();
 
-            var pattern = string.Format(Resources.Formatted_code_file_0, @"Program\.cs");
+            var pattern = string.Format(Resources.Formatted_code_file_0, @"(.*)");
             var fileFormatted = new Regex(pattern, RegexOptions.Multiline);
             var match = fileFormatted.Match(log);
 
             Assert.True(match.Success, log);
+            Assert.Equal("Program.cs", match.Groups[1].Value);
         }
     }
 }
