@@ -87,12 +87,12 @@ namespace Microsoft.CodeAnalysis.Tools
                 Build.Locator.MSBuildLocator.RegisterInstance(msBuildInstance);
 
                 var formatResult = await CodeFormatter.FormatWorkspaceAsync(
-                    logger,
                     workspacePath,
                     isSolution,
                     logAllWorkspaceWarnings: logLevel == LogLevel.Trace,
                     saveFormattedFiles: !dryRun,
                     filesToFormat: fileList,
+                    logger,
                     cancellationTokenSource.Token).ConfigureAwait(false);
 
                 return GetExitCode(formatResult, check);

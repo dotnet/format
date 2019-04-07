@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.Tools
     {
         private const int MaxLoggedWorkspaceWarnings = 5;
 
-        public static async Task<WorkspaceFormatResult> FormatWorkspaceAsync(ILogger logger, string solutionOrProjectPath, bool isSolution, bool logAllWorkspaceWarnings, bool saveFormattedFiles, ImmutableHashSet<string> filesToFormat, CancellationToken cancellationToken)
+        public static async Task<WorkspaceFormatResult> FormatWorkspaceAsync(string solutionOrProjectPath, bool isSolution, bool logAllWorkspaceWarnings, bool saveFormattedFiles, ImmutableHashSet<string> filesToFormat, ILogger logger, CancellationToken cancellationToken)
         {
             logger.LogInformation(string.Format(Resources.Formatting_code_files_in_workspace_0, solutionOrProjectPath));
 
@@ -74,7 +74,7 @@ namespace Microsoft.CodeAnalysis.Tools
                 logger.LogTrace(Resources.Workspace_loaded_in_0_ms, workspaceStopwatch.ElapsedMilliseconds);
                 workspaceStopwatch.Restart();
 
-                (formatResult.ExitCode, formatResult.FileCount, formatResult.FilesFormatted) = await FormatFilesInWorkspaceAsync(logger, workspace, projectPath, codingConventionsManager, saveFormattedFiles, filesToFormat, cancellationToken).ConfigureAwait(false);
+                (formatResult.ExitCode, formatResult.FileCount, formatResult.FilesFormatted) = await FormatFilesInWorkspaceAsync(workspace, projectPath, codingConventionsManager, saveFormattedFiles, filesToFormat, logger, cancellationToken).ConfigureAwait(false);
 
                 logger.LogDebug(Resources.Formatted_0_of_1_files_in_2_ms, formatResult.FilesFormatted, formatResult.FileCount, workspaceStopwatch.ElapsedMilliseconds);
             }
@@ -105,7 +105,7 @@ namespace Microsoft.CodeAnalysis.Tools
             }
         }
 
-        private static async Task<(int status, int fileCount, int filesFormatted)> FormatFilesInWorkspaceAsync(ILogger logger, Workspace workspace, string projectPath, ICodingConventionsManager codingConventionsManager, bool saveFormattedFiles, ImmutableHashSet<string> filesToFormat, CancellationToken cancellationToken)
+        private static async Task<(int status, int fileCount, int filesFormatted)> FormatFilesInWorkspaceAsync(Workspace workspace, string projectPath, ICodingConventionsManager codingConventionsManager, bool saveFormattedFiles, ImmutableHashSet<string> filesToFormat, ILogger logger, CancellationToken cancellationToken)
         {
             var projectIds = workspace.CurrentSolution.ProjectIds.ToImmutableArray();
             var optionsApplier = new EditorConfigOptionsApplier();
@@ -129,7 +129,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
                 logger.LogInformation(Resources.Formatting_code_files_in_project_0, project.Name);
 
-                var (formattedSolution, filesFormatted) = await FormatFilesInProjectAsync(logger, project, codingConventionsManager, optionsApplier, filesToFormat, cancellationToken).ConfigureAwait(false);
+                var (formattedSolution, filesFormatted) = await FormatFilesInProjectAsync(project, codingConventionsManager, optionsApplier, filesToFormat, logger, cancellationToken).ConfigureAwait(false);
                 totalFileCount += project.DocumentIds.Count;
                 totalFilesFormatted += filesFormatted;
                 if (saveFormattedFiles && !workspace.TryApplyChanges(formattedSolution))
@@ -142,7 +142,7 @@ namespace Microsoft.CodeAnalysis.Tools
             return (0, totalFileCount, totalFilesFormatted);
         }
 
-        private static async Task<(Solution solution, int filesFormatted)> FormatFilesInProjectAsync(ILogger logger, Project project, ICodingConventionsManager codingConventionsManager, EditorConfigOptionsApplier optionsApplier, ImmutableHashSet<string> filesToFormat, CancellationToken cancellationToken)
+        private static async Task<(Solution solution, int filesFormatted)> FormatFilesInProjectAsync(Project project, ICodingConventionsManager codingConventionsManager, EditorConfigOptionsApplier optionsApplier, ImmutableHashSet<string> filesToFormat, ILogger logger, CancellationToken cancellationToken)
         {
             var formattedDocuments = new List<(DocumentId documentId, Task<SourceText> formatTask)>();
             foreach (var documentId in project.DocumentIds)
