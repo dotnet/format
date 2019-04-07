@@ -144,10 +144,6 @@ namespace Microsoft.CodeAnalysis.Tools
 
         private static async Task<(Solution solution, int filesFormatted)> FormatFilesInProjectAsync(ILogger logger, Project project, ICodingConventionsManager codingConventionsManager, EditorConfigOptionsApplier optionsApplier, ImmutableHashSet<string> filesToFormat, CancellationToken cancellationToken)
         {
-            var isCommentTrivia = project.Language == LanguageNames.CSharp
-                ? IsCSharpCommentTrivia
-                : IsVisualBasicCommentTrivia;
-
             var formattedDocuments = new List<(DocumentId documentId, Task<SourceText> formatTask)>();
             foreach (var documentId in project.DocumentIds)
             {
@@ -164,8 +160,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
                 var formatTask = Task.Run(async () =>
                 {
-                    var syntaxTree = await document.GetSyntaxTreeAsync(cancellationToken).ConfigureAwait(false);
-                    if (GeneratedCodeUtilities.IsGeneratedCode(syntaxTree, isCommentTrivia, cancellationToken))
+                    if (await GeneratedCodeUtilities.IsGeneratedCodeAsync(document, cancellationToken))
                     {
                         return null;
                     }
@@ -212,15 +207,5 @@ namespace Microsoft.CodeAnalysis.Tools
 
             return (formattedSolution, filesFormatted);
         }
-
-        private static readonly Func<SyntaxTrivia, bool> IsCSharpCommentTrivia =
-            (syntaxTrivia) => syntaxTrivia.IsKind(CSharp.SyntaxKind.SingleLineCommentTrivia)
-                || syntaxTrivia.IsKind(CSharp.SyntaxKind.MultiLineCommentTrivia)
-                || syntaxTrivia.IsKind(CSharp.SyntaxKind.SingleLineDocumentationCommentTrivia)
-                || syntaxTrivia.IsKind(CSharp.SyntaxKind.MultiLineDocumentationCommentTrivia);
-
-        private static readonly Func<SyntaxTrivia, bool> IsVisualBasicCommentTrivia =
-            (syntaxTrivia) => syntaxTrivia.IsKind(VisualBasic.SyntaxKind.CommentTrivia)
-                || syntaxTrivia.IsKind(VisualBasic.SyntaxKind.DocumentationCommentTrivia);
     }
 }
