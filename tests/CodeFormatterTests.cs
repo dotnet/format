@@ -115,8 +115,8 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             var files = new[] { Path.Combine(UnformattedProjectPath, "does_not_exist.cs") };
 
             await TestFormatWorkspaceAsync(
-                UnformattedProjectFilePath, 
-                files, 
+                UnformattedProjectFilePath,
+                files,
                 expectedExitCode: 0,
                 expectedFilesFormatted: 0,
                 expectedFileCount: 4);
@@ -128,10 +128,10 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             var files = new[] { UnformattedProgramFilePath };
 
             var log = await TestFormatWorkspaceAsync(
-                UnformattedSolutionFilePath, 
-                files, 
-                expectedExitCode: 0, 
-                expectedFilesFormatted: 1, 
+                UnformattedSolutionFilePath,
+                files,
+                expectedExitCode: 0,
+                expectedFilesFormatted: 1,
                 expectedFileCount: 4);
 
             var pattern = string.Format(Resources.Formatted_code_file_0, @"(.*)");
