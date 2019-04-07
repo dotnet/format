@@ -8,16 +8,12 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Formatting;
-using Microsoft.CodeAnalysis.CodeStyle;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Options;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.Tools.Utilities;
 using Microsoft.CodeAnalysis.Tools.Formatters;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.CodingConventions;
-using Roslyn.Utilities;
 
 namespace Microsoft.CodeAnalysis.Tools
 {
@@ -32,7 +28,7 @@ namespace Microsoft.CodeAnalysis.Tools
         public static async Task<WorkspaceFormatResult> FormatWorkspaceAsync(
             string solutionOrProjectPath,
             bool isSolution,
-            bool logAllWorkspaceWarnings,
+            bool logWorkspaceWarnings,
             bool saveFormattedFiles,
             ImmutableHashSet<string> filesToFormat,
             ILogger logger,
@@ -49,7 +45,7 @@ namespace Microsoft.CodeAnalysis.Tools
             };
 
             using (var workspace = await OpenWorkspaceAsync(
-                solutionOrProjectPath, isSolution, logAllWorkspaceWarnings, logger, cancellationToken).ConfigureAwait(false))
+                solutionOrProjectPath, isSolution, logWorkspaceWarnings, logger, cancellationToken).ConfigureAwait(false))
             {
                 if (workspace is null)
                 {
@@ -57,28 +53,26 @@ namespace Microsoft.CodeAnalysis.Tools
                 }
 
                 var loadWorkspaceMS = workspaceStopwatch.ElapsedMilliseconds;
-                logger.LogDebug(Resources.Workspace_loaded_in_0_ms, workspaceStopwatch.ElapsedMilliseconds);
+                logger.LogTrace(Resources.Complete_in_0_ms, workspaceStopwatch.ElapsedMilliseconds);
 
                 var projectPath = isSolution ? string.Empty : solutionOrProjectPath;
                 var solution = workspace.CurrentSolution;
 
-                logger.LogDebug("Determining formattable files...");
+                logger.LogTrace(Resources.Determining_formattable_files);
 
                 var (fileCount, formatableFiles) = await DetermineFormattableFiles(
                     solution, projectPath, filesToFormat, logger, cancellationToken).ConfigureAwait(false);
 
                 var determineFilesMS = workspaceStopwatch.ElapsedMilliseconds - loadWorkspaceMS;
-                logger.LogDebug("Determining formattable files took {0}ms", determineFilesMS);
+                logger.LogTrace(Resources.Complete_in_0_ms, determineFilesMS);
 
-                logger.LogDebug("Running formatters...");
+                logger.LogTrace(Resources.Running_formatters);
 
                 var formattedSolution = await RunCodeFormattersAsync(
                     solution, formatableFiles, logger, cancellationToken).ConfigureAwait(false);
 
                 var formatterRanMS = workspaceStopwatch.ElapsedMilliseconds - loadWorkspaceMS - determineFilesMS;
-                logger.LogDebug("Running formatters took {0}ms", formatterRanMS);
-
-                logger.LogDebug("Saving changes...");
+                logger.LogTrace(Resources.Complete_in_0_ms, formatterRanMS);
 
                 var solutionChanges = formattedSolution.GetChanges(solution);
 
@@ -105,9 +99,6 @@ namespace Microsoft.CodeAnalysis.Tools
                     formatResult.ExitCode = 0;
                 }
 
-                var savingChangesMS = workspaceStopwatch.ElapsedMilliseconds - loadWorkspaceMS - determineFilesMS - formatterRanMS;
-                logger.LogDebug("Saving changes took {0}ms", savingChangesMS);
-
                 logger.LogDebug(Resources.Formatted_0_of_1_files_in_2_ms, formatResult.FilesFormatted, formatResult.FileCount, workspaceStopwatch.ElapsedMilliseconds);
             }
 
@@ -119,12 +110,10 @@ namespace Microsoft.CodeAnalysis.Tools
         private static async Task<Workspace> OpenWorkspaceAsync(
             string solutionOrProjectPath,
             bool isSolution,
-            bool logAllWorkspaceWarnings,
+            bool logWorkspaceWarnings,
             ILogger logger,
             CancellationToken cancellationToken)
         {
-            var loggedWarningCount = 0;
-
             var properties = new Dictionary<string, string>(StringComparer.Ordinal)
             {
                 // This property ensures that XAML files will be compiled in the current AppDomain
@@ -170,18 +159,14 @@ namespace Microsoft.CodeAnalysis.Tools
                     return;
                 }
 
-                logger.LogWarning(args.Diagnostic.Message);
-
-                if (!logAllWorkspaceWarnings)
+                if (!logWorkspaceWarnings)
                 {
-                    loggedWarningCount++;
-
-                    if (loggedWarningCount == MaxLoggedWorkspaceWarnings)
-                    {
-                        logger.LogWarning(Resources.Maximum_number_of_workspace_warnings_to_log_has_been_reached_Set_the_verbosity_option_to_the_diagnostic_level_to_see_all_warnings);
-                        ((MSBuildWorkspace)sender).WorkspaceFailed -= LogWorkspaceWarnings;
-                    }
+                    logger.LogWarning(Resources.Warnings_were_encountered_while_loading_the_workspace_Set_the_verbosity_option_to_the_diagnostic_level_to_log_warnings);
+                    ((MSBuildWorkspace)sender).WorkspaceFailed -= LogWorkspaceWarnings;
+                    return;
                 }
+
+                logger.LogWarning(args.Diagnostic.Message);
             }
         }
 
@@ -211,18 +196,19 @@ namespace Microsoft.CodeAnalysis.Tools
             var codingConventionsManager = CodingConventionsManagerFactory.CreateCodingConventionsManager();
             var optionsApplier = new EditorConfigOptionsApplier();
 
-            var getDocumentsAndOptions = new List<Task<(Document, OptionSet, bool)>>(solution.Projects.Sum(project => project.DocumentIds.Count));
-
             var fileCount = 0;
+            var getDocumentsAndOptions = new List<Task<(Document, OptionSet, bool)>>(solution.Projects.Sum(project => project.DocumentIds.Count));
 
             foreach (var project in solution.Projects)
             {
+                // If a project is used as a workspace, then ignore other referenced projects.
                 if (!string.IsNullOrEmpty(projectPath) && !project.FilePath.Equals(projectPath, StringComparison.OrdinalIgnoreCase))
                 {
                     logger.LogDebug(Resources.Skipping_referenced_project_0, project.Name);
                     continue;
                 }
 
+                // Ignore unsupported project types.
                 if (project.Language != LanguageNames.CSharp && project.Language != LanguageNames.VisualBasic)
                 {
                     logger.LogWarning(Resources.Could_not_format_0_Format_currently_supports_only_CSharp_and_Visual_Basic_projects, project.FilePath);
@@ -231,6 +217,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
                 fileCount += project.DocumentIds.Count;
 
+                // Get project documents and options with .editorconfig settings applied.
                 var getProjectDocuments = project.DocumentIds.Select(documentId => Task.Run(async () => await GetDocumentAndOptions(
                     project, documentId, filesToFormat, codingConventionsManager, optionsApplier, cancellationToken).ConfigureAwait(false), cancellationToken));
                 getDocumentsAndOptions.AddRange(getProjectDocuments);
@@ -248,18 +235,19 @@ namespace Microsoft.CodeAnalysis.Tools
                     continue;
                 }
 
+                // If any code file has an .editorconfig, then we should ignore files without an .editorconfig entry.
                 if (foundEditorConfig && !hasEditorConfig)
                 {
                     continue;
                 }
 
+                // If we've already added this document, either via a link or multi-targeted framework, then ignore.
                 if (addedFilePaths.Contains(document.FilePath))
                 {
                     continue;
                 }
 
                 addedFilePaths.Add(document.FilePath);
-
                 formattableFiles.Add((document, options));
             }
 
@@ -276,6 +264,7 @@ namespace Microsoft.CodeAnalysis.Tools
         {
             var document = project.Solution.GetDocument(documentId);
 
+            // If a files list was passed in, then ignore files not present in the list.
             if (!filesToFormat.IsEmpty && !filesToFormat.Contains(document.FilePath))
             {
                 return (null, null, false);
@@ -286,6 +275,7 @@ namespace Microsoft.CodeAnalysis.Tools
                 return (null, null, false);
             }
 
+            // Ignore generated code files.
             if (await GeneratedCodeUtilities.IsGeneratedCodeAsync(document, cancellationToken).ConfigureAwait(false))
             {
                 return (null, null, false);
@@ -296,6 +286,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
             OptionSet options = await document.GetOptionsAsync(cancellationToken).ConfigureAwait(false);
 
+            // Check whether an .editorconfig was found for this document.
             if (context?.CurrentConventions is null)
             {
                 return (document, options, false);

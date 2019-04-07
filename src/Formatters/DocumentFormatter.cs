@@ -77,7 +77,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
         }
 
         /// <summary>
-        /// Applies the changed <see cref="SourceText"/> for each formatted <see cref="Document"/>.
+        /// Applies the changed <see cref="SourceText"/> to each formatted <see cref="Document"/>.
         /// </summary>
         private static async Task<Solution> ApplyFileChangesAsync(
             Solution solution,
