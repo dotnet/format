@@ -2,7 +2,7 @@
 
 using System;
 using System.Diagnostics;
-using System.Linq;
+using System.IO;
 using System.Threading;
 using Microsoft.CodeAnalysis;
 
@@ -53,16 +53,16 @@ namespace Roslyn.Utilities
         {
             if (!string.IsNullOrEmpty(filePath))
             {
-                var fileName = PathUtilities.GetFileName(filePath);
+                var fileName = Path.GetFileName(filePath);
                 if (fileName.StartsWith("TemporaryGeneratedFile_", StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
 
-                var extension = PathUtilities.GetExtension(fileName);
+                var extension = Path.GetExtension(fileName);
                 if (!string.IsNullOrEmpty(extension))
                 {
-                    var fileNameWithoutExtension = PathUtilities.GetFileName(filePath, includeExtension: false);
+                    var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
                     if (fileNameWithoutExtension.EndsWith(".designer", StringComparison.OrdinalIgnoreCase) ||
                         fileNameWithoutExtension.EndsWith(".generated", StringComparison.OrdinalIgnoreCase) ||
                         fileNameWithoutExtension.EndsWith(".g", StringComparison.OrdinalIgnoreCase) ||
