@@ -72,7 +72,7 @@ namespace Microsoft.CodeAnalysis.Tools
                 var workspaceDirectory = Path.GetDirectoryName(workspacePath);
                 Environment.CurrentDirectory = workingDirectory;
 
-                var fileList = GetFileList(files);
+                var filesToFormat = GetFilesToFormat(files);
 
                 // Since we are running as a dotnet tool we should be able to find an instance of
                 // MSBuild in a .NET Core SDK.
@@ -91,7 +91,7 @@ namespace Microsoft.CodeAnalysis.Tools
                     isSolution,
                     logAllWorkspaceWarnings: logLevel == LogLevel.Trace,
                     saveFormattedFiles: !dryRun,
-                    filesToFormat: fileList,
+                    filesToFormat,
                     logger,
                     cancellationTokenSource.Token).ConfigureAwait(false);
 
@@ -155,7 +155,7 @@ namespace Microsoft.CodeAnalysis.Tools
             serviceCollection.AddLogging();
         }
 
-        internal static ImmutableHashSet<string> GetFileList(string files)
+        internal static ImmutableHashSet<string> GetFilesToFormat(string files)
         {
             if (string.IsNullOrEmpty(files))
             {

@@ -111,11 +111,11 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
         [Fact]
         public async Task NoFilesFormattedWhenNotInList()
         {
-            var filesToFormat = new[] { Path.Combine(UnformattedProjectPath, "does_not_exist.cs") };
+            var files = new[] { Path.Combine(UnformattedProjectPath, "does_not_exist.cs") };
 
             await TestFormatWorkspaceAsync(
                 UnformattedProjectFilePath, 
-                filesToFormat, 
+                files, 
                 expectedExitCode: 0,
                 expectedFilesFormatted: 0,
                 expectedFileCount: 4);
@@ -124,11 +124,11 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
         [Fact]
         public async Task OnlyLogFormattedFiles()
         {
-            var filesToFormat = new[] { UnformattedProgramFilePath };
+            var files = new[] { UnformattedProgramFilePath };
 
             var log = await TestFormatWorkspaceAsync(
                 UnformattedSolutionFilePath, 
-                filesToFormat, 
+                files, 
                 expectedExitCode: 0, 
                 expectedFilesFormatted: 1, 
                 expectedFileCount: 4);
@@ -140,14 +140,14 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             Assert.Equal("Program.cs", match.Groups[1].Value);
         }
 
-        public async Task<string> TestFormatWorkspaceAsync(string solutionOrProjectPath, IEnumerable<string> filesToFormat, int expectedExitCode, int expectedFilesFormatted, int expectedFileCount)
+        public async Task<string> TestFormatWorkspaceAsync(string solutionOrProjectPath, IEnumerable<string> files, int expectedExitCode, int expectedFilesFormatted, int expectedFileCount)
         {
             var workspacePath = Path.GetFullPath(solutionOrProjectPath);
             var isSolution = workspacePath.EndsWith(".sln");
-            var files = filesToFormat.Select(Path.GetFullPath).ToImmutableHashSet(StringComparer.OrdinalIgnoreCase);
+            var filesToFormat = files.Select(Path.GetFullPath).ToImmutableHashSet(StringComparer.OrdinalIgnoreCase);
 
             var logger = new TestLogger();
-            var formatResult = await CodeFormatter.FormatWorkspaceAsync(workspacePath, isSolution, logAllWorkspaceWarnings: false, saveFormattedFiles: false, filesToFormat: files, logger, cancellationToken: CancellationToken.None);
+            var formatResult = await CodeFormatter.FormatWorkspaceAsync(workspacePath, isSolution, logAllWorkspaceWarnings: false, saveFormattedFiles: false, filesToFormat, logger, CancellationToken.None);
 
             Assert.Equal(expectedExitCode, formatResult.ExitCode);
             Assert.Equal(expectedFilesFormatted, formatResult.FilesFormatted);
