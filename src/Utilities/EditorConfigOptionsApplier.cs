@@ -7,7 +7,7 @@ using System.Reflection;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.VisualStudio.CodingConventions;
 
-namespace Microsoft.CodeAnalysis.CodeStyle
+namespace Microsoft.CodeAnalysis.Tools.Utilities
 {
     internal class EditorConfigOptionsApplier
     {

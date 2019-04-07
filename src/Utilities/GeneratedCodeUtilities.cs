@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis;
 using CSharp = Microsoft.CodeAnalysis.CSharp;
 using VisualBasic = Microsoft.CodeAnalysis.VisualBasic;
 
-namespace Roslyn.Utilities
+namespace Microsoft.CodeAnalysis.Tools.Utilities
 {
     internal static class GeneratedCodeUtilities
     {
