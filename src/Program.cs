@@ -43,6 +43,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
         public static async Task<int> Run(string workspace, string verbosity, bool dryRun, bool check, string files, IConsole console = null)
         {
+            // Setup logging
             var serviceCollection = new ServiceCollection();
             var logLevel = GetLogLevel(verbosity);
             ConfigureServices(serviceCollection, console, logLevel);
@@ -50,6 +51,7 @@ namespace Microsoft.CodeAnalysis.Tools
             var serviceProvider = serviceCollection.BuildServiceProvider();
             var logger = serviceProvider.GetService<ILogger<Program>>();
 
+            // Hook so we can process ctrl+c key presses
             var cancellationTokenSource = new CancellationTokenSource();
             Console.CancelKeyPress += (sender, e) =>
             {
@@ -155,6 +157,9 @@ namespace Microsoft.CodeAnalysis.Tools
             serviceCollection.AddLogging();
         }
 
+        /// <summary>
+        /// Converts a comma-separated list of relative file paths to a hashmap of full file paths.
+        /// </summary>
         internal static ImmutableHashSet<string> GetFilesToFormat(string files)
         {
             if (string.IsNullOrEmpty(files))

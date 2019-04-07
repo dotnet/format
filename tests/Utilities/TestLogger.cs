@@ -7,6 +7,9 @@ using Microsoft.Extensions.Logging.Abstractions.Internal;
 
 namespace Microsoft.CodeAnalysis.Tools.Tests
 {
+    /// <summary>
+    /// Logger that records all logged messages.
+    /// </summary>
     internal class TestLogger : ILogger
     {
         private readonly StringBuilder _builder = new StringBuilder();
