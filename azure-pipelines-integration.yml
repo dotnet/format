@@ -1,6 +1,7 @@
 # Branches that trigger a build on commit
 trigger:
 - master
+- add-integration-tests
 
 # Branches that trigger builds on PR
 pr:
@@ -13,15 +14,34 @@ jobs:
     name: NetCorePublic-Int-Pool
     queue: buildpool.windows.10.amd64.vs2017.open
   strategy:
-    maxParallel: 4
-  timeoutInMinutes: 120
+    maxParallel: 9
+    matrix:
+      format:
+        _repo: "https://github.com/dotnet/format"
+      roslyn:
+        _repo: "https://github.com/dotnet/roslyn"
+      cli:
+        _repo: "https://github.com/dotnet/cli"
+      project-system:
+        _repo: "https://github.com/dotnet/project-system"
+      msbuild:
+        _repo: "https://github.com/Microsoft/msbuild"
+      corefx:
+        _repo: "https://github.com/dotnet/corefx"
+      Blazor:
+        _repo: "https://github.com/aspnet/Blazor"
+      EntityFrameworkCore:
+        _repo: "https://github.com/aspnet/EntityFrameworkCore"
+      EntityFramework6:
+        _repo: "https://github.com/aspnet/EntityFramework6"
+  timeoutInMinutes: 65
   steps:
-    - script: eng\integration-test.cmd -logPath '$(Build.SourcesDirectory)\artifacts\log\integration' -testPath '$(Build.SourcesDirectory)\temp'
+    - script: eng\integration-test.cmd -repo '$(_repo)' -logPath '$(Build.SourcesDirectory)\artifacts\log\integration' -testPath '$(Build.SourcesDirectory)\temp'
       displayName: Run Integration Tests
     - task: PublishBuildArtifacts@1
       displayName: Publish Integration Test Logs
       inputs:
         PathtoPublish: '$(Build.SourcesDirectory)\artifacts\log\integration'
-        ArtifactName: 'IntegrationTests'
+        ArtifactName: '$(_repo) Logs'
       continueOnError: true
       condition: not(succeeded())
