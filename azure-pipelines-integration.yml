@@ -16,32 +16,23 @@ jobs:
     matrix:
       format:
         _repo: "https://github.com/dotnet/format"
-        _repoName: "dotnet/format"
       roslyn:
         _repo: "https://github.com/dotnet/roslyn"
-        _repoName: "dotnet/roslyn"
       cli:
         _repo: "https://github.com/dotnet/cli"
-        _repoName: "dotnet/cli"
       project-system:
         _repo: "https://github.com/dotnet/project-system"
-        _repoName: "dotnet/project-system"
       msbuild:
         _repo: "https://github.com/Microsoft/msbuild"
-        _repoName: "Microsoft/msbuild"
       corefx:
         _repo: "https://github.com/dotnet/corefx"
-        _repoName: "dotnet/corefx"
       Blazor:
         _repo: "https://github.com/aspnet/Blazor"
-        _repoName: "aspnet/Blazor"
       EntityFrameworkCore:
         _repo: "https://github.com/aspnet/EntityFrameworkCore"
-        _repoName: "aspnet/EntityFrameworkCore"
       EntityFramework6:
         _repo: "https://github.com/aspnet/EntityFramework6"
-        _repoName: "aspnet/EntityFramework6"
   timeoutInMinutes: 65
   steps:
     - script: eng\integration-test.cmd -repo '$(_repo)' -testPath '$(Build.SourcesDirectory)\temp'
-      displayName: Run Integration Tests
+      displayName: Run dotnet-format on Repo
