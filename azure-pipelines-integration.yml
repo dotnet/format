@@ -41,7 +41,7 @@ jobs:
       EntityFramework6:
         _repo: "https://github.com/aspnet/EntityFramework6"
         _repoName: "aspnet/EntityFramework6"
-  timeoutInMinutes: 40
+  timeoutInMinutes: 45
   steps:
     - script: eng\integration-test.cmd -repo '$(_repo)' -testPath '$(Build.SourcesDirectory)\temp'
       displayName: Run dotnet-format on $(_repoName)

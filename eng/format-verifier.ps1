@@ -23,12 +23,12 @@ try {
     foreach ($solution in $solutions) {
         $solutionFile = Split-Path $solution -leaf
 
-        Write-Output "$(Get-Date) - Restoring  $solutionFile."
+        Write-Output "$(Get-Date) - $solutionFile - Restoring"
         dotnet.exe restore $solution
 
-        Write-Output "$(Get-Date) - Formatting $solutionFile."
+        Write-Output "$(Get-Date) - $solutionFile - Formatting"
         $output = dotnet.exe run -p .\src\dotnet-format.csproj -c Release -- -w $solution -v d --dry-run | Out-String
-        Write-Output $output
+        Write-Output $output.TrimEnd()
         
         if ($LastExitCode -ne 0) {
             Write-Output "$(Get-Date) - Formatting failed with error code $LastExitCode."
@@ -40,7 +40,7 @@ try {
             exit -1
         }
 
-        Write-Output "$(Get-Date) - Formatted  $solutionFile."
+        Write-Output "$(Get-Date) - $solutionFile - Complete"
     }
 }
 catch {
