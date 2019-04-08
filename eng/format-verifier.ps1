@@ -18,7 +18,7 @@ try {
     git.exe clone --depth 1 $repo $repoPath
 
     Write-Output "$(Get-Date) - Finding solutions."
-    $solutions = Get-ChildItem -Path $repoPath -Filter *.sln -Exclude *.slnf -Recurse -Depth 2 | Select-Object -ExpandProperty FullName
+    $solutions = Get-ChildItem -Path $repoPath -Filter *.sln -Recurse -Depth 2 | Select-Object -ExpandProperty FullName | Where-Object {$_ -match '.sln$'}
 
     foreach ($solution in $solutions) {
         $solutionFile = Split-Path $solution -leaf
