@@ -27,7 +27,7 @@ try {
     $repoPath = Join-Path $testPath $folderName
 
     Write-Output "$(Get-Date) - Cloning $repoName."
-    Clone-Repo $repo, $sha, $repoPath
+    Clone-Repo $repo $sha $repoPath
 
     Write-Output "$(Get-Date) - Finding solutions."
     $solutions = Get-ChildItem -Path $repoPath -Filter *.sln -Recurse -Depth 2 | Select-Object -ExpandProperty FullName | Where-Object { $_ -match '.sln$' }
