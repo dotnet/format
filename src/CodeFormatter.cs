@@ -39,17 +39,13 @@ namespace Microsoft.CodeAnalysis.Tools
             logger.LogTrace(Resources.Loading_workspace);
 
             var workspaceStopwatch = Stopwatch.StartNew();
-            var formatResult = new WorkspaceFormatResult()
-            {
-                ExitCode = 1
-            };
 
             using (var workspace = await OpenWorkspaceAsync(
                 solutionOrProjectPath, isSolution, logWorkspaceWarnings, logger, cancellationToken).ConfigureAwait(false))
             {
                 if (workspace is null)
                 {
-                    return formatResult;
+                    return new WorkspaceFormatResult(filesFormatted: 0, fileCount: 0, exitCode: 1);
                 }
 
                 var loadWorkspaceMS = workspaceStopwatch.ElapsedMilliseconds;
@@ -87,24 +83,20 @@ namespace Microsoft.CodeAnalysis.Tools
                     }
                 }
 
-                formatResult.FilesFormatted = filesFormatted;
-                formatResult.FileCount = fileCount;
+                var exitCode = 0;
 
                 if (saveFormattedFiles && !workspace.TryApplyChanges(formattedSolution))
                 {
                     logger.LogError(Resources.Failed_to_save_formatting_changes);
-                }
-                else
-                {
-                    formatResult.ExitCode = 0;
+                    exitCode = 1;
                 }
 
-                logger.LogDebug(Resources.Formatted_0_of_1_files_in_2_ms, formatResult.FilesFormatted, formatResult.FileCount, workspaceStopwatch.ElapsedMilliseconds);
+                logger.LogDebug(Resources.Formatted_0_of_1_files_in_2_ms, filesFormatted, fileCount, workspaceStopwatch.ElapsedMilliseconds);
+
+                logger.LogInformation(Resources.Format_complete);
+
+                return new WorkspaceFormatResult(filesFormatted, fileCount, exitCode);
             }
-
-            logger.LogInformation(Resources.Format_complete);
-
-            return formatResult;
         }
 
         private static async Task<Workspace> OpenWorkspaceAsync(
