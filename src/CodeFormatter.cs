@@ -19,7 +19,6 @@ namespace Microsoft.CodeAnalysis.Tools
 {
     internal static class CodeFormatter
     {
-        private const int MaxLoggedWorkspaceWarnings = 5;
         private static readonly ImmutableArray<ICodeFormatter> s_codeFormatters = new ICodeFormatter[]
         {
             new WhitespaceFormatter()
