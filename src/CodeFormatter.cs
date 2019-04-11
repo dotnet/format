@@ -90,9 +90,9 @@ namespace Microsoft.CodeAnalysis.Tools
                     exitCode = 1;
                 }
 
-                logger.LogDebug(Resources.Formatted_0_of_1_files_in_2_ms, filesFormatted, fileCount, workspaceStopwatch.ElapsedMilliseconds);
+                logger.LogDebug(Resources.Formatted_0_of_1_files, filesFormatted, fileCount);
 
-                logger.LogInformation(Resources.Format_complete);
+                logger.LogInformation(Resources.Format_complete_in_0_ms, workspaceStopwatch.ElapsedMilliseconds);
 
                 return new WorkspaceFormatResult(filesFormatted, fileCount, exitCode);
             }

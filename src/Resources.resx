@@ -141,8 +141,8 @@
   <data name="Multiple_MSBuild_solution_files_found_in_0_Specify_which_to_use_with_the_workspace_option" xml:space="preserve">
     <value>Multiple MSBuild solution files found in '{0}'. Specify which to use with the --workspace option.</value>
   </data>
-  <data name="Format_complete" xml:space="preserve">
-    <value>Format complete.</value>
+  <data name="Format_complete_in_0_ms" xml:space="preserve">
+    <value>Format complete in {0}ms.</value>
   </data>
   <data name="Formatting_code_file_0" xml:space="preserve">
     <value>Formatting code file '{0}'.</value>
@@ -153,8 +153,8 @@
   <data name="Could_not_format_0_Format_currently_supports_only_CSharp_and_Visual_Basic_projects" xml:space="preserve">
     <value>Could not format '{0}'. Format currently supports only C# and Visual Basic projects.</value>
   </data>
-  <data name="Formatted_0_of_1_files_in_2_ms" xml:space="preserve">
-    <value>Formatted {0} of {1} files in {2}ms.</value>
+  <data name="Formatted_0_of_1_files" xml:space="preserve">
+    <value>Formatted {0} of {1} files.</value>
   </data>
   <data name="Loading_workspace" xml:space="preserve">
     <value>Loading workspace.</value>

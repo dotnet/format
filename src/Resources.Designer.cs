@@ -128,11 +128,11 @@ namespace Microsoft.CodeAnalysis.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Format complete..
+        ///   Looks up a localized string similar to Format complete in {0}ms..
         /// </summary>
-        internal static string Format_complete {
+        internal static string Format_complete_in_0_ms {
             get {
-                return ResourceManager.GetString("Format_complete", resourceCulture);
+                return ResourceManager.GetString("Format_complete_in_0_ms", resourceCulture);
             }
         }
         
@@ -146,11 +146,11 @@ namespace Microsoft.CodeAnalysis.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Formatted {0} of {1} files in {2}ms..
+        ///   Looks up a localized string similar to Formatted {0} of {1} files..
         /// </summary>
-        internal static string Formatted_0_of_1_files_in_2_ms {
+        internal static string Formatted_0_of_1_files {
             get {
-                return ResourceManager.GetString("Formatted_0_of_1_files_in_2_ms", resourceCulture);
+                return ResourceManager.GetString("Formatted_0_of_1_files", resourceCulture);
             }
         }
         
