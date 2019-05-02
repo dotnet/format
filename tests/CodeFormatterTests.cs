@@ -27,6 +27,10 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
         private const string FSharpProjectPath = "tests/projects/for_code_formatter/fsharp_project";
         private const string FSharpProjectFilePath = FSharpProjectPath + "/fsharp_project.fsproj";
 
+        private const string AspNetFullFrameworkProjectPath = "tests/projects/for_code_formatter/aspnet_full_project";
+        private const string AspNetFullFrameworkProjectFilePath = AspNetFullFrameworkProjectPath + "/aspnet_full_project.csproj";
+
+
         private static IEnumerable<string> EmptyFilesToFormat => Array.Empty<string>();
 
         public CodeFormatterTests(MSBuildFixture msBuildFixture, SolutionPathFixture solutionPathFixture)
@@ -139,6 +143,17 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
 
             Assert.True(match.Success, log);
             Assert.Equal("Program.cs", match.Groups[1].Value);
+        }
+
+        [Fact]
+        public async Task FilesFoundInAspNetFullFrameworkProject()
+        {
+            await TestFormatWorkspaceAsync(
+                AspNetFullFrameworkProjectFilePath,
+                EmptyFilesToFormat,
+                expectedExitCode: 0,
+                expectedFilesFormatted: 5,
+                expectedFileCount: 6);
         }
 
         public async Task<string> TestFormatWorkspaceAsync(string solutionOrProjectPath, IEnumerable<string> files, int expectedExitCode, int expectedFilesFormatted, int expectedFileCount)

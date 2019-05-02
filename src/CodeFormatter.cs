@@ -114,6 +114,9 @@ namespace Microsoft.CodeAnalysis.Tools
                 // This flag is used at restore time to avoid imports from packages changing the inputs to restore,
                 // without this it is possible to get different results between the first and second restore.
                 { "ExcludeRestorePackageImports", bool.TrueString },
+                // Clearing VSToolsPath will cause ASP.NET full framework projects to skip loading Microsoft.WebApplication.targets
+                // which does not exist in the .NET Core SDK.
+                { "VSToolsPath", string.Empty }
             };
 
             var workspace = MSBuildWorkspace.Create(properties);
