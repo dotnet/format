@@ -9,7 +9,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
 {
     public class EOFNewLineFormatterTests : CSharpFormatterTests
     {
-        private protected override ICodeFormatter Formatter => new EOFNewLineFormatter();
+        private protected override ICodeFormatter Formatter => new EndOfFileNewLineFormatter();
 
         [Fact]
         public async Task WhenFinalNewLineUnspecified_AndFinalNewLineMissing_NoChange()

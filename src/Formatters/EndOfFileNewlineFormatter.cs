@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.CodingConventions;
 
 namespace Microsoft.CodeAnalysis.Tools.Formatters
 {
-    internal sealed class EOFNewLineFormatter : DocumentFormatter
+    internal sealed class EndOfFileNewLineFormatter : DocumentFormatter
     {
         protected override async Task<SourceText> FormatFileAsync(
             Document document,
