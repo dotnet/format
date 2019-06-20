@@ -76,7 +76,7 @@ namespace Microsoft.CodeAnalysis.Tools.Utilities
             var args = new object[] { adjustedConventions, option.Type, value };
 
             var isOptionPresent = (bool)tryGetOptionMethod.Invoke(editorConfigStorage, args);
-            value = args[3];
+            value = args[2];
 
             return isOptionPresent;
         }
