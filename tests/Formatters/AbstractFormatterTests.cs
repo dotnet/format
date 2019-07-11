@@ -176,7 +176,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
             {
                 (var newFileName, var source) = sources[i];
                 var documentId = DocumentId.CreateNewId(projectId, debugName: newFileName);
-                solution = solution.AddDocument(documentId, newFileName, source);
+                solution = solution.AddDocument(documentId, newFileName, source, filePath: newFileName);
             }
 
             for (var i = 0; i < additionalFiles.Length; i++)

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Threading;
@@ -26,7 +27,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
             CancellationToken cancellationToken)
         {
             var formattedDocuments = FormatFiles(formattableDocuments, logger, cancellationToken);
-            return await ApplyFileChangesAsync(solution, formattedDocuments, cancellationToken).ConfigureAwait(false);
+            return await ApplyFileChangesAsync(solution, formattedDocuments, logger, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -42,12 +43,12 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
         /// <summary>
         /// Applies formatting and returns the changed <see cref="SourceText"/> for each <see cref="Document"/>.
         /// </summary>
-        private ImmutableArray<(Document, Task<SourceText>)> FormatFiles(
+        private ImmutableArray<(Document, Task<(SourceText originalText, SourceText formattedText)>)> FormatFiles(
             ImmutableArray<(Document, OptionSet, ICodingConventionsSnapshot)> formattableDocuments,
             ILogger logger,
             CancellationToken cancellationToken)
         {
-            var formattedDocuments = ImmutableArray.CreateBuilder<(Document, Task<SourceText>)>(formattableDocuments.Length);
+            var formattedDocuments = ImmutableArray.CreateBuilder<(Document, Task<(SourceText originalText, SourceText formattedText)>)>(formattableDocuments.Length);
 
             foreach (var (document, options, codingConventions) in formattableDocuments)
             {
@@ -62,7 +63,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
         /// <summary>
         /// Get formatted <see cref="SourceText"/> for a <see cref="Document"/>.
         /// </summary>
-        private async Task<SourceText> GetFormattedSourceTextAsync(
+        private async Task<(SourceText originalText, SourceText formattedText)> GetFormattedSourceTextAsync(
             Document document,
             OptionSet options,
             ICodingConventionsSnapshot codingConventions,
@@ -75,8 +76,8 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
             var formattedSourceText = await FormatFileAsync(document, options, codingConventions, logger, cancellationToken).ConfigureAwait(false);
 
             return !formattedSourceText.ContentEquals(originalSourceText)
-                ? formattedSourceText
-                : null;
+                ? (originalSourceText, formattedSourceText)
+                : (originalSourceText, null);
         }
 
         /// <summary>
@@ -84,7 +85,8 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
         /// </summary>
         private static async Task<Solution> ApplyFileChangesAsync(
             Solution solution,
-            ImmutableArray<(Document, Task<SourceText>)> formattedDocuments,
+            ImmutableArray<(Document, Task<(SourceText originalText, SourceText formattedText)>)> formattedDocuments,
+            ILogger logger,
             CancellationToken cancellationToken)
         {
             var formattedSolution = solution;
@@ -96,13 +98,20 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
                     return formattedSolution;
                 }
 
-                var text = await formatTask.ConfigureAwait(false);
-                if (text is null)
+                var (originalText, formattedText) = await formatTask.ConfigureAwait(false);
+                if (formattedText is null)
                 {
                     continue;
                 }
 
-                formattedSolution = formattedSolution.WithDocumentText(document.Id, text);
+                var changes = formattedText.GetChangeRanges(originalText);
+                foreach (var change in changes)
+                {
+                    var changePosition = originalText.Lines.GetLinePosition(change.Span.Start);
+                    logger.LogTrace($"{Path.GetRelativePath(Environment.CurrentDirectory, document.FilePath)}({changePosition.Line},{changePosition.Character}): Fix formatting");
+                }
+
+                formattedSolution = formattedSolution.WithDocumentText(document.Id, formattedText);
             }
 
             return formattedSolution;
