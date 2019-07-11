@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Tools.Tests.Utilities;
+using Microsoft.Extensions.Logging;
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.Tools.Tests
@@ -30,7 +31,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
 
         private static IEnumerable<string> EmptyFilesToFormat => Array.Empty<string>();
 
-        private Regex FindFormattingRegEx => new Regex(@"(.*\(\d+,\d+\): Fix formatting)");
+        private Regex FindFormattingRegEx => new Regex(@"(.*\(\d+,\d+\): .*)\r|(.*\(\d+,\d+\): .*)");
 
         public CodeFormatterTests(MSBuildFixture msBuildFixture, SolutionPathFixture solutionPathFixture)
         {
@@ -160,10 +161,10 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
 
             var expectedFormatLocations = new[]
             {
-                @"tests\projects\for_code_formatter\unformatted_project\other_items\OtherClass.cs(0,0): Fix formatting",
-                @"tests\projects\for_code_formatter\unformatted_project\Program.cs(0,0): Fix formatting",
-                @"tests\projects\for_code_formatter\unformatted_project\other_items\OtherClass.cs(11,1): Fix formatting",
-                @"tests\projects\for_code_formatter\unformatted_project\Program.cs(11,1): Fix formatting",
+                @"other_items\OtherClass.cs(0,0): Fix whitespace formatting.",
+                @"Program.cs(0,0): Fix whitespace formatting.",
+                @"other_items\OtherClass.cs(11,1): Add final newline.",
+                @"Program.cs(11,1): Add final newline.",
             };
 
             Assert.Equal(expectedFormatLocations, formatLocations);
@@ -192,7 +193,13 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             var filesToFormat = files.Select(Path.GetFullPath).ToImmutableHashSet(StringComparer.OrdinalIgnoreCase);
 
             var logger = new TestLogger();
-            var formatResult = await CodeFormatter.FormatWorkspaceAsync(workspacePath, isSolution, logWorkspaceWarnings: false, saveFormattedFiles: false, filesToFormat, logger, CancellationToken.None);
+            var formatOptions = new FormatOptions(
+                workspacePath,
+                isSolution,
+                LogLevel.Trace,
+                saveFormattedFiles: false,
+                filesToFormat);
+            var formatResult = await CodeFormatter.FormatWorkspaceAsync(formatOptions, logger, CancellationToken.None);
 
             Assert.Equal(expectedExitCode, formatResult.ExitCode);
             Assert.Equal(expectedFilesFormatted, formatResult.FilesFormatted);

@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Threading;
@@ -17,17 +16,20 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
     /// </summary>
     internal abstract class DocumentFormatter : ICodeFormatter
     {
+        protected abstract string FormatWarningDescription { get;  }
+
         /// <summary>
         /// Applies formatting and returns a formatted <see cref="Solution"/>
         /// </summary>
         public async Task<Solution> FormatAsync(
             Solution solution,
             ImmutableArray<(Document, OptionSet, ICodingConventionsSnapshot)> formattableDocuments,
+            FormatOptions options,
             ILogger logger,
             CancellationToken cancellationToken)
         {
             var formattedDocuments = FormatFiles(formattableDocuments, logger, cancellationToken);
-            return await ApplyFileChangesAsync(solution, formattedDocuments, logger, cancellationToken).ConfigureAwait(false);
+            return await ApplyFileChangesAsync(solution, formattedDocuments, options, logger, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -83,9 +85,10 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
         /// <summary>
         /// Applies the changed <see cref="SourceText"/> to each formatted <see cref="Document"/>.
         /// </summary>
-        private static async Task<Solution> ApplyFileChangesAsync(
+        private async Task<Solution> ApplyFileChangesAsync(
             Solution solution,
             ImmutableArray<(Document, Task<(SourceText originalText, SourceText formattedText)>)> formattedDocuments,
+            FormatOptions options,
             ILogger logger,
             CancellationToken cancellationToken)
         {
@@ -104,17 +107,26 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
                     continue;
                 }
 
-                var changes = formattedText.GetChangeRanges(originalText);
-                foreach (var change in changes)
+                if (options.LogLevel == LogLevel.Trace)
                 {
-                    var changePosition = originalText.Lines.GetLinePosition(change.Span.Start);
-                    logger.LogTrace($"{Path.GetRelativePath(Environment.CurrentDirectory, document.FilePath)}({changePosition.Line},{changePosition.Character}): Fix formatting");
+                    LogFormattingChanges(options.WorkspaceFilePath, document.FilePath, originalText, formattedText, logger);
                 }
 
                 formattedSolution = formattedSolution.WithDocumentText(document.Id, formattedText);
             }
 
             return formattedSolution;
+        }
+
+        private void LogFormattingChanges(string workspacePath, string filePath, SourceText originalText, SourceText formattedText, ILogger logger)
+        {
+            var workspaceFolder = Path.GetDirectoryName(workspacePath);
+            var changes = formattedText.GetChangeRanges(originalText);
+            foreach (var change in changes)
+            {
+                var changePosition = originalText.Lines.GetLinePosition(change.Span.Start);
+                logger.LogTrace($"{Path.GetRelativePath(workspaceFolder, filePath)}({changePosition.Line},{changePosition.Character}): {FormatWarningDescription}");
+            }
         }
     }
 }

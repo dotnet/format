@@ -84,15 +84,22 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
             TestCode = testCode;
 
             var solution = GetSolution(TestState.Sources.ToArray(), TestState.AdditionalFiles.ToArray(), TestState.AdditionalReferences.ToArray());
-            var document = solution.Projects.Single().Documents.Single();
+            var project = solution.Projects.Single();
+            var document = project.Documents.Single();
             var options = (OptionSet)await document.GetOptionsAsync();
+            var formatOptions = new FormatOptions(
+                workspaceFilePath: project.FilePath,
+                isSolution: false,
+                logLevel: LogLevel.Trace,
+                saveFormattedFiles: false,
+                filesToFormat: ImmutableHashSet.Create<string>(document.FilePath));
 
             ICodingConventionsSnapshot codingConventions = new TestCodingConventionsSnapshot(editorConfig);
             options = OptionsApplier.ApplyConventions(options, codingConventions, Language);
 
             var filesToFormat = new[] { (document, options, codingConventions) }.ToImmutableArray();
 
-            var formattedSolution = await formatter.FormatAsync(solution, filesToFormat, Logger, default);
+            var formattedSolution = await formatter.FormatAsync(solution, filesToFormat, formatOptions, Logger, default);
             var formattedDocument = formattedSolution.Projects.Single().Documents.Single();
             var formattedText = await formattedDocument.GetTextAsync();
 
