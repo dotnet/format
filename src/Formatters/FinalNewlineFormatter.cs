@@ -19,6 +19,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
             Document document,
             OptionSet options,
             ICodingConventionsSnapshot codingConventions,
+            FormatOptions formatOptions,
             ILogger logger,
             CancellationToken cancellationToken)
         {

@@ -161,10 +161,22 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
 
             var expectedFormatLocations = new[]
             {
-                @"other_items\OtherClass.cs(0,0): Fix whitespace formatting.",
-                @"Program.cs(0,0): Fix whitespace formatting.",
-                @"other_items\OtherClass.cs(11,1): Add final newline.",
-                @"Program.cs(11,1): Add final newline.",
+                @"other_items\OtherClass.cs(5,3): Fix whitespace formatting.",
+                @"other_items\OtherClass.cs(6,3): Fix whitespace formatting.",
+                @"other_items\OtherClass.cs(7,5): Fix whitespace formatting.",
+                @"other_items\OtherClass.cs(8,5): Fix whitespace formatting.",
+                @"other_items\OtherClass.cs(9,7): Fix whitespace formatting.",
+                @"other_items\OtherClass.cs(10,5): Fix whitespace formatting.",
+                @"other_items\OtherClass.cs(11,3): Fix whitespace formatting.",
+                @"Program.cs(5,3): Fix whitespace formatting.",
+                @"Program.cs(6,3): Fix whitespace formatting.",
+                @"Program.cs(7,5): Fix whitespace formatting.",
+                @"Program.cs(8,5): Fix whitespace formatting.",
+                @"Program.cs(9,7): Fix whitespace formatting.",
+                @"Program.cs(10,5): Fix whitespace formatting.",
+                @"Program.cs(11,3): Fix whitespace formatting.",
+                @"other_items\OtherClass.cs(12,2): Add final newline.",
+                @"Program.cs(12,2): Add final newline.",
             };
 
             Assert.Equal(expectedFormatLocations, formatLocations);
@@ -198,6 +210,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
                 isSolution,
                 LogLevel.Trace,
                 saveFormattedFiles: false,
+                changesAreErrors: false,
                 filesToFormat);
             var formatResult = await CodeFormatter.FormatWorkspaceAsync(formatOptions, logger, CancellationToken.None);
 

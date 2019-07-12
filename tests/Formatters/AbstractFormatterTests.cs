@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,6 +44,8 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         protected virtual string DefaultFilePathPrefix { get; } = "Test";
 
         protected virtual string DefaultTestProjectName { get; } = "TestProject";
+
+        protected virtual string DefaultTestProjectPath => "." + Path.DirectorySeparatorChar + DefaultTestProjectName + "." + DefaultFileExt + "proj";
 
         protected virtual string DefaultFilePath => DefaultFilePathPrefix + 0 + "." + DefaultFileExt;
 
@@ -92,6 +95,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
                 isSolution: false,
                 logLevel: LogLevel.Trace,
                 saveFormattedFiles: false,
+                changesAreErrors: false,
                 filesToFormat: ImmutableHashSet.Create<string>(document.FilePath));
 
             ICodingConventionsSnapshot codingConventions = new TestCodingConventionsSnapshot(editorConfig);
@@ -216,7 +220,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
 
             var solution = CreateWorkspace()
                 .CurrentSolution
-                .AddProject(projectId, DefaultTestProjectName, DefaultTestProjectName, language)
+                .AddProject(ProjectInfo.Create(projectId, VersionStamp.Create(), DefaultTestProjectName, DefaultTestProjectName, language, filePath: DefaultTestProjectPath))
                 .WithProjectCompilationOptions(projectId, compilationOptions)
                 .AddMetadataReference(projectId, MetadataReferences.CorlibReference)
                 .AddMetadataReference(projectId, MetadataReferences.SystemReference)

@@ -30,7 +30,7 @@ namespace Microsoft.CodeAnalysis.Tools
             ILogger logger,
             CancellationToken cancellationToken)
         {
-            var (workspaceFilePath, isSolution, logLevel, saveFormattedFiles, filesToFormat) = options;
+            var (workspaceFilePath, isSolution, logLevel, saveFormattedFiles, _, filesToFormat) = options;
             var logWorkspaceWarnings = logLevel == LogLevel.Trace;
 
             logger.LogInformation(string.Format(Resources.Formatting_code_files_in_workspace_0, workspaceFilePath));

@@ -93,6 +93,7 @@ namespace Microsoft.CodeAnalysis.Tools
                     isSolution,
                     logLevel,
                     saveFormattedFiles: !dryRun,
+                    changesAreErrors: check,
                     filesToFormat);
 
                 var formatResult = await CodeFormatter.FormatWorkspaceAsync(

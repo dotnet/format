@@ -16,7 +16,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
     /// </summary>
     internal abstract class DocumentFormatter : ICodeFormatter
     {
-        protected abstract string FormatWarningDescription { get;  }
+        protected abstract string FormatWarningDescription { get; }
 
         /// <summary>
         /// Applies formatting and returns a formatted <see cref="Solution"/>
@@ -24,12 +24,12 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
         public async Task<Solution> FormatAsync(
             Solution solution,
             ImmutableArray<(Document, OptionSet, ICodingConventionsSnapshot)> formattableDocuments,
-            FormatOptions options,
+            FormatOptions formatOptions,
             ILogger logger,
             CancellationToken cancellationToken)
         {
-            var formattedDocuments = FormatFiles(formattableDocuments, logger, cancellationToken);
-            return await ApplyFileChangesAsync(solution, formattedDocuments, options, logger, cancellationToken).ConfigureAwait(false);
+            var formattedDocuments = FormatFiles(formattableDocuments, formatOptions, logger, cancellationToken);
+            return await ApplyFileChangesAsync(solution, formattedDocuments, formatOptions, logger, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -39,6 +39,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
             Document document,
             OptionSet options,
             ICodingConventionsSnapshot codingConventions,
+            FormatOptions formatOptions,
             ILogger logger,
             CancellationToken cancellationToken);
 
@@ -47,6 +48,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
         /// </summary>
         private ImmutableArray<(Document, Task<(SourceText originalText, SourceText formattedText)>)> FormatFiles(
             ImmutableArray<(Document, OptionSet, ICodingConventionsSnapshot)> formattableDocuments,
+            FormatOptions formatOptions,
             ILogger logger,
             CancellationToken cancellationToken)
         {
@@ -54,7 +56,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
 
             foreach (var (document, options, codingConventions) in formattableDocuments)
             {
-                var formatTask = Task.Run(async () => await GetFormattedSourceTextAsync(document, options, codingConventions, logger, cancellationToken).ConfigureAwait(false), cancellationToken);
+                var formatTask = Task.Run(async () => await GetFormattedSourceTextAsync(document, options, codingConventions, formatOptions, logger, cancellationToken).ConfigureAwait(false), cancellationToken);
 
                 formattedDocuments.Add((document, formatTask));
             }
@@ -69,13 +71,14 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
             Document document,
             OptionSet options,
             ICodingConventionsSnapshot codingConventions,
+            FormatOptions formatOptions,
             ILogger logger,
             CancellationToken cancellationToken)
         {
             logger.LogTrace(Resources.Formatting_code_file_0, Path.GetFileName(document.FilePath));
 
             var originalSourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
-            var formattedSourceText = await FormatFileAsync(document, options, codingConventions, logger, cancellationToken).ConfigureAwait(false);
+            var formattedSourceText = await FormatFileAsync(document, options, codingConventions, formatOptions, logger, cancellationToken).ConfigureAwait(false);
 
             return !formattedSourceText.ContentEquals(originalSourceText)
                 ? (originalSourceText, formattedSourceText)
@@ -88,7 +91,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
         private async Task<Solution> ApplyFileChangesAsync(
             Solution solution,
             ImmutableArray<(Document, Task<(SourceText originalText, SourceText formattedText)>)> formattedDocuments,
-            FormatOptions options,
+            FormatOptions formatOptions,
             ILogger logger,
             CancellationToken cancellationToken)
         {
@@ -107,9 +110,10 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
                     continue;
                 }
 
-                if (options.LogLevel == LogLevel.Trace)
+                if (!formatOptions.SaveFormattedFiles)
                 {
-                    LogFormattingChanges(options.WorkspaceFilePath, document.FilePath, originalText, formattedText, logger);
+                    // Log formatting changes as errors when we are doing a dry-run.
+                    LogFormattingChanges(formatOptions.WorkspaceFilePath, document.FilePath, originalText, formattedText, formatOptions.ChangesAreErrors, logger);
                 }
 
                 formattedSolution = formattedSolution.WithDocumentText(document.Id, formattedText);
@@ -118,14 +122,25 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
             return formattedSolution;
         }
 
-        private void LogFormattingChanges(string workspacePath, string filePath, SourceText originalText, SourceText formattedText, ILogger logger)
+        private void LogFormattingChanges(string workspacePath, string filePath, SourceText originalText, SourceText formattedText, bool changesAreErrors, ILogger logger)
         {
             var workspaceFolder = Path.GetDirectoryName(workspacePath);
             var changes = formattedText.GetChangeRanges(originalText);
+
             foreach (var change in changes)
             {
+                // LinePosition is zero based so we need to increment to report numbers people expect.
                 var changePosition = originalText.Lines.GetLinePosition(change.Span.Start);
-                logger.LogTrace($"{Path.GetRelativePath(workspaceFolder, filePath)}({changePosition.Line},{changePosition.Character}): {FormatWarningDescription}");
+                var formatMessage = $"{Path.GetRelativePath(workspaceFolder, filePath)}({changePosition.Line + 1},{changePosition.Character + 1}): {FormatWarningDescription}";
+
+                if (changesAreErrors)
+                {
+                    logger.LogError(formatMessage);
+                }
+                else
+                {
+                    logger.LogWarning(formatMessage);
+                }
             }
         }
     }

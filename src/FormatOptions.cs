@@ -9,6 +9,7 @@ namespace Microsoft.CodeAnalysis.Tools
         public bool IsSolution { get; }
         public LogLevel LogLevel { get; }
         public bool SaveFormattedFiles { get; }
+        public bool ChangesAreErrors { get; }
         public ImmutableHashSet<string> FilesToFormat { get; }
 
         public FormatOptions(
@@ -16,12 +17,14 @@ namespace Microsoft.CodeAnalysis.Tools
             bool isSolution,
             LogLevel logLevel,
             bool saveFormattedFiles,
+            bool changesAreErrors,
             ImmutableHashSet<string> filesToFormat)
         {
             WorkspaceFilePath = workspaceFilePath;
             IsSolution = isSolution;
             LogLevel = logLevel;
             SaveFormattedFiles = saveFormattedFiles;
+            ChangesAreErrors = changesAreErrors;
             FilesToFormat = filesToFormat;
         }
 
@@ -30,12 +33,14 @@ namespace Microsoft.CodeAnalysis.Tools
             out bool isSolution,
             out LogLevel logLevel,
             out bool saveFormattedFiles,
+            out bool changesAreErrors,
             out ImmutableHashSet<string> filesToFormat)
         {
             workspaceFilePath = WorkspaceFilePath;
             isSolution = IsSolution;
             logLevel = LogLevel;
             saveFormattedFiles = SaveFormattedFiles;
+            changesAreErrors = ChangesAreErrors;
             filesToFormat = FilesToFormat;
         }
     }
