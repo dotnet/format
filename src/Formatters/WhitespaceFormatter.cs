@@ -52,9 +52,9 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
         private static async Task<SourceText> GetFormattedDocumentWithDetailedChanges(Document document, OptionSet options, CancellationToken cancellationToken)
         {
             var root = await document.GetSyntaxRootAsync(cancellationToken);
-            var formattingTextChanges = Formatter.GetFormattedTextChanges(root, document.Project.Solution.Workspace, options, cancellationToken);
-
             var originalText = await document.GetTextAsync(cancellationToken);
+
+            var formattingTextChanges = Formatter.GetFormattedTextChanges(root, document.Project.Solution.Workspace, options, cancellationToken);
             return originalText.WithChanges(formattingTextChanges);
         }
     }

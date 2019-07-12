@@ -31,7 +31,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
 
         private static IEnumerable<string> EmptyFilesToFormat => Array.Empty<string>();
 
-        private Regex FindFormattingRegEx => new Regex(@"(.*\(\d+,\d+\): .*)\r|(.*\(\d+,\d+\): .*)");
+        private Regex FindFormattingLogLine => new Regex(@"((.*)\(\d+,\d+\): (.*))\r|((.*)\(\d+,\d+\): (.*))");
 
         public CodeFormatterTests(MSBuildFixture msBuildFixture, SolutionPathFixture solutionPathFixture)
         {
@@ -156,7 +156,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
                 expectedFileCount: 5);
 
             var formatLocations = log.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
-                .Where(line => FindFormattingRegEx.Match(line).Success)
+                .Where(line => FindFormattingLogLine.Match(line).Success)
                 .ToArray();
 
             var expectedFormatLocations = new[]
@@ -177,9 +177,21 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
                 @"Program.cs(11,3): Fix whitespace formatting.",
                 @"other_items\OtherClass.cs(12,2): Add final newline.",
                 @"Program.cs(12,2): Add final newline.",
-            };
+            }.Select(path => path.Replace('\\', Path.DirectorySeparatorChar)).ToArray();
 
-            Assert.Equal(expectedFormatLocations, formatLocations);
+            // We can't assert the location of the format message because different platform
+            // line endings change the position in the file.
+            Assert.Equal(expectedFormatLocations.Length, formatLocations.Length);
+            for (var index = 0; index < expectedFormatLocations.Length; index++)
+            {
+                var expectedParts = FindFormattingLogLine.Match(expectedFormatLocations[index]);
+                var formatParts = FindFormattingLogLine.Match(formatLocations[index]);
+
+                // Match filename
+                Assert.Equal(expectedParts.Groups[2].Value, formatParts.Groups[2].Value);
+                // Match formatter message
+                Assert.Equal(expectedParts.Groups[3].Value, formatParts.Groups[3].Value);
+            }
         }
 
         [Fact]
@@ -193,7 +205,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
                 expectedFileCount: 3);
 
             var formatLocations = log.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
-                .Where(line => FindFormattingRegEx.Match(line).Success);
+                .Where(line => FindFormattingLogLine.Match(line).Success);
 
             Assert.Empty(formatLocations);
         }
