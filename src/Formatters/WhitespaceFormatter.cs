@@ -17,7 +17,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
     /// </summary>
     internal sealed class WhitespaceFormatter : DocumentFormatter
     {
-        protected override string FormatWarningDescription => "Fix whitespace formatting.";
+        protected override string FormatWarningDescription => Resources.Fix_whitespace_formatting;
 
         protected override async Task<SourceText> FormatFileAsync(
             Document document,
