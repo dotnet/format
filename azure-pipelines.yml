@@ -1,10 +1,12 @@
 # Branches that trigger a build on commit
 trigger:
 - master
+- feature/*
 
 # Branches that trigger builds on PR
 pr:
 - master
+- feature/*
 
 jobs:
 
