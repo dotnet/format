@@ -32,6 +32,11 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                                                 ILogger logger,
                                                 CancellationToken cancellationToken)
         {
+            if (!options.FormatType.HasFlag(FormatType.CodeStyle))
+            {
+                return solution;
+            }
+
             var analyzers = await _finder.FindAllAnalyzersAsync(logger, cancellationToken);
             var result = await  _runner.RunCodeAnalysisAsync(analyzers, formattableDocuments, logger, cancellationToken);
             var codefixes = await _finder.FindAllCodeFixesAsync(logger, cancellationToken);

@@ -94,6 +94,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
                 workspaceFilePath: project.FilePath,
                 isSolution: false,
                 logLevel: LogLevel.Trace,
+                formatType: FormatType.All,
                 saveFormattedFiles: false,
                 changesAreErrors: false,
                 filesToFormat: ImmutableHashSet.Create<string>(document.FilePath));
