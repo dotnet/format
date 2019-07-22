@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
+
 using System.Collections.Immutable;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Tools.Formatters;
 using Microsoft.Extensions.Logging;
@@ -27,14 +27,15 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
         }
 
         public async Task<Solution> FormatAsync(Solution solution,
-                                          ImmutableArray<(Document, OptionSet, ICodingConventionsSnapshot)> formattableDocuments,
-                                          FormatOptions options,
-                                          ILogger logger,
-                                          CancellationToken cancellationToken)
+                                                ImmutableArray<(Document, OptionSet, ICodingConventionsSnapshot)> formattableDocuments,
+                                                FormatOptions options,
+                                                ILogger logger,
+                                                CancellationToken cancellationToken)
         {
             var analyzers = await _finder.FindAllAnalyzersAsync(logger, cancellationToken);
             var result = await  _runner.RunCodeAnalysisAsync(analyzers, formattableDocuments, logger, cancellationToken);
-            return await _applier.ApplyCodeFixesAsync(solution, result, formattableDocuments, logger, cancellationToken);
+            var codefixes = await _finder.FindAllCodeFixesAsync(logger, cancellationToken);
+            return await _applier.ApplyCodeFixesAsync(solution, result, codefixes, formattableDocuments, logger, cancellationToken);
         }
     }
 }
