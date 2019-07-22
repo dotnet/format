@@ -19,7 +19,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
         public static IAnalyzerRunner Instance { get; } = new ConcurrentAnalyzerRunner();
 
         public Task<CodeAnalysisResult> RunCodeAnalysisAsync(ImmutableArray<DiagnosticAnalyzer> analyzers,
-                                                             ImmutableArray<(Document, OptionSet, ICodingConventionsSnapshot)> formattableDocuments,
+                                                             ImmutableArray<(Document Document, OptionSet OptionSet, ICodingConventionsSnapshot CodingConventions)> formattableDocuments,
                                                              ILogger logger,
                                                              CancellationToken cancellationToken)
         {

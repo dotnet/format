@@ -14,7 +14,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
     interface IAnalyzerRunner
     {
         Task<CodeAnalysisResult> RunCodeAnalysisAsync(ImmutableArray<DiagnosticAnalyzer> analyzers,
-                                                      ImmutableArray<(Document, OptionSet, ICodingConventionsSnapshot)> formattableDocuments,
+                                                      ImmutableArray<(Document Document, OptionSet OptionSet, ICodingConventionsSnapshot CodingConventions)> formattableDocuments,
                                                       ILogger logger,
                                                       CancellationToken cancellationToken);
     }
