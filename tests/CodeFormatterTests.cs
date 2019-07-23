@@ -221,7 +221,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
                 workspacePath,
                 isSolution,
                 LogLevel.Trace,
-                FormatType.All,
+                FormatType.Whitespace,
                 saveFormattedFiles: false,
                 changesAreErrors: false,
                 filesToFormat);

@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.ExternalAccess.Format;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.CodingConventions;
@@ -33,7 +34,8 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 var compilation = project.GetCompilationAsync(cancellationToken).GetAwaiter().GetResult();
                 // TODO: generate option set to ensure the analyzers run
                 // TODO: Ensure that the coding conventions snapshop gets passed to the analyzers somehow
-                var analyzerCompilation = compilation.WithAnalyzers(analyzers, options: null, cancellationToken);
+                var workspaceAnalyzerOptions = CodeStyleAnalyzers.GetWorkspaceAnalyzerOptions(project);
+                var analyzerCompilation = compilation.WithAnalyzers(analyzers, workspaceAnalyzerOptions, cancellationToken);
                 var diagnostics = analyzerCompilation.GetAllDiagnosticsAsync(cancellationToken).GetAwaiter().GetResult();
                 result.AddDiagnostic(project, diagnostics);
             });
