@@ -16,17 +16,6 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
         private readonly ConcurrentDictionary<Project, List<Diagnostic>> _dictionary
             = new ConcurrentDictionary<Project, List<Diagnostic>>();
 
-        internal void AddDiagnostic(Project project, Diagnostic diagnostic)
-        {
-            _ = _dictionary.AddOrUpdate(project,
-                addValueFactory: (key) => new List<Diagnostic> { diagnostic },
-                updateValueFactory: (key, list) =>
-                {
-                    list.Add(diagnostic);
-                    return list;
-                });
-        }
-
         internal void AddDiagnostic(Project project, IEnumerable<Diagnostic> diagnostics)
         {
             _ = _dictionary.AddOrUpdate(project,
