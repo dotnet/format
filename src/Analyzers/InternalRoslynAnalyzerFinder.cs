@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,14 +17,12 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
 
         public Task<ImmutableArray<DiagnosticAnalyzer>> FindAllAnalyzersAsync(ILogger logger, CancellationToken cancellationToken)
         {
-            // The `GetAnalyzersAsync` will be fixed in a forthcoming build of ExternalAccess.Format
-            return Task.FromResult(CodeStyleAnalyzers.GetAnalyzersAsync());
+            return Task.FromResult(CodeStyleAnalyzers.GetDiagnosticAnalyzers());
         }
 
         public Task<ImmutableArray<CodeFixProvider>> FindAllCodeFixesAsync(ILogger logger, CancellationToken cancellationToken)
         {
-            // Code fix providers will be in a forthcoming build of ExternalAccess.Format
-            return Task.FromResult(new ImmutableArray<CodeFixProvider>());
+            return Task.FromResult(CodeStyleAnalyzers.GetCodeFixProviders());
         }
     }
 }
