@@ -1,9 +1,12 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
+# nullable enable
+
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Microsoft.CodeAnalysis.ExternalAccess.Format;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Tools.Formatters;
 using Microsoft.Extensions.Logging;
@@ -18,7 +21,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
         private readonly ICodeFixApplier _applier;
 
         public AnalyzerFormatter(IAnalyzerFinder finder,
-                                 IAnalyzerRunner runner, 
+                                 IAnalyzerRunner runner,
                                  ICodeFixApplier applier)
         {
             _finder = finder;
@@ -37,8 +40,19 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 return solution;
             }
 
+
             var analyzers = await _finder.FindAllAnalyzersAsync(logger, cancellationToken);
-            var result = await  _runner.RunCodeAnalysisAsync(analyzers, formattableDocuments, logger, cancellationToken);
+            var result = new CodeAnalysisResult();
+            var paths = formattableDocuments.Select(x => x.Item1.FilePath).ToImmutableArray();
+            await analyzers.ForEachAsync(async (analyzer, token) =>
+            {
+                await solution.Projects.ForEachAsync(async (project, innerToken) =>
+                {
+                    var options = CodeStyleAnalyzers.GetWorkspaceAnalyzerOptions(project);
+                    await _runner.RunCodeAnalysisAsync(result, analyzer, project, options, paths, logger, innerToken);
+                }, token);
+            });
+
             var codefixes = await _finder.FindAllCodeFixesAsync(logger, cancellationToken);
             return await _applier.ApplyCodeFixesAsync(solution, result, codefixes[0], logger, cancellationToken);
         }

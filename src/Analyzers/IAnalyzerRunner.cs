@@ -2,6 +2,7 @@
 
 #nullable enable
 
+using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,10 +13,12 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
 {
     interface IAnalyzerRunner
     {
-        Task<CodeAnalysisResult> RunCodeAnalysisAsync(DiagnosticAnalyzer analyzers,
-                                                      Project project,
-                                                      AnalyzerOptions analyzerOptions,
-                                                      ILogger logger,
-                                                      CancellationToken cancellationToken);
+        Task RunCodeAnalysisAsync(CodeAnalysisResult result,
+                                  DiagnosticAnalyzer analyzers,
+                                  Project project,
+                                  AnalyzerOptions analyzerOptions,
+                                  ImmutableArray<string> formattableDocumentPaths,
+                                  ILogger logger,
+                                  CancellationToken cancellationToken);
     }
 }
