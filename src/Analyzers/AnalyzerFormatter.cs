@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.CodeAnalysis.ExternalAccess.Format;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Tools.Formatters;
 using Microsoft.Extensions.Logging;
@@ -42,15 +41,14 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             }
 
 
-            var analyzers = await _finder.FindAllAnalyzersAsync(logger, cancellationToken);
-            var codefixes = await _finder.FindAllCodeFixesAsync(logger, cancellationToken);
+            var pairs = _finder.GetAnalyzersAndFixers();
             var paths = formattableDocuments.Select(x => x.Item1.FilePath).ToImmutableArray();
             foreach (var (analyzer, codefix) in pairs)
             {
                 var result = new CodeAnalysisResult();
                 await solution.Projects.ForEachAsync(async (project, token) =>
                 {
-                    var options = CodeStyleAnalyzers.GetWorkspaceAnalyzerOptions(project);
+                    var options = _finder.GetWorkspaceAnalyzerOptions(project);
                     await _runner.RunCodeAnalysisAsync(result, analyzer, project, options, paths, logger, token);
                 }, cancellationToken);
 
