@@ -2,6 +2,7 @@
 
 #nullable enable
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 });
         }
 
-        internal void AddDiagnostic(Project project, ImmutableArray<Diagnostic> diagnostics)
+        internal void AddDiagnostic(Project project, IEnumerable<Diagnostic> diagnostics)
         {
             _ = _dictionary.AddOrUpdate(project,
                 addValueFactory: (key) => diagnostics.ToList(),

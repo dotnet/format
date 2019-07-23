@@ -1,21 +1,24 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
+#nullable enable
+
 using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.CodingConventions;
 
 namespace Microsoft.CodeAnalysis.Tools.Analyzers
 {
     interface IAnalyzerRunner
     {
-        Task<CodeAnalysisResult> RunCodeAnalysisAsync(ImmutableArray<DiagnosticAnalyzer> analyzers,
-                                                      ImmutableArray<(Document Document, OptionSet OptionSet, ICodingConventionsSnapshot CodingConventions)> formattableDocuments,
-                                                      ILogger logger,
-                                                      CancellationToken cancellationToken);
+        Task RunCodeAnalysisAsync(CodeAnalysisResult result,
+                                  DiagnosticAnalyzer analyzers,
+                                  Project project,
+                                  AnalyzerOptions analyzerOptions,
+                                  ImmutableArray<string> formattableDocumentPaths,
+                                  ILogger logger,
+                                  CancellationToken cancellationToken);
     }
 }
