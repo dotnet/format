@@ -6,6 +6,6 @@
   -->
   <ItemGroup>
     <!-- Sign 3rd party dlls with 3rd party cert -->
-    <FileSignInfo Include="NonBlocking.dll" CertificateName="3PartySHA2" />
+    <FileSignInfo Include="NonBlocking.dll" StrongNameKeyId="Open" CertificateName="3PartySHA2" />
   </ItemGroup>
 </Project>
