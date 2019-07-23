@@ -6,8 +6,10 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Tools.Analyzers;
@@ -119,7 +121,7 @@ namespace Microsoft.CodeAnalysis.Tools
                 { "ExcludeRestorePackageImports", bool.TrueString },
             };
 
-            var workspace = MSBuildWorkspace.Create(properties);
+            var workspace = MSBuildWorkspace.Create(properties, FormatHostServices.HostServices);
             workspace.WorkspaceFailed += LogWorkspaceWarnings;
 
             var projectPath = string.Empty;
