@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.ExternalAccess.Format;
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.CodeAnalysis.Tools.Analyzers
@@ -17,12 +18,14 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
 
         public Task<ImmutableArray<DiagnosticAnalyzer>> FindAllAnalyzersAsync(ILogger logger, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            // The `GetAnalyzersAsync` will be fixed in a forthcoming build of ExternalAccess.Format
+            return Task.FromResult(CodeStyleAnalyzers.GetAnalyzersAsync());
         }
 
         public Task<ImmutableArray<CodeFixProvider>> FindAllCodeFixesAsync(ILogger logger, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            // Code fix providers will be in a forthcoming build of ExternalAccess.Format
+            return Task.FromResult(new ImmutableArray<CodeFixProvider>());
         }
     }
 }
