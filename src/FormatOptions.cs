@@ -1,4 +1,6 @@
-﻿using System.Collections.Immutable;
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
+
+using System.Collections.Immutable;
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.CodeAnalysis.Tools
@@ -8,6 +10,7 @@ namespace Microsoft.CodeAnalysis.Tools
         public string WorkspaceFilePath { get; }
         public bool IsSolution { get; }
         public LogLevel LogLevel { get; }
+        public FormatType FormatType { get; }
         public bool SaveFormattedFiles { get; }
         public bool ChangesAreErrors { get; }
         public ImmutableHashSet<string> FilesToFormat { get; }
@@ -16,6 +19,7 @@ namespace Microsoft.CodeAnalysis.Tools
             string workspaceFilePath,
             bool isSolution,
             LogLevel logLevel,
+            FormatType formatType,
             bool saveFormattedFiles,
             bool changesAreErrors,
             ImmutableHashSet<string> filesToFormat)
@@ -23,6 +27,7 @@ namespace Microsoft.CodeAnalysis.Tools
             WorkspaceFilePath = workspaceFilePath;
             IsSolution = isSolution;
             LogLevel = logLevel;
+            FormatType = formatType;
             SaveFormattedFiles = saveFormattedFiles;
             ChangesAreErrors = changesAreErrors;
             FilesToFormat = filesToFormat;
@@ -32,6 +37,7 @@ namespace Microsoft.CodeAnalysis.Tools
             out string workspaceFilePath,
             out bool isSolution,
             out LogLevel logLevel,
+            out FormatType formatType,
             out bool saveFormattedFiles,
             out bool changesAreErrors,
             out ImmutableHashSet<string> filesToFormat)
@@ -39,6 +45,7 @@ namespace Microsoft.CodeAnalysis.Tools
             workspaceFilePath = WorkspaceFilePath;
             isSolution = IsSolution;
             logLevel = LogLevel;
+            formatType = FormatType;
             saveFormattedFiles = SaveFormattedFiles;
             changesAreErrors = ChangesAreErrors;
             filesToFormat = FilesToFormat;

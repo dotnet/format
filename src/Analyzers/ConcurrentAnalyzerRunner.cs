@@ -47,7 +47,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                     var doc = documents.Find(d => d.FilePath == diagnostic.Location.GetLineSpan().Path);
                     if (doc != null)
                     {
-                        result.AddDiagnostic(doc, x);
+                        result.AddDiagnostic(doc, diagnostic);
                     }
                 }
             }
