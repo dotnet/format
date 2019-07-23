@@ -2,9 +2,7 @@
 
 #nullable enable
 
-using System;
 using System.Collections.Immutable;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,8 +10,6 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.ExternalAccess.Format;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.CodingConventions;
-using NonBlocking;
 
 namespace Microsoft.CodeAnalysis.Tools.Analyzers
 {
@@ -21,8 +17,9 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
     {
         public static IAnalyzerRunner Instance { get; } = new ConcurrentAnalyzerRunner();
 
-        public async Task<CodeAnalysisResult> RunCodeAnalysisAsync(ImmutableArray<DiagnosticAnalyzer> analyzers,
-                                                                   ImmutableArray<(Document Document, OptionSet OptionSet, ICodingConventionsSnapshot CodingConventions)> formattableDocuments,
+        public async Task<CodeAnalysisResult> RunCodeAnalysisAsync(DiagnosticAnalyzer analyzers,
+                                                                   Project project,
+                                                                   AnalyzerOptions analyzerOptions,
                                                                    ILogger logger,
                                                                    CancellationToken cancellationToken)
         {
