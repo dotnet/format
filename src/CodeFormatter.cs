@@ -10,8 +10,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Options;
-using Microsoft.CodeAnalysis.Tools.Utilities;
+using Microsoft.CodeAnalysis.Tools.Analyzers;
 using Microsoft.CodeAnalysis.Tools.Formatters;
+using Microsoft.CodeAnalysis.Tools.Utilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.CodingConventions;
 
@@ -24,6 +25,7 @@ namespace Microsoft.CodeAnalysis.Tools
             new WhitespaceFormatter(),
             new FinalNewlineFormatter(),
             new EndOfLineFormatter(),
+            new AnalyzerFormatter(new InternalRoslynAnalyzerFinder(), new ConcurrentAnalyzerRunner(), new PerDocumentCodeFixApplier()),
         }.ToImmutableArray();
 
         public static async Task<WorkspaceFormatResult> FormatWorkspaceAsync(
