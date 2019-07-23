@@ -2,6 +2,7 @@
 
 #nullable enable
 
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
@@ -12,24 +13,24 @@ using Microsoft.CodeAnalysis.ExternalAccess.Format;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.CodingConventions;
+using NonBlocking;
 
 namespace Microsoft.CodeAnalysis.Tools.Analyzers
 {
-    internal class ConcurrentAnalyzerRunner : IAnalyzerRunner
+    internal partial class ConcurrentAnalyzerRunner : IAnalyzerRunner
     {
-        private const string NoFormattableDocuments = "Unable to find solution when running code analysis.";
-
         public static IAnalyzerRunner Instance { get; } = new ConcurrentAnalyzerRunner();
 
-        public Task<CodeAnalysisResult> RunCodeAnalysisAsync(ImmutableArray<DiagnosticAnalyzer> analyzers,
-                                                             ImmutableArray<(Document Document, OptionSet OptionSet, ICodingConventionsSnapshot CodingConventions)> formattableDocuments,
-                                                             ILogger logger,
-                                                             CancellationToken cancellationToken)
+        public async Task<CodeAnalysisResult> RunCodeAnalysisAsync(ImmutableArray<DiagnosticAnalyzer> analyzers,
+                                                                   ImmutableArray<(Document Document, OptionSet OptionSet, ICodingConventionsSnapshot CodingConventions)> formattableDocuments,
+                                                                   ILogger logger,
+                                                                   CancellationToken cancellationToken)
         {
             var result = new CodeAnalysisResult();
             var solution = formattableDocuments.FirstOrDefault().Document.Project.Solution;
             var documents = formattableDocuments.Select(x => x.Document).ToList();
-            Parallel.ForEach(solution.Projects, project =>
+
+            await formattableDocuments.ForEachAsync(async (tuple, token) =>
             {
                 var compilation = project.GetCompilationAsync(cancellationToken).GetAwaiter().GetResult();
                 // TODO: generate option set to ensure the analyzers run
