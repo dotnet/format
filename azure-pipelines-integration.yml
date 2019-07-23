@@ -48,5 +48,7 @@ jobs:
         _sha: "936befcd88a4b58be6f35038248cd5337aca4967"
   timeoutInMinutes: 20
   steps:
+    - script: Restore.cmd -ci -prepareMachine
+      displayName: Restore project
     - script: eng\integration-test.cmd -repo '$(_repo)' -sha '$(_sha)' -testPath '$(Build.SourcesDirectory)\temp'
       displayName: Run dotnet-format on $(_repoName)
