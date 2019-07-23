@@ -12,17 +12,13 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
 {
     public class CodeAnalysisResult
     {
-        private readonly ConcurrentDictionary<DocumentId, IList<Diagnostic>> _dictionary
-            = new ConcurrentDictionary<DocumentId, IList<Diagnostic>>();
+        private readonly ConcurrentDictionary<Project, List<Diagnostic>> _dictionary
+            = new ConcurrentDictionary<Project, List<Diagnostic>>();
 
-        internal void AddDiagnostic(Document document, Diagnostic diagnostic)
+        internal void AddDiagnostic(Project project, Diagnostic diagnostic)
         {
-            _ = _dictionary.AddOrUpdate(document.Id,
-                addValueFactory: (key) =>
-                 {
-                     var list = new List<Diagnostic> { diagnostic };
-                     return list;
-                 },
+            _ = _dictionary.AddOrUpdate(project,
+                addValueFactory: (key) => new List<Diagnostic> { diagnostic },
                 updateValueFactory: (key, list) =>
                 {
                     list.Add(diagnostic);
@@ -30,11 +26,23 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 });
         }
 
-        public IReadOnlyDictionary<DocumentId, ImmutableArray<Diagnostic>> Diagnostics
-            => new Dictionary<DocumentId, ImmutableArray<Diagnostic>>(
+        internal void AddDiagnostic(Project project, ImmutableArray<Diagnostic> diagnostics)
+        {
+            _ = _dictionary.AddOrUpdate(project,
+                addValueFactory: (key) => diagnostics.ToList(),
+                updateValueFactory: (key, list) =>
+                {
+                    list.AddRange(diagnostics);
+                    return list;
+                });
+        }
+
+        public IReadOnlyDictionary<Project, ImmutableArray<Diagnostic>> Diagnostics
+            => new Dictionary<Project, ImmutableArray<Diagnostic>>(
                 _dictionary.Select(
                     x => KeyValuePair.Create(
                         x.Key,
                         x.Value.ToImmutableArray())));
+
     }
 }

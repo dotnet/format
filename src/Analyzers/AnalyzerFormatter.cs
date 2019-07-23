@@ -40,7 +40,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             var analyzers = await _finder.FindAllAnalyzersAsync(logger, cancellationToken);
             var result = await  _runner.RunCodeAnalysisAsync(analyzers, formattableDocuments, logger, cancellationToken);
             var codefixes = await _finder.FindAllCodeFixesAsync(logger, cancellationToken);
-            return await _applier.ApplyCodeFixesAsync(solution, result, codefixes, formattableDocuments, logger, cancellationToken);
+            return await _applier.ApplyCodeFixesAsync(solution, result, codefixes[0], logger, cancellationToken);
         }
     }
 }

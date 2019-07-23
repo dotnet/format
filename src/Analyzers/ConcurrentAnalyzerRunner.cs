@@ -36,15 +36,8 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 // TODO: Ensure that the coding conventions snapshop gets passed to the analyzers somehow
                 var workspaceAnalyzerOptions = CodeStyleAnalyzers.GetWorkspaceAnalyzerOptions(project);
                 var analyzerCompilation = compilation.WithAnalyzers(analyzers, workspaceAnalyzerOptions, cancellationToken);
-                var diagnosticResult = analyzerCompilation.GetAllDiagnosticsAsync(cancellationToken).GetAwaiter().GetResult();
-                foreach (var diagnostic in diagnosticResult)
-                {
-                    var doc = documents.Find(d => d.FilePath == diagnostic.Location.GetLineSpan().Path);
-                    if (doc != null)
-                    {
-                        result.AddDiagnostic(doc, diagnostic);
-                    }
-                }
+                var diagnostics = analyzerCompilation.GetAllDiagnosticsAsync(cancellationToken).GetAwaiter().GetResult();
+                result.AddDiagnostic(project, diagnostics);
             });
 
             return Task.FromResult(result);
