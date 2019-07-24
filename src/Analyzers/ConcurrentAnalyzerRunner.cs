@@ -29,7 +29,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 ImmutableArray.Create(analyzers),
                 options: analyzerOptions,
                 cancellationToken);
-            var diagnostics = await analyzerCompilation.GetAllDiagnosticsAsync(cancellationToken);
+            var diagnostics = await analyzerCompilation.GetAnalyzerDiagnosticsAsync(cancellationToken);
             // filter diagnostics
             var filteredDiagnostics = diagnostics.Where(
                 x => !x.IsSuppressed &&
