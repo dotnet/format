@@ -119,7 +119,7 @@ namespace Microsoft.CodeAnalysis.Tools
                 { "ExcludeRestorePackageImports", bool.TrueString },
             };
 
-            var workspace = MSBuildWorkspace.Create(properties);
+            var workspace = MSBuildWorkspace.Create(properties, FormatHostServices.HostServices);
             workspace.WorkspaceFailed += LogWorkspaceWarnings;
 
             var projectPath = string.Empty;

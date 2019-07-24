@@ -32,7 +32,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             var diagnostics = await analyzerCompilation.GetAllDiagnosticsAsync(cancellationToken);
             // filter diagnostics
             var filteredDiagnostics = diagnostics.Where(
-                x => x.Location.IsInSource && 
+                x => x.Location.IsInSource &&
                      formattableDocumentPaths.Contains(x.Location.SourceTree.FilePath, StringComparer.OrdinalIgnoreCase));
             result.AddDiagnostic(project, filteredDiagnostics);
         }

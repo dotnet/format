@@ -70,10 +70,9 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 cancellationToken: cancellationToken);
 
             var action = await fixAllProvider.GetFixAsync(fixAllContext);
-            var operations = await action.GetOperationsAsync(cancellationToken);
+            var operations = await (action?.GetOperationsAsync(cancellationToken) ?? Task.FromResult(ImmutableArray<CodeActionOperation>.Empty));
             var applyChangesOperation = operations.OfType<ApplyChangesOperation>().SingleOrDefault();
-            // TODO: if there's nothing to fix, is the ApplyChangesOperation null?
-            return applyChangesOperation.ChangedSolution;
+            return applyChangesOperation?.ChangedSolution ?? solution;
         }
     }
 }
