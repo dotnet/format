@@ -14,8 +14,6 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
 {
     internal partial class AnalyzerRunner : IAnalyzerRunner
     {
-        public static IAnalyzerRunner Instance { get; } = new AnalyzerRunner();
-
         public async Task RunCodeAnalysisAsync(CodeAnalysisResult result,
                                                DiagnosticAnalyzer analyzers,
                                                Project project,
