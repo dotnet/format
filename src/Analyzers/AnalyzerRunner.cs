@@ -12,10 +12,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Microsoft.CodeAnalysis.Tools.Analyzers
 {
-    internal partial class ConcurrentAnalyzerRunner : IAnalyzerRunner
+    internal partial class AnalyzerRunner : IAnalyzerRunner
     {
-        public static IAnalyzerRunner Instance { get; } = new ConcurrentAnalyzerRunner();
-
         public async Task RunCodeAnalysisAsync(CodeAnalysisResult result,
                                                DiagnosticAnalyzer analyzers,
                                                Project project,

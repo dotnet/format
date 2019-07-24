@@ -25,7 +25,7 @@ namespace Microsoft.CodeAnalysis.Tools
             new WhitespaceFormatter(),
             new FinalNewlineFormatter(),
             new EndOfLineFormatter(),
-            new AnalyzerFormatter(new InternalRoslynAnalyzerFinder(), new ConcurrentAnalyzerRunner(), new SolutionCodeFixApplier()),
+            new AnalyzerFormatter(new RoslynCodeStyleAnalyzerFinder(), new AnalyzerRunner(), new SolutionCodeFixApplier()),
         }.ToImmutableArray();
 
         public static async Task<WorkspaceFormatResult> FormatWorkspaceAsync(
