@@ -13,7 +13,7 @@ using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.Tools.Formatters;
 using Microsoft.CodeAnalysis.Tools.Tests.Utilities;
-using Microsoft.CodeAnalysis.Tools.Utilities;
+using Microsoft.CodeAnalysis.ExternalAccess.Format;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.CodingConventions;
 using Microsoft.VisualStudio.Composition;
@@ -86,10 +86,11 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         {
             TestCode = testCode;
 
-            var solution = GetSolution(TestState.Sources.ToArray(), TestState.AdditionalFiles.ToArray(), TestState.AdditionalReferences.ToArray());
+            ICodingConventionsSnapshot codingConventions = new TestCodingConventionsSnapshot(editorConfig);
+
+            var solution = GetSolution(TestState.Sources.ToArray(), TestState.AdditionalFiles.ToArray(), TestState.AdditionalReferences.ToArray(), codingConventions);
             var project = solution.Projects.Single();
             var document = project.Documents.Single();
-            var options = (OptionSet)await document.GetOptionsAsync();
             var formatOptions = new FormatOptions(
                 workspaceFilePath: project.FilePath,
                 isSolution: false,
@@ -99,7 +100,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
                 changesAreErrors: false,
                 filesToFormat: ImmutableHashSet.Create<string>(document.FilePath));
 
-            ICodingConventionsSnapshot codingConventions = new TestCodingConventionsSnapshot(editorConfig);
+            var options = (OptionSet)await document.GetOptionsAsync();
             options = OptionsApplier.ApplyConventions(options, codingConventions, Language);
 
             var filesToFormat = new[] { (document, options, codingConventions) }.ToImmutableArray();
@@ -126,10 +127,10 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// </summary>
         public List<Func<OptionSet, OptionSet>> OptionsTransforms { get; } = new List<Func<OptionSet, OptionSet>>();
 
-        public Document GetTestDocument(string testCode)
+        public Document GetTestDocument(string testCode, ICodingConventionsSnapshot codingConventions)
         {
             TestCode = testCode;
-            var solution = GetSolution(TestState.Sources.ToArray(), TestState.AdditionalFiles.ToArray(), TestState.AdditionalReferences.ToArray());
+            var solution = GetSolution(TestState.Sources.ToArray(), TestState.AdditionalFiles.ToArray(), TestState.AdditionalReferences.ToArray(), codingConventions);
             return solution.Projects.Single().Documents.Single();
         }
 
@@ -141,9 +142,9 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// <param name="additionalFiles">Additional documents to include in the project.</param>
         /// <param name="additionalMetadataReferences">Additional metadata references to include in the project.</param>
         /// <returns>A solution containing a project with the specified sources and additional files.</returns>
-        private Solution GetSolution((string filename, SourceText content)[] sources, (string filename, SourceText content)[] additionalFiles, MetadataReference[] additionalMetadataReferences)
+        private Solution GetSolution((string filename, SourceText content)[] sources, (string filename, SourceText content)[] additionalFiles, MetadataReference[] additionalMetadataReferences, ICodingConventionsSnapshot codingConventions)
         {
-            var project = CreateProject(sources, additionalFiles, additionalMetadataReferences, Language);
+            var project = CreateProject(sources, additionalFiles, additionalMetadataReferences, codingConventions, Language);
             return project.Solution;
         }
 
@@ -161,10 +162,10 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// <see cref="LanguageNames"/> class.</param>
         /// <returns>A <see cref="Project"/> created out of the <see cref="Document"/>s created from the source
         /// strings.</returns>
-        protected Project CreateProject((string filename, SourceText content)[] sources, (string filename, SourceText content)[] additionalFiles, MetadataReference[] additionalMetadataReferences, string language)
+        protected Project CreateProject((string filename, SourceText content)[] sources, (string filename, SourceText content)[] additionalFiles, MetadataReference[] additionalMetadataReferences, ICodingConventionsSnapshot codingConventions, string language)
         {
             language = language ?? language;
-            return CreateProjectImpl(sources, additionalFiles, additionalMetadataReferences, language);
+            return CreateProjectImpl(sources, additionalFiles, additionalMetadataReferences, codingConventions, language);
         }
 
         /// <summary>
@@ -177,10 +178,10 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// <see cref="LanguageNames"/> class.</param>
         /// <returns>A <see cref="Project"/> created out of the <see cref="Document"/>s created from the source
         /// strings.</returns>
-        protected virtual Project CreateProjectImpl((string filename, SourceText content)[] sources, (string filename, SourceText content)[] additionalFiles, MetadataReference[] additionalMetadataReferences, string language)
+        protected virtual Project CreateProjectImpl((string filename, SourceText content)[] sources, (string filename, SourceText content)[] additionalFiles, MetadataReference[] additionalMetadataReferences, ICodingConventionsSnapshot codingConventions, string language)
         {
             var projectId = ProjectId.CreateNewId(debugName: DefaultTestProjectName);
-            var solution = CreateSolution(projectId, language);
+            var solution = CreateSolution(projectId, codingConventions, language);
 
             solution = solution.AddMetadataReferences(projectId, additionalMetadataReferences);
 
@@ -207,7 +208,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// <param name="projectId">The project identifier to use.</param>
         /// <param name="language">The language for which the solution is being created.</param>
         /// <returns>The created solution.</returns>
-        protected virtual Solution CreateSolution(ProjectId projectId, string language)
+        protected virtual Solution CreateSolution(ProjectId projectId, ICodingConventionsSnapshot codingConventions, string language)
         {
             var compilationOptions = CreateCompilationOptions();
 
@@ -234,9 +235,9 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
                 solution = solution.AddMetadataReference(projectId, MetadataReferences.MicrosoftVisualBasicReference);
             }
 
-            foreach (var transform in OptionsTransforms)
+            if (codingConventions is object)
             {
-                solution.Workspace.Options = transform(solution.Workspace.Options);
+                solution.Workspace.Options = OptionsApplier.ApplyConventions(solution.Workspace.Options, codingConventions, language);
             }
 
             var parseOptions = solution.GetProject(projectId).ParseOptions;

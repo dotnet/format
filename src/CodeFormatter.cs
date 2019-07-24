@@ -198,7 +198,6 @@ namespace Microsoft.CodeAnalysis.Tools
             CancellationToken cancellationToken)
         {
             var codingConventionsManager = new CachingCodingConventionsManager();
-            var optionsApplier = new EditorConfigOptionsApplier();
 
             var fileCount = 0;
             var getDocumentsAndOptions = new List<Task<(Document, OptionSet, ICodingConventionsSnapshot, bool)>>(solution.Projects.Sum(project => project.DocumentIds.Count));
@@ -223,7 +222,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
                 // Get project documents and options with .editorconfig settings applied.
                 var getProjectDocuments = project.DocumentIds.Select(documentId => Task.Run(async () => await GetDocumentAndOptions(
-                    project, documentId, filesToFormat, codingConventionsManager, optionsApplier, cancellationToken).ConfigureAwait(false), cancellationToken));
+                    project, documentId, filesToFormat, codingConventionsManager, cancellationToken).ConfigureAwait(false), cancellationToken));
                 getDocumentsAndOptions.AddRange(getProjectDocuments);
             }
 
@@ -263,7 +262,6 @@ namespace Microsoft.CodeAnalysis.Tools
             DocumentId documentId,
             ImmutableHashSet<string> filesToFormat,
             ICodingConventionsManager codingConventionsManager,
-            EditorConfigOptionsApplier optionsApplier,
             CancellationToken cancellationToken)
         {
             var document = project.Solution.GetDocument(documentId);

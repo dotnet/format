@@ -5,6 +5,7 @@ using System.Composition;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.CodingConventions;
+using NonBlocking;
 
 namespace Microsoft.CodeAnalysis.Tools.Utilities
 {
@@ -12,7 +13,7 @@ namespace Microsoft.CodeAnalysis.Tools.Utilities
     internal class CachingCodingConventionsManager : ICodingConventionsManager
     {
         private static readonly ICodingConventionsManager _codingConventionsManager = CodingConventionsManagerFactory.CreateCodingConventionsManager();
-        private static readonly Dictionary<string, ICodingConventionContext> _contextCache = new Dictionary<string, ICodingConventionContext>();
+        private static readonly ConcurrentDictionary<string, ICodingConventionContext> _contextCache = new ConcurrentDictionary<string, ICodingConventionContext>();
 
         public async Task<ICodingConventionContext> GetConventionContextAsync(string filePathContext, CancellationToken cancellationToken)
         {
