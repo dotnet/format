@@ -1,73 +1,54 @@
 // Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.ExternalAccess.Format;
+using Microsoft.VisualStudio.CodingConventions;
 
-internal static class FormatHostServices
+namespace Microsoft.CodeAnalysis.Tools.Utilities
 {
-    private static MefHostServices s_hostServices;
-    public static MefHostServices HostServices
+    internal static class FormatHostServices
     {
-        get
+        private static MefHostServices s_hostServices;
+        public static MefHostServices HostServices
         {
-            if (s_hostServices == null)
+            get
             {
-                s_hostServices = MefHostServices.Create(FormatHostServices.DefaultAssemblies);
+                if (s_hostServices == null)
+                {
+                    s_hostServices = MefHostServices.Create(FormatHostServices.DefaultAssemblies);
+                }
+
+                return s_hostServices;
             }
-
-            return s_hostServices;
         }
-    }
 
-    private static ImmutableArray<Assembly> s_defaultAssemblies;
-    public static ImmutableArray<Assembly> DefaultAssemblies
-    {
-        get
+        private static ImmutableArray<Assembly> s_defaultAssemblies;
+        public static ImmutableArray<Assembly> DefaultAssemblies
         {
-            if (s_defaultAssemblies.IsDefault)
+            get
             {
-                s_defaultAssemblies = LoadDefaultAssemblies();
+                if (s_defaultAssemblies.IsDefault)
+                {
+                    s_defaultAssemblies = LoadDefaultAssemblies();
+                }
+
+                return s_defaultAssemblies;
             }
-
-            return s_defaultAssemblies;
-        }
-    }
-
-    private static ImmutableArray<Assembly> LoadDefaultAssemblies()
-    {
-        return new Assembly[]
-        {
-            TryLoadNearbyAssembly(typeof(CodeStyleAnalyzers).Assembly.GetName().Name)
-        }
-        .Concat(MSBuildMefHostServices.DefaultAssemblies)
-        .ToImmutableArray();
-    }
-
-    private static Assembly TryLoadNearbyAssembly(string assemblySimpleName)
-    {
-        var thisAssemblyName = typeof(MefHostServices).GetTypeInfo().Assembly.GetName();
-        var assemblyShortName = thisAssemblyName.Name;
-        var assemblyVersion = thisAssemblyName.Version;
-        var publicKeyToken = thisAssemblyName.GetPublicKeyToken().Aggregate(string.Empty, (s, b) => s + b.ToString("x2"));
-
-        if (string.IsNullOrEmpty(publicKeyToken))
-        {
-            publicKeyToken = "null";
         }
 
-        var assemblyName = new AssemblyName(string.Format("{0}, Version={1}, Culture=neutral, PublicKeyToken={2}", assemblySimpleName, assemblyVersion, publicKeyToken));
-
-        try
+        private static ImmutableArray<Assembly> LoadDefaultAssemblies()
         {
-            return Assembly.Load(assemblyName);
-        }
-        catch (Exception)
-        {
-            return null;
+            return new Assembly[]
+            {
+                typeof(NullFileWatcher).Assembly,
+                typeof(CodingConventionsManagerFactory).Assembly,
+                typeof(CodeStyleAnalyzers).Assembly,
+            }
+            .Concat(MSBuildMefHostServices.DefaultAssemblies)
+            .ToImmutableArray();
         }
     }
 }

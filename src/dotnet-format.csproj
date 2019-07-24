@@ -40,7 +40,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.Features" Version="$(MicrosoftCodeAnalysisVersion)" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(MicrosoftCodeAnalysisVersion)" />
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="$(MicrosoftCodeAnalysisVersion)" />
-    <PackageReference Include="Microsoft.CodeAnalysis.ExternalAccess.Format" Version="3.3.0-beta2-19373-08" />
+    <PackageReference Include="Microsoft.CodeAnalysis.ExternalAccess.Format" Version="3.3.0-beta2-19374-04" />
   </ItemGroup>
 
   <ItemGroup>

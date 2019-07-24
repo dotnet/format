@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.ExternalAccess.Format;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Tools.Analyzers;
@@ -15,6 +16,7 @@ using Microsoft.CodeAnalysis.Tools.Formatters;
 using Microsoft.CodeAnalysis.Tools.Utilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.CodingConventions;
+
 
 namespace Microsoft.CodeAnalysis.Tools
 {
@@ -120,6 +122,8 @@ namespace Microsoft.CodeAnalysis.Tools
             };
 
             var workspace = MSBuildWorkspace.Create(properties, FormatHostServices.HostServices);
+            CodeStyleAnalyzers.RegisterDocumentOptionsProvider(workspace);
+
             workspace.WorkspaceFailed += LogWorkspaceWarnings;
 
             var projectPath = string.Empty;
@@ -287,7 +291,6 @@ namespace Microsoft.CodeAnalysis.Tools
                 return (document, options, null, false);
             }
 
-            options = optionsApplier.ApplyConventions(options, context.CurrentConventions, project.Language);
             return (document, options, context.CurrentConventions, true);
         }
     }
