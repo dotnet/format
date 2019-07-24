@@ -4,7 +4,6 @@ using System;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.ExternalAccess.Format;
 
@@ -17,8 +16,7 @@ internal static class FormatHostServices
         {
             if (s_hostServices == null)
             {
-                var host = MefHostServices.Create(FormatHostServices.DefaultAssemblies);
-                Interlocked.CompareExchange(ref s_hostServices, host, null);
+                s_hostServices = MefHostServices.Create(FormatHostServices.DefaultAssemblies);
             }
 
             return s_hostServices;
@@ -32,7 +30,7 @@ internal static class FormatHostServices
         {
             if (s_defaultAssemblies.IsDefault)
             {
-                ImmutableInterlocked.InterlockedInitialize(ref s_defaultAssemblies, LoadDefaultAssemblies());
+                s_defaultAssemblies = LoadDefaultAssemblies();
             }
 
             return s_defaultAssemblies;
