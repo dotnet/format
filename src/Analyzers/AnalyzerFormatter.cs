@@ -16,6 +16,8 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
 {
     class AnalyzerFormatter : ICodeFormatter
     {
+        public FormatType FormatType => FormatType.CodeStyle;
+
         private readonly IAnalyzerFinder _finder;
         private readonly IAnalyzerRunner _runner;
         private readonly ICodeFixApplier _applier;
@@ -35,12 +37,6 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                                                 ILogger logger,
                                                 CancellationToken cancellationToken)
         {
-            if (!options.FormatType.HasFlag(FormatType.CodeStyle))
-            {
-                return solution;
-            }
-
-
             var pairs = _finder.GetAnalyzersAndFixers();
             var paths = formattableDocuments.Select(x => x.Item1.FilePath).ToImmutableArray();
             foreach (var (analyzer, codefix) in pairs)

@@ -179,6 +179,11 @@ namespace Microsoft.CodeAnalysis.Tools
 
             foreach (var codeFormatter in s_codeFormatters)
             {
+                if (!options.FormatType.HasFlag(codeFormatter.FormatType))
+                {
+                    continue;
+                }
+
                 formattedSolution = await codeFormatter.FormatAsync(formattedSolution, formattableDocuments, options, logger, cancellationToken).ConfigureAwait(false);
             }
 
@@ -192,7 +197,7 @@ namespace Microsoft.CodeAnalysis.Tools
             ILogger logger,
             CancellationToken cancellationToken)
         {
-            var codingConventionsManager = CodingConventionsManagerFactory.CreateCodingConventionsManager();
+            var codingConventionsManager = new CachingCodingConventionsManager();
             var optionsApplier = new EditorConfigOptionsApplier();
 
             var fileCount = 0;

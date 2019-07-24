@@ -12,6 +12,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
 {
     internal sealed class EndOfLineFormatter : DocumentFormatter
     {
+        public override FormatType FormatType => FormatType.Whitespace;
         protected override string FormatWarningDescription => Resources.Fix_end_of_line_marker;
 
         protected override Task<SourceText> FormatFileAsync(

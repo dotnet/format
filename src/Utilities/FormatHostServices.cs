@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.CodeAnalysis.Host.Mef;
 using Microsoft.CodeAnalysis.ExternalAccess.Format;
-using Microsoft.VisualStudio.CodingConventions;
 
 namespace Microsoft.CodeAnalysis.Tools.Utilities
 {
@@ -44,7 +43,6 @@ namespace Microsoft.CodeAnalysis.Tools.Utilities
             return new Assembly[]
             {
                 typeof(NullFileWatcher).Assembly,
-                typeof(CodingConventionsManagerFactory).Assembly,
                 typeof(CodeStyleAnalyzers).Assembly,
             }
             .Concat(MSBuildMefHostServices.DefaultAssemblies)
