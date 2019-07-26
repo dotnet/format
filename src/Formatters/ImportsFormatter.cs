@@ -16,7 +16,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
     internal sealed class ImportsFormatter : DocumentFormatter
     {
         public override FormatType FormatType => FormatType.CodeStyle;
-        protected override string FormatWarningDescription => Resources.Fix_whitespace_formatting;
+        protected override string FormatWarningDescription => Resources.Fix_imports_ordering;
 
         protected override async Task<SourceText> FormatFileAsync(
             Document document,
