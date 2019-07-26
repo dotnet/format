@@ -27,6 +27,7 @@ namespace Microsoft.CodeAnalysis.Tools
             new WhitespaceFormatter(),
             new FinalNewlineFormatter(),
             new EndOfLineFormatter(),
+            new ImportsFormatter(),
             new AnalyzerFormatter(new RoslynCodeStyleAnalyzerFinder(), new AnalyzerRunner(), new SolutionCodeFixApplier()),
         }.ToImmutableArray();
 
