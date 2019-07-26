@@ -121,12 +121,6 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// </remarks>
         public Dictionary<string, string> XmlReferences { get; } = new Dictionary<string, string>();
 
-        /// <summary>
-        /// Gets a collection of transformation functions to apply to <see cref="Workspace.Options"/> during diagnostic
-        /// or code fix test setup.
-        /// </summary>
-        public List<Func<OptionSet, OptionSet>> OptionsTransforms { get; } = new List<Func<OptionSet, OptionSet>>();
-
         public Document GetTestDocument(string testCode, ICodingConventionsSnapshot codingConventions)
         {
             TestCode = testCode;
@@ -141,6 +135,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// <param name="sources">Classes in the form of strings.</param>
         /// <param name="additionalFiles">Additional documents to include in the project.</param>
         /// <param name="additionalMetadataReferences">Additional metadata references to include in the project.</param>
+        /// <param name="codingConventions">EditorConfig options that should be applied to the workspace.</param>
         /// <returns>A solution containing a project with the specified sources and additional files.</returns>
         private Solution GetSolution((string filename, SourceText content)[] sources, (string filename, SourceText content)[] additionalFiles, MetadataReference[] additionalMetadataReferences, ICodingConventionsSnapshot codingConventions)
         {
@@ -158,6 +153,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// <param name="sources">Classes in the form of strings.</param>
         /// <param name="additionalFiles">Additional documents to include in the project.</param>
         /// <param name="additionalMetadataReferences">Additional metadata references to include in the project.</param>
+        /// <param name="codingConventions">EditorConfig options that should be applied to the workspace.</param>
         /// <param name="language">The language the source classes are in. Values may be taken from the
         /// <see cref="LanguageNames"/> class.</param>
         /// <returns>A <see cref="Project"/> created out of the <see cref="Document"/>s created from the source
@@ -174,6 +170,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// <param name="sources">Classes in the form of strings.</param>
         /// <param name="additionalFiles">Additional documents to include in the project.</param>
         /// <param name="additionalMetadataReferences">Additional metadata references to include in the project.</param>
+        /// <param name="codingConventions">EditorConfig options that should be applied to the workspace.</param>
         /// <param name="language">The language the source classes are in. Values may be taken from the
         /// <see cref="LanguageNames"/> class.</param>
         /// <returns>A <see cref="Project"/> created out of the <see cref="Document"/>s created from the source
@@ -206,6 +203,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// Creates a solution that will be used as parent for the sources that need to be checked.
         /// </summary>
         /// <param name="projectId">The project identifier to use.</param>
+        /// <param name="codingConventions">EditorConfig options that should be applied to the workspace.</param>
         /// <param name="language">The language for which the solution is being created.</param>
         /// <returns>The created solution.</returns>
         protected virtual Solution CreateSolution(ProjectId projectId, ICodingConventionsSnapshot codingConventions, string language)

@@ -15,7 +15,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
         public override FormatType FormatType => FormatType.Whitespace;
         protected override string FormatWarningDescription => Resources.Fix_end_of_line_marker;
 
-        protected override Task<SourceText> FormatFileAsync(
+        internal override Task<SourceText> FormatFileAsync(
             Document document,
             SourceText sourceText,
             OptionSet options,
@@ -70,7 +70,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
             return false;
         }
 
-        private static string GetEndOfLine(string endOfLineOption)
+        public static string GetEndOfLine(string endOfLineOption)
         {
             switch (endOfLineOption)
             {
@@ -82,6 +82,21 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
                     return "\r\n";
                 default:
                     return Environment.NewLine;
+            }
+        }
+
+        public static string GetEndOfLineOption(string newLine)
+        {
+            switch (newLine)
+            {
+                case "\n":
+                    return "lf";
+                case "\r":
+                    return "cr";
+                case "\r\n":
+                    return "crlf";
+                default:
+                    return GetEndOfLineOption(Environment.NewLine);
             }
         }
     }
