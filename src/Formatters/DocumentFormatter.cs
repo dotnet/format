@@ -77,8 +77,6 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
             ILogger logger,
             CancellationToken cancellationToken)
         {
-            logger.LogTrace(Resources.Formatting_code_file_0, Path.GetFileName(document.FilePath));
-
             var originalSourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
             var formattedSourceText = await FormatFileAsync(document, originalSourceText, options, codingConventions, formatOptions, logger, cancellationToken).ConfigureAwait(false);
 
