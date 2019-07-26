@@ -16,7 +16,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
         public override FormatType FormatType => FormatType.Whitespace;
         protected override string FormatWarningDescription => Resources.Add_final_newline;
 
-        protected override async Task<SourceText> FormatFileAsync(
+        internal override async Task<SourceText> FormatFileAsync(
             Document document,
             SourceText sourceText,
             OptionSet options,

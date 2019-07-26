@@ -17,8 +17,9 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
     {
         public override FormatType FormatType => FormatType.CodeStyle;
         protected override string FormatWarningDescription => Resources.Fix_imports_ordering;
+        private readonly DocumentFormatter _endOfLineFormatter = new EndOfLineFormatter();
 
-        protected override async Task<SourceText> FormatFileAsync(
+        internal override async Task<SourceText> FormatFileAsync(
             Document document,
             SourceText sourceText,
             OptionSet options,
@@ -33,7 +34,8 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
                 return sourceText;
             }
 
-            return await organizedDocument.GetTextAsync(cancellationToken);
+            var organizedSourceText = await organizedDocument.GetTextAsync(cancellationToken);
+            return await _endOfLineFormatter.FormatFileAsync(organizedDocument, organizedSourceText, options, codingConventions, formatOptions, logger, cancellationToken);
         }
     }
 }
