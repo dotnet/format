@@ -10,9 +10,8 @@ using Microsoft.CodeAnalysis.ExternalAccess.Format;
 
 namespace Microsoft.CodeAnalysis.Tools.Analyzers
 {
-    internal class InternalRoslynAnalyzerFinder : IAnalyzerFinder
+    internal class RoslynCodeStyleAnalyzerFinder : IAnalyzerFinder
     {
-        public static IAnalyzerFinder Instance { get; } = new InternalRoslynAnalyzerFinder();
         public ImmutableArray<(DiagnosticAnalyzer Analyzer, CodeFixProvider Fixer)> GetAnalyzersAndFixers() => CodeStyleAnalyzers.GetAnalyzersAndFixers();
         public AnalyzerOptions GetWorkspaceAnalyzerOptions(Project project) => CodeStyleAnalyzers.GetWorkspaceAnalyzerOptions(project);
     }
