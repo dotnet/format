@@ -2,10 +2,12 @@
 
 # nullable enable
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.CommandLine;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -41,6 +43,9 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                                                 ILogger logger,
                                                 CancellationToken cancellationToken)
         {
+            var analysisStopwatch = Stopwatch.StartNew();
+            logger.LogTrace($"Analyzing code style.");
+
             var pairs = _finder.GetAnalyzersAndFixers();
             var paths = formattableDocuments.Select(x => x.Item1.FilePath).ToImmutableArray();
             foreach (var (analyzer, codefix) in pairs)
@@ -52,7 +57,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                     await _runner.RunCodeAnalysisAsync(result, analyzer, project, options, paths, logger, token);
                 }, cancellationToken);
 
-                var hasDiagnostics = result.Diagnostics.Any(kvp => kvp.Value.Length > 0);
+                Boolean hasDiagnostics = result.Diagnostics.Any(kvp => kvp.Value.Length > 0);
                 if (hasDiagnostics)
                 {
                     if (options.SaveFormattedFiles)
@@ -66,6 +71,8 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                     }
                 }
             }
+
+            logger.LogTrace("Analysis complete in {0}ms.", analysisStopwatch.ElapsedMilliseconds);
 
             return solution;
         }
