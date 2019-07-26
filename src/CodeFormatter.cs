@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.ExternalAccess.Format;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Tools.Analyzers;
@@ -15,6 +16,7 @@ using Microsoft.CodeAnalysis.Tools.Formatters;
 using Microsoft.CodeAnalysis.Tools.Utilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.CodingConventions;
+
 
 namespace Microsoft.CodeAnalysis.Tools
 {
@@ -120,6 +122,8 @@ namespace Microsoft.CodeAnalysis.Tools
             };
 
             var workspace = MSBuildWorkspace.Create(properties, FormatHostServices.HostServices);
+            CodeStyleAnalyzers.RegisterDocumentOptionsProvider(workspace);
+
             workspace.WorkspaceFailed += LogWorkspaceWarnings;
 
             var projectPath = string.Empty;
@@ -175,6 +179,11 @@ namespace Microsoft.CodeAnalysis.Tools
 
             foreach (var codeFormatter in s_codeFormatters)
             {
+                if (!options.FormatType.HasFlag(codeFormatter.FormatType))
+                {
+                    continue;
+                }
+
                 formattedSolution = await codeFormatter.FormatAsync(formattedSolution, formattableDocuments, options, logger, cancellationToken).ConfigureAwait(false);
             }
 
@@ -188,8 +197,7 @@ namespace Microsoft.CodeAnalysis.Tools
             ILogger logger,
             CancellationToken cancellationToken)
         {
-            var codingConventionsManager = CodingConventionsManagerFactory.CreateCodingConventionsManager();
-            var optionsApplier = new EditorConfigOptionsApplier();
+            var codingConventionsManager = new CachingCodingConventionsManager();
 
             var fileCount = 0;
             var getDocumentsAndOptions = new List<Task<(Document, OptionSet, ICodingConventionsSnapshot, bool)>>(solution.Projects.Sum(project => project.DocumentIds.Count));
@@ -214,7 +222,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
                 // Get project documents and options with .editorconfig settings applied.
                 var getProjectDocuments = project.DocumentIds.Select(documentId => Task.Run(async () => await GetDocumentAndOptions(
-                    project, documentId, filesToFormat, codingConventionsManager, optionsApplier, cancellationToken).ConfigureAwait(false), cancellationToken));
+                    project, documentId, filesToFormat, codingConventionsManager, cancellationToken).ConfigureAwait(false), cancellationToken));
                 getDocumentsAndOptions.AddRange(getProjectDocuments);
             }
 
@@ -254,7 +262,6 @@ namespace Microsoft.CodeAnalysis.Tools
             DocumentId documentId,
             ImmutableHashSet<string> filesToFormat,
             ICodingConventionsManager codingConventionsManager,
-            EditorConfigOptionsApplier optionsApplier,
             CancellationToken cancellationToken)
         {
             var document = project.Solution.GetDocument(documentId);
@@ -287,7 +294,6 @@ namespace Microsoft.CodeAnalysis.Tools
                 return (document, options, null, false);
             }
 
-            options = optionsApplier.ApplyConventions(options, context.CurrentConventions, project.Language);
             return (document, options, context.CurrentConventions, true);
         }
     }
