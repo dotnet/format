@@ -57,7 +57,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                     await _runner.RunCodeAnalysisAsync(result, analyzer, project, options, paths, logger, token);
                 }, cancellationToken);
 
-                Boolean hasDiagnostics = result.Diagnostics.Any(kvp => kvp.Value.Length > 0);
+                var hasDiagnostics = result.Diagnostics.Any(kvp => kvp.Value.Length > 0);
                 if (hasDiagnostics)
                 {
                     if (options.SaveFormattedFiles)
