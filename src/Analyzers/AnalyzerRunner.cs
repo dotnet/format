@@ -14,17 +14,26 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
 {
     internal partial class AnalyzerRunner : IAnalyzerRunner
     {
+        public Task RunCodeAnalysisAsync(CodeAnalysisResult result,
+                                         DiagnosticAnalyzer analyzers,
+                                         Project project,
+                                         AnalyzerOptions analyzerOptions,
+                                         ImmutableArray<string> formattableDocumentPaths,
+                                         ILogger logger,
+                                         CancellationToken cancellationToken)
+            => RunCodeAnalysisAsync(result, ImmutableArray.Create(analyzers), project, analyzerOptions, formattableDocumentPaths, logger, cancellationToken);
+
         public async Task RunCodeAnalysisAsync(CodeAnalysisResult result,
-                                               DiagnosticAnalyzer analyzers,
-                                               Project project,
-                                               AnalyzerOptions analyzerOptions,
-                                               ImmutableArray<string> formattableDocumentPaths,
-                                               ILogger logger,
-                                               CancellationToken cancellationToken)
+                                         ImmutableArray<DiagnosticAnalyzer> analyzers,
+                                         Project project,
+                                         AnalyzerOptions analyzerOptions,
+                                         ImmutableArray<string> formattableDocumentPaths,
+                                         ILogger logger,
+                                         CancellationToken cancellationToken)
         {
             var compilation = await project.GetCompilationAsync(cancellationToken);
             var analyzerCompilation = compilation.WithAnalyzers(
-                ImmutableArray.Create(analyzers),
+                analyzers,
                 options: analyzerOptions,
                 cancellationToken);
             var diagnostics = await analyzerCompilation.GetAnalyzerDiagnosticsAsync(cancellationToken);
