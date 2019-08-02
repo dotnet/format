@@ -2,7 +2,6 @@
 
 #nullable enable
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -28,11 +27,6 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
         }
 
         public IReadOnlyDictionary<Project, ImmutableArray<Diagnostic>> Diagnostics
-            => new Dictionary<Project, ImmutableArray<Diagnostic>>(
-                _dictionary.Select(
-                    x => KeyValuePair.Create(
-                        x.Key,
-                        x.Value.ToImmutableArray())));
-
+            => _dictionary.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value.ToImmutableArray());
     }
 }

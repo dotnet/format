@@ -15,13 +15,13 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
     internal partial class AnalyzerRunner : IAnalyzerRunner
     {
         public Task RunCodeAnalysisAsync(CodeAnalysisResult result,
-                                         DiagnosticAnalyzer analyzers,
+                                         DiagnosticAnalyzer analyzer,
                                          Project project,
                                          AnalyzerOptions analyzerOptions,
                                          ImmutableArray<string> formattableDocumentPaths,
                                          ILogger logger,
                                          CancellationToken cancellationToken)
-            => RunCodeAnalysisAsync(result, ImmutableArray.Create(analyzers), project, analyzerOptions, formattableDocumentPaths, logger, cancellationToken);
+            => RunCodeAnalysisAsync(result, ImmutableArray.Create(analyzer), project, analyzerOptions, formattableDocumentPaths, logger, cancellationToken);
 
         public async Task RunCodeAnalysisAsync(CodeAnalysisResult result,
                                          ImmutableArray<DiagnosticAnalyzer> analyzers,
