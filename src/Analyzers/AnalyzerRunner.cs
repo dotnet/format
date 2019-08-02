@@ -38,12 +38,15 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 cancellationToken);
             var diagnostics = await analyzerCompilation.GetAnalyzerDiagnosticsAsync(cancellationToken);
             // filter diagnostics
-            var filteredDiagnostics = diagnostics.Where(
-                x => !x.IsSuppressed &&
-                     x.Severity >= DiagnosticSeverity.Warning &&
-                     x.Location.IsInSource &&
-                     formattableDocumentPaths.Contains(x.Location.SourceTree.FilePath, StringComparer.OrdinalIgnoreCase));
-            result.AddDiagnostic(project, filteredDiagnostics);
+            foreach (var diagnostic in diagnostics){
+                if(!diagnostic.IsSuppressed &&
+                    diagnostic.Severity >= DiagnosticSeverity.Warning &&
+                    diagnostic.Location.IsInSource &&
+                    formattableDocumentPaths.Contains(diagnostic.Location.SourceTree.FilePath, StringComparer.OrdinalIgnoreCase))
+                {
+                  result.AddDiagnostic(project, diagnostic);
+                }
+            }
         }
     }
 }
