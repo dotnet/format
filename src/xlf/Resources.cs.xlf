@@ -47,6 +47,11 @@
         <target state="new">Fix end of line marker.</target>
         <note />
       </trans-unit>
+      <trans-unit id="Fix_imports_ordering">
+        <source>Fix imports ordering.</source>
+        <target state="new">Fix imports ordering.</target>
+        <note />
+      </trans-unit>
       <trans-unit id="Fix_whitespace_formatting">
         <source>Fix whitespace formatting.</source>
         <target state="new">Fix whitespace formatting.</target>
@@ -90,6 +95,11 @@
       <trans-unit id="Multiple_MSBuild_solution_files_found_in_0_Specify_which_to_use_with_the_workspace_option">
         <source>Multiple MSBuild solution files found in '{0}'. Specify which to use with the --workspace option.</source>
         <target state="translated">{0} obsahuje více souborů řešení MSBuild. Určete, který soubor chcete použít, pomocí parametru --workspace.</target>
+        <note />
+      </trans-unit>
+      <trans-unit id="Run_code_style_analyzer_and_apply_fixes">
+        <source>Run code style analyzers and apply fixes.</source>
+        <target state="new">Run code style analyzers and apply fixes.</target>
         <note />
       </trans-unit>
       <trans-unit id="Running_formatters">

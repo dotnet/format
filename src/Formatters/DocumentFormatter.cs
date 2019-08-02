@@ -16,6 +16,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
     /// </summary>
     internal abstract class DocumentFormatter : ICodeFormatter
     {
+        public abstract FormatType FormatType { get; }
         protected abstract string FormatWarningDescription { get; }
 
         /// <summary>
@@ -35,7 +36,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
         /// <summary>
         /// Applies formatting and returns the changed <see cref="SourceText"/> for a <see cref="Document"/>.
         /// </summary>
-        protected abstract Task<SourceText> FormatFileAsync(
+        internal abstract Task<SourceText> FormatFileAsync(
             Document document,
             SourceText sourceText,
             OptionSet options,
@@ -76,8 +77,6 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
             ILogger logger,
             CancellationToken cancellationToken)
         {
-            logger.LogTrace(Resources.Formatting_code_file_0, Path.GetFileName(document.FilePath));
-
             var originalSourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
             var formattedSourceText = await FormatFileAsync(document, originalSourceText, options, codingConventions, formatOptions, logger, cancellationToken).ConfigureAwait(false);
 
