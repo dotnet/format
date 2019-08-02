@@ -3,8 +3,6 @@
 #nullable enable
 
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 
 using NonBlocking;
 
@@ -15,18 +13,18 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
         private readonly ConcurrentDictionary<Project, List<Diagnostic>> _dictionary
             = new ConcurrentDictionary<Project, List<Diagnostic>>();
 
-        internal void AddDiagnostic(Project project, IEnumerable<Diagnostic> diagnostics)
+        internal void AddDiagnostic(Project project, Diagnostic diagnostic)
         {
             _ = _dictionary.AddOrUpdate(project,
-                addValueFactory: (key) => diagnostics.ToList(),
+                addValueFactory: (key) => new List<Diagnostic>() { diagnostic },
                 updateValueFactory: (key, list) =>
                 {
-                    list.AddRange(diagnostics);
+                    list.Add(diagnostic);
                     return list;
                 });
         }
 
-        public IReadOnlyDictionary<Project, ImmutableArray<Diagnostic>> Diagnostics
-            => _dictionary.ToImmutableDictionary(kvp => kvp.Key, kvp => kvp.Value.ToImmutableArray());
+        public IReadOnlyDictionary<Project, List<Diagnostic>> Diagnostics
+            => _dictionary;
     }
 }

@@ -117,7 +117,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                     await _runner.RunCodeAnalysisAsync(result, analyzer, project, options, paths, logger, token);
                 }, cancellationToken);
 
-                var hasDiagnostics = result.Diagnostics.Any(kvp => kvp.Value.Length > 0);
+                var hasDiagnostics = result.Diagnostics.Any(kvp => kvp.Value.Count > 0);
                 if (hasDiagnostics)
                 {
                     logger.LogTrace($"Applying fixes for {codefix.GetType().Name}");
