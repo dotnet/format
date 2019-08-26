@@ -35,7 +35,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
         }
 
         public async Task<Solution> FormatAsync(Solution solution,
-                                                ImmutableArray<(Document, OptionSet, ICodingConventionsSnapshot)> formattableDocuments,
+                                                ImmutableArray<(DocumentId, OptionSet, ICodingConventionsSnapshot)> formattableDocuments,
                                                 FormatOptions options,
                                                 ILogger logger,
                                                 CancellationToken cancellationToken)
@@ -58,10 +58,10 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             return solution;
         }
 
-        private async Task LogDiagnosticsAsync(Solution solution, ImmutableArray<(Document, OptionSet, ICodingConventionsSnapshot)> formattableDocuments, FormatOptions options, ILogger logger, CancellationToken cancellationToken)
+        private async Task LogDiagnosticsAsync(Solution solution, ImmutableArray<(DocumentId, OptionSet, ICodingConventionsSnapshot)> formattableDocuments, FormatOptions options, ILogger logger, CancellationToken cancellationToken)
         {
             var pairs = _finder.GetAnalyzersAndFixers();
-            var paths = formattableDocuments.Select(x => x.Item1.FilePath).ToImmutableArray();
+            var paths = formattableDocuments.Select(x => solution.GetDocument(x.Item1)!.FilePath).ToImmutableArray();
 
             // no need to run codefixes as we won't persist the changes
             var analyzers = pairs.Select(x => x.Analyzer).ToImmutableArray();
@@ -102,10 +102,10 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             }
         }
 
-        private async Task<Solution> FixDiagnosticsAsync(Solution solution, ImmutableArray<(Document, OptionSet, ICodingConventionsSnapshot)> formattableDocuments, ILogger logger, CancellationToken cancellationToken)
+        private async Task<Solution> FixDiagnosticsAsync(Solution solution, ImmutableArray<(DocumentId, OptionSet, ICodingConventionsSnapshot)> formattableDocuments, ILogger logger, CancellationToken cancellationToken)
         {
             var pairs = _finder.GetAnalyzersAndFixers();
-            var paths = formattableDocuments.Select(x => x.Item1.FilePath).ToImmutableArray();
+            var paths = formattableDocuments.Select(x => solution.GetDocument(x.Item1)!.FilePath).ToImmutableArray();
 
             // we need to run each codefix iteratively so ensure that all diagnostics are found and fixed
             foreach (var (analyzer, codefix) in pairs)

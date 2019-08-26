@@ -207,4 +207,7 @@
   <data name="Fix_imports_ordering" xml:space="preserve">
     <value>Fix imports ordering.</value>
   </data>
+  <data name="Fix_file_encoding" xml:space="preserve">
+    <value>Fix file encoding.</value>
+  </data>
 </root>
