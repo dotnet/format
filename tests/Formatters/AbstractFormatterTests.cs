@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Host.Mef;
@@ -66,25 +67,20 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// </value>
         public abstract string Language { get; }
 
-        private string TestCode
-        {
-            set
-            {
-                if (value != null)
-                {
-                    TestState.Sources.Add(value);
-                }
-            }
-        }
-
         private static ILogger Logger => new TestLogger();
         private static EditorConfigOptionsApplier OptionsApplier => new EditorConfigOptionsApplier();
 
         public SolutionState TestState { get; }
 
-        private protected async Task TestAsync(string testCode, string expectedCode, IReadOnlyDictionary<string, string> editorConfig)
+        private protected Task<SourceText> TestAsync(string testCode, string expectedCode, IReadOnlyDictionary<string, string> editorConfig)
         {
-            TestCode = testCode;
+            return TestAsync(testCode, expectedCode, editorConfig, Encoding.UTF8);
+        }
+
+        private protected async Task<SourceText> TestAsync(string testCode, string expectedCode, IReadOnlyDictionary<string, string> editorConfig, Encoding encoding)
+        {
+            var text = SourceText.From(testCode, encoding);
+            TestState.Sources.Add(text);
 
             ICodingConventionsSnapshot codingConventions = new TestCodingConventionsSnapshot(editorConfig);
 
@@ -98,19 +94,42 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
                 formatType: FormatType.Whitespace,
                 saveFormattedFiles: false,
                 changesAreErrors: false,
-                filesToFormat: ImmutableHashSet.Create<string>(document.FilePath));
+                filesToFormat: ImmutableHashSet.Create(document.FilePath));
 
-            var options = (OptionSet)await document.GetOptionsAsync();
-            options = OptionsApplier.ApplyConventions(options, codingConventions, Language);
-
-            var filesToFormat = new[] { (document, options, codingConventions) }.ToImmutableArray();
+            var filesToFormat = await GetOnlyFileToFormatAsync(solution, editorConfig);
 
             var formattedSolution = await Formatter.FormatAsync(solution, filesToFormat, formatOptions, Logger, default);
-            var formattedDocument = formattedSolution.Projects.Single().Documents.Single();
+            var formattedDocument = GetOnlyDocument(formattedSolution);
             var formattedText = await formattedDocument.GetTextAsync();
 
             Assert.Equal(expectedCode, formattedText.ToString());
+
+            return formattedText;
         }
+
+        /// <summary>
+        /// Gets the only <see cref="Document"/> along with related options and conventions.
+        /// </summary>
+        /// <param name="solution">A Solution containing a single Project containing a single Document.</param>
+        /// <param name="editorConfig">The editorconfig to apply to the documents options set.</param>
+        /// <returns>The document contained within along with option set and coding conventions.</returns>
+        protected async Task<ImmutableArray<(DocumentId, OptionSet, ICodingConventionsSnapshot)>> GetOnlyFileToFormatAsync(Solution solution, IReadOnlyDictionary<string, string> editorConfig)
+        {
+            var document = GetOnlyDocument(solution);
+            var options = (OptionSet)await document.GetOptionsAsync();
+
+            ICodingConventionsSnapshot codingConventions = new TestCodingConventionsSnapshot(editorConfig);
+            options = OptionsApplier.ApplyConventions(options, codingConventions, Language);
+
+            return ImmutableArray.Create((document.Id, options, codingConventions));
+        }
+
+        /// <summary>
+        /// Gets the only <see cref="Document"/> contained within the only <see cref="Project"/> within the <see cref="Solution"/>.
+        /// </summary>
+        /// <param name="solution">A Solution containing a single Project containing a single Document.</param>
+        /// <returns>The document contained within.</returns>
+        public Document GetOnlyDocument(Solution solution) => solution.Projects.Single().Documents.Single();
 
         /// <summary>
         /// Gets the collection of inputs to provide to the XML documentation resolver.
@@ -120,13 +139,6 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// comments.</para>
         /// </remarks>
         public Dictionary<string, string> XmlReferences { get; } = new Dictionary<string, string>();
-
-        public Document GetTestDocument(string testCode, ICodingConventionsSnapshot codingConventions)
-        {
-            TestCode = testCode;
-            var solution = GetSolution(TestState.Sources.ToArray(), TestState.AdditionalFiles.ToArray(), TestState.AdditionalReferences.ToArray(), codingConventions);
-            return solution.Projects.Single().Documents.Single();
-        }
 
         /// <summary>
         /// Given an array of strings as sources and a language, turn them into a <see cref="Project"/> and return the
