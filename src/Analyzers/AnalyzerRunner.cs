@@ -38,13 +38,14 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 cancellationToken);
             var diagnostics = await analyzerCompilation.GetAnalyzerDiagnosticsAsync(cancellationToken);
             // filter diagnostics
-            foreach (var diagnostic in diagnostics){
-                if(!diagnostic.IsSuppressed &&
+            foreach (var diagnostic in diagnostics)
+            {
+                if (!diagnostic.IsSuppressed &&
                     diagnostic.Severity >= DiagnosticSeverity.Warning &&
                     diagnostic.Location.IsInSource &&
                     formattableDocumentPaths.Contains(diagnostic.Location.SourceTree.FilePath, StringComparer.OrdinalIgnoreCase))
                 {
-                  result.AddDiagnostic(project, diagnostic);
+                    result.AddDiagnostic(project, diagnostic);
                 }
             }
         }
