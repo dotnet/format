@@ -258,6 +258,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
                 workspacePath,
                 workspaceType,
                 LogLevel.Trace,
+                FormatType.Whitespace,
                 saveFormattedFiles: false,
                 changesAreErrors: false,
                 filesToFormat);

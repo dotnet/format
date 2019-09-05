@@ -201,6 +201,12 @@
   <data name="Fix_whitespace_formatting" xml:space="preserve">
     <value>Fix whitespace formatting.</value>
   </data>
+  <data name="Run_code_style_analyzer_and_apply_fixes" xml:space="preserve">
+    <value>Run code style analyzers and apply fixes.</value>
+  </data>
+  <data name="Fix_imports_ordering" xml:space="preserve">
+    <value>Fix imports ordering.</value>
+  </data>
   <data name="Fix_file_encoding" xml:space="preserve">
     <value>Fix file encoding.</value>
   </data>

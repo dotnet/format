@@ -12,12 +12,13 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
 {
     internal sealed class CharsetFormatter : DocumentFormatter
     {
+        public override FormatType FormatType => FormatType.Whitespace;
         protected override string FormatWarningDescription => Resources.Fix_file_encoding;
 
         private static Encoding Utf8 => new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
         private static Encoding Latin1 => Encoding.GetEncoding("iso-8859-1");
 
-        protected override Task<SourceText> FormatFileAsync(
+        internal override Task<SourceText> FormatFileAsync(
             Document document,
             SourceText sourceText,
             OptionSet options,
