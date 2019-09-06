@@ -8,7 +8,7 @@ namespace Microsoft.CodeAnalysis.Tools
     internal class FormatOptions
     {
         public string WorkspaceFilePath { get; }
-        public bool IsSolution { get; }
+        public WorkspaceType WorkspaceType { get; }
         public LogLevel LogLevel { get; }
         public FormatType FormatType { get; }
         public bool SaveFormattedFiles { get; }
@@ -17,7 +17,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
         public FormatOptions(
             string workspaceFilePath,
-            bool isSolution,
+            WorkspaceType workspaceType,
             LogLevel logLevel,
             FormatType formatType,
             bool saveFormattedFiles,
@@ -25,7 +25,7 @@ namespace Microsoft.CodeAnalysis.Tools
             ImmutableHashSet<string> filesToFormat)
         {
             WorkspaceFilePath = workspaceFilePath;
-            IsSolution = isSolution;
+            WorkspaceType = workspaceType;
             LogLevel = logLevel;
             FormatType = formatType;
             SaveFormattedFiles = saveFormattedFiles;
@@ -35,7 +35,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
         public void Deconstruct(
             out string workspaceFilePath,
-            out bool isSolution,
+            out WorkspaceType workspaceType,
             out LogLevel logLevel,
             out FormatType formatType,
             out bool saveFormattedFiles,
@@ -43,7 +43,7 @@ namespace Microsoft.CodeAnalysis.Tools
             out ImmutableHashSet<string> filesToFormat)
         {
             workspaceFilePath = WorkspaceFilePath;
-            isSolution = IsSolution;
+            workspaceType = WorkspaceType;
             logLevel = LogLevel;
             formatType = FormatType;
             saveFormattedFiles = SaveFormattedFiles;

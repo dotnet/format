@@ -112,7 +112,7 @@ namespace Microsoft.CodeAnalysis.Tools.Formatters
                     continue;
                 }
 
-                if (!formatOptions.SaveFormattedFiles)
+                if (!formatOptions.SaveFormattedFiles || formatOptions.LogLevel == LogLevel.Trace)
                 {
                     // Log formatting changes as errors when we are doing a dry-run.
                     LogFormattingChanges(formatOptions.WorkspaceFilePath, document.FilePath, originalText, formattedText, formatOptions.ChangesAreErrors, logger);
