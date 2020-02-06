@@ -8,13 +8,16 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.ExternalAccess.Format;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Options;
-using Microsoft.CodeAnalysis.Tools.Utilities;
+using Microsoft.CodeAnalysis.Tools.Analyzers;
 using Microsoft.CodeAnalysis.Tools.Formatters;
+using Microsoft.CodeAnalysis.Tools.Utilities;
 using Microsoft.CodeAnalysis.Tools.Workspaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.CodingConventions;
+
 
 namespace Microsoft.CodeAnalysis.Tools
 {
@@ -26,6 +29,8 @@ namespace Microsoft.CodeAnalysis.Tools
             new FinalNewlineFormatter(),
             new EndOfLineFormatter(),
             new CharsetFormatter(),
+            new ImportsFormatter(),
+            new AnalyzerFormatter(new RoslynCodeStyleAnalyzerFinder(), new AnalyzerRunner(), new SolutionCodeFixApplier()),
         }.ToImmutableArray();
 
         public static async Task<WorkspaceFormatResult> FormatWorkspaceAsync(
@@ -33,7 +38,7 @@ namespace Microsoft.CodeAnalysis.Tools
             ILogger logger,
             CancellationToken cancellationToken)
         {
-            var (workspaceFilePath, workspaceType, logLevel, saveFormattedFiles, _, filesToFormat) = options;
+            var (workspaceFilePath, workspaceType, logLevel, _, saveFormattedFiles, _, filesToFormat) = options;
             var logWorkspaceWarnings = logLevel == LogLevel.Trace;
 
             logger.LogInformation(string.Format(Resources.Formatting_code_files_in_workspace_0, workspaceFilePath));
@@ -137,7 +142,8 @@ namespace Microsoft.CodeAnalysis.Tools
                 { "ExcludeRestorePackageImports", bool.TrueString },
             };
 
-            var workspace = MSBuildWorkspace.Create(properties);
+            var workspace = MSBuildWorkspace.Create(properties, FormatHostServices.HostServices);
+            CodeStyleAnalyzers.RegisterDocumentOptionsProvider(workspace);
 
             if (workspaceType == WorkspaceType.Solution)
             {
@@ -198,6 +204,11 @@ namespace Microsoft.CodeAnalysis.Tools
 
             foreach (var codeFormatter in s_codeFormatters)
             {
+                if (!options.FormatType.HasFlag(codeFormatter.FormatType))
+                {
+                    continue;
+                }
+
                 formattedSolution = await codeFormatter.FormatAsync(formattedSolution, formattableDocuments, options, logger, cancellationToken).ConfigureAwait(false);
             }
 
@@ -211,8 +222,7 @@ namespace Microsoft.CodeAnalysis.Tools
             ILogger logger,
             CancellationToken cancellationToken)
         {
-            var codingConventionsManager = CodingConventionsManagerFactory.CreateCodingConventionsManager();
-            var optionsApplier = new EditorConfigOptionsApplier();
+            var codingConventionsManager = new CachingCodingConventionsManager();
 
             var fileCount = 0;
             var getDocumentsAndOptions = new List<Task<(Document, OptionSet, ICodingConventionsSnapshot, bool)>>(solution.Projects.Sum(project => project.DocumentIds.Count));
@@ -236,8 +246,8 @@ namespace Microsoft.CodeAnalysis.Tools
                 fileCount += project.DocumentIds.Count;
 
                 // Get project documents and options with .editorconfig settings applied.
-                var getProjectDocuments = project.DocumentIds.Select(documentId => GetDocumentAndOptions(
-                    project, documentId, filesToFormat, codingConventionsManager, optionsApplier, cancellationToken));
+                var getProjectDocuments = project.DocumentIds.Select(documentId => Task.Run(async () => await GetDocumentAndOptionsAsync(
+                    project, documentId, filesToFormat, codingConventionsManager, cancellationToken).ConfigureAwait(false), cancellationToken));
                 getDocumentsAndOptions.AddRange(getProjectDocuments);
             }
 
@@ -272,12 +282,11 @@ namespace Microsoft.CodeAnalysis.Tools
             return (fileCount, formattableFiles.ToImmutableArray());
         }
 
-        private static async    Task<(Document, OptionSet, ICodingConventionsSnapshot, bool)> GetDocumentAndOptions(
+        private static async Task<(Document, OptionSet, ICodingConventionsSnapshot, bool)> GetDocumentAndOptionsAsync(
             Project project,
             DocumentId documentId,
             ImmutableHashSet<string> filesToFormat,
             ICodingConventionsManager codingConventionsManager,
-            EditorConfigOptionsApplier optionsApplier,
             CancellationToken cancellationToken)
         {
             var document = project.Solution.GetDocument(documentId);
@@ -310,7 +319,6 @@ namespace Microsoft.CodeAnalysis.Tools
                 return (document, options, null, false);
             }
 
-            options = optionsApplier.ApplyConventions(options, context.CurrentConventions, project.Language);
             return (document, options, context.CurrentConventions, true);
         }
     }

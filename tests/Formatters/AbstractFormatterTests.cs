@@ -14,7 +14,7 @@ using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.Tools.Formatters;
 using Microsoft.CodeAnalysis.Tools.Tests.Utilities;
-using Microsoft.CodeAnalysis.Tools.Utilities;
+using Microsoft.CodeAnalysis.ExternalAccess.Format;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.CodingConventions;
 using Microsoft.VisualStudio.Composition;
@@ -62,13 +62,9 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// <summary>
         /// Gets the language name used for the test.
         /// </summary>
-        /// <value>
-        /// The language name used for the test.
-        /// </value>
         public abstract string Language { get; }
 
         private static ILogger Logger => new TestLogger();
-        private static EditorConfigOptionsApplier OptionsApplier => new EditorConfigOptionsApplier();
 
         public SolutionState TestState { get; }
 
@@ -82,13 +78,16 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
             var text = SourceText.From(testCode, encoding);
             TestState.Sources.Add(text);
 
-            var solution = GetSolution(TestState.Sources.ToArray(), TestState.AdditionalFiles.ToArray(), TestState.AdditionalReferences.ToArray());
+            var analyzerConfig = CreateEditorConfigText(editorConfig);
+
+            var solution = GetSolution(TestState.Sources.ToArray(), TestState.AdditionalFiles.ToArray(), TestState.AdditionalReferences.ToArray(), analyzerConfig);
             var project = solution.Projects.Single();
             var document = project.Documents.Single();
             var formatOptions = new FormatOptions(
                 workspaceFilePath: project.FilePath,
                 workspaceType: WorkspaceType.Folder,
                 logLevel: LogLevel.Trace,
+                formatType: FormatType.Whitespace,
                 saveFormattedFiles: false,
                 changesAreErrors: false,
                 filesToFormat: ImmutableHashSet.Create(document.FilePath));
@@ -104,19 +103,28 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
             return formattedText;
         }
 
+        private string CreateEditorConfigText(IReadOnlyDictionary<string, string> editorConfig)
+        {
+            var entries = string.Join(Environment.NewLine, editorConfig.Select(kvp => $"{kvp.Key} = {kvp.Value}"));
+            return $@"
+root = true
+
+[*.{DefaultFileExt}]
+
+{entries}
+";
+        }
+
         /// <summary>
         /// Gets the only <see cref="Document"/> along with related options and conventions.
         /// </summary>
         /// <param name="solution">A Solution containing a single Project containing a single Document.</param>
-        /// <param name="editorConfig">The editorconfig to apply to the documents options set.</param>
         /// <returns>The document contained within along with option set and coding conventions.</returns>
         protected async Task<ImmutableArray<(DocumentId, OptionSet, ICodingConventionsSnapshot)>> GetOnlyFileToFormatAsync(Solution solution, IReadOnlyDictionary<string, string> editorConfig)
         {
             var document = GetOnlyDocument(solution);
             var options = (OptionSet)await document.GetOptionsAsync();
-
             ICodingConventionsSnapshot codingConventions = new TestCodingConventionsSnapshot(editorConfig);
-            options = OptionsApplier.ApplyConventions(options, codingConventions, Language);
 
             return ImmutableArray.Create((document.Id, options, codingConventions));
         }
@@ -138,22 +146,17 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         public Dictionary<string, string> XmlReferences { get; } = new Dictionary<string, string>();
 
         /// <summary>
-        /// Gets a collection of transformation functions to apply to <see cref="Workspace.Options"/> during diagnostic
-        /// or code fix test setup.
-        /// </summary>
-        public List<Func<OptionSet, OptionSet>> OptionsTransforms { get; } = new List<Func<OptionSet, OptionSet>>();
-
-        /// <summary>
         /// Given an array of strings as sources and a language, turn them into a <see cref="Project"/> and return the
         /// solution.
         /// </summary>
         /// <param name="sources">Classes in the form of strings.</param>
         /// <param name="additionalFiles">Additional documents to include in the project.</param>
         /// <param name="additionalMetadataReferences">Additional metadata references to include in the project.</param>
+        /// <param name="analyzerConfig">EditorConfig source that should be added to the project.</param>
         /// <returns>A solution containing a project with the specified sources and additional files.</returns>
-        private Solution GetSolution((string filename, SourceText content)[] sources, (string filename, SourceText content)[] additionalFiles, MetadataReference[] additionalMetadataReferences)
+        private Solution GetSolution((string filename, SourceText content)[] sources, (string filename, SourceText content)[] additionalFiles, MetadataReference[] additionalMetadataReferences, string analyzerConfig)
         {
-            var project = CreateProject(sources, additionalFiles, additionalMetadataReferences, Language);
+            var project = CreateProject(sources, additionalFiles, additionalMetadataReferences, analyzerConfig, Language);
             return project.Solution;
         }
 
@@ -167,14 +170,15 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// <param name="sources">Classes in the form of strings.</param>
         /// <param name="additionalFiles">Additional documents to include in the project.</param>
         /// <param name="additionalMetadataReferences">Additional metadata references to include in the project.</param>
+        /// <param name="analyzerConfig">EditorConfig source that should be added to the project.</param>
         /// <param name="language">The language the source classes are in. Values may be taken from the
         /// <see cref="LanguageNames"/> class.</param>
         /// <returns>A <see cref="Project"/> created out of the <see cref="Document"/>s created from the source
         /// strings.</returns>
-        protected Project CreateProject((string filename, SourceText content)[] sources, (string filename, SourceText content)[] additionalFiles, MetadataReference[] additionalMetadataReferences, string language)
+        protected Project CreateProject((string filename, SourceText content)[] sources, (string filename, SourceText content)[] additionalFiles, MetadataReference[] additionalMetadataReferences, string analyzerConfig, string language)
         {
             language = language ?? language;
-            return CreateProjectImpl(sources, additionalFiles, additionalMetadataReferences, language);
+            return CreateProjectImpl(sources, additionalFiles, additionalMetadataReferences, analyzerConfig, language);
         }
 
         /// <summary>
@@ -183,14 +187,18 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
         /// <param name="sources">Classes in the form of strings.</param>
         /// <param name="additionalFiles">Additional documents to include in the project.</param>
         /// <param name="additionalMetadataReferences">Additional metadata references to include in the project.</param>
+        /// <param name="analyzerConfig">EditorConfig source that should be added to the project.</param>
         /// <param name="language">The language the source classes are in. Values may be taken from the
         /// <see cref="LanguageNames"/> class.</param>
         /// <returns>A <see cref="Project"/> created out of the <see cref="Document"/>s created from the source
         /// strings.</returns>
-        protected virtual Project CreateProjectImpl((string filename, SourceText content)[] sources, (string filename, SourceText content)[] additionalFiles, MetadataReference[] additionalMetadataReferences, string language)
+        protected virtual Project CreateProjectImpl((string filename, SourceText content)[] sources, (string filename, SourceText content)[] additionalFiles, MetadataReference[] additionalMetadataReferences, string analyzerConfig, string language)
         {
             var projectId = ProjectId.CreateNewId(debugName: DefaultTestProjectName);
-            var solution = CreateSolution(projectId, language);
+            var workspace = CreateSolution(projectId, language).Workspace;
+            var solution = workspace.CurrentSolution;
+
+            var tempDirectory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
 
             solution = solution.AddMetadataReferences(projectId, additionalMetadataReferences);
 
@@ -198,7 +206,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
             {
                 (var newFileName, var source) = sources[i];
                 var documentId = DocumentId.CreateNewId(projectId, debugName: newFileName);
-                solution = solution.AddDocument(documentId, newFileName, source, filePath: newFileName);
+                solution = solution.AddDocument(documentId, newFileName, source, filePath: Path.Combine(tempDirectory, newFileName));
             }
 
             for (var i = 0; i < additionalFiles.Length; i++)
@@ -208,7 +216,17 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
                 solution = solution.AddAdditionalDocument(documentId, newFileName, source);
             }
 
-            return solution.GetProject(projectId);
+            // Add editorconfig to the analyzer config documents and register document options provider so
+            // that the compiler will process it.
+            {
+                var documentId = DocumentId.CreateNewId(projectId, debugName: ".editorconfig");
+                solution = solution.AddAnalyzerConfigDocument(documentId, ".editorconfig", SourceText.From(analyzerConfig), filePath: Path.Combine(tempDirectory, ".editorconfig"));
+
+                workspace.TryApplyChanges(solution);
+                CodeStyleAnalyzers.RegisterDocumentOptionsProvider(workspace);
+            }
+
+            return workspace.CurrentSolution.GetProject(projectId);
         }
 
         /// <summary>
@@ -229,7 +247,8 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
 
             compilationOptions = compilationOptions.WithXmlReferenceResolver(xmlReferenceResolver);
 
-            var solution = CreateWorkspace()
+            var workspace = CreateWorkspace();
+            var solution = workspace
                 .CurrentSolution
                 .AddProject(ProjectInfo.Create(projectId, VersionStamp.Create(), DefaultTestProjectName, DefaultTestProjectName, language, filePath: DefaultTestProjectPath))
                 .WithProjectCompilationOptions(projectId, compilationOptions)
@@ -244,13 +263,10 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
                 solution = solution.AddMetadataReference(projectId, MetadataReferences.MicrosoftVisualBasicReference);
             }
 
-            foreach (var transform in OptionsTransforms)
-            {
-                solution.Workspace.Options = transform(solution.Workspace.Options);
-            }
-
             var parseOptions = solution.GetProject(projectId).ParseOptions;
             solution = solution.WithProjectParseOptions(projectId, parseOptions.WithDocumentationMode(DocumentationMode.Diagnose));
+
+            workspace.TryApplyChanges(solution);
 
             return solution;
         }
