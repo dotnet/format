@@ -19,8 +19,8 @@ namespace Microsoft.CodeAnalysis.Tools
     internal class Program
     {
         private static readonly string[] _verbosityLevels = new[] { "q", "quiet", "m", "minimal", "n", "normal", "d", "detailed", "diag", "diagnostic" };
-        private const int ExceptionExitCode = 1;
-        private const int CheckFailedExitCode = 2;
+        internal const int UnhandledExceptionExitCode = 1;
+        internal const int CheckFailedExitCode = 2;
 
         private static async Task<int> Main(string[] args)
         {
@@ -138,11 +138,11 @@ namespace Microsoft.CodeAnalysis.Tools
             catch (FileNotFoundException fex)
             {
                 logger.LogError(fex.Message);
-                return ExceptionExitCode;
+                return UnhandledExceptionExitCode;
             }
             catch (OperationCanceledException)
             {
-                return ExceptionExitCode;
+                return UnhandledExceptionExitCode;
             }
             finally
             {
