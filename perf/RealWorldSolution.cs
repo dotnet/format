@@ -1,10 +1,11 @@
-﻿using System.Collections.Immutable;
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
+
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Environments;
-using BenchmarkDotNet.Horology;
 using BenchmarkDotNet.Jobs;
+using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.CodeAnalysis.Tools.Perf
@@ -15,6 +16,7 @@ namespace Microsoft.CodeAnalysis.Tools.Perf
         private const string UnformattedSolutionFilePath = "temp/project-system/ProjectSystem.sln";
         private const string UnformattedFolderFilePath = "temp/project-system";
         private static EmptyLogger EmptyLogger = new EmptyLogger();
+        private static readonly Matcher FileMatcher = new Matcher();
 
         [IterationSetup]
         public void RealWorldSolutionIterationSetup()
@@ -33,8 +35,7 @@ namespace Microsoft.CodeAnalysis.Tools.Perf
                 LogLevel.Error,
                 saveFormattedFiles: false,
                 changesAreErrors: false,
-                ImmutableHashSet<string>.Empty,
-                ImmutableHashSet<string>.Empty,
+                FileMatcher,
                 reportPath: string.Empty);
             _ = CodeFormatter.FormatWorkspaceAsync(options, EmptyLogger, default).GetAwaiter().GetResult();
         }
@@ -49,8 +50,7 @@ namespace Microsoft.CodeAnalysis.Tools.Perf
                 LogLevel.Error,
                 saveFormattedFiles: false,
                 changesAreErrors: false,
-                ImmutableHashSet<string>.Empty,
-                ImmutableHashSet<string>.Empty,
+                FileMatcher,
                 reportPath: string.Empty);
             _ = CodeFormatter.FormatWorkspaceAsync(options, EmptyLogger, default).GetAwaiter().GetResult();
         }

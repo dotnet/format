@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.Tools.Formatters;
 using Microsoft.CodeAnalysis.Tools.Tests.Utilities;
+using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
@@ -49,14 +50,15 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
             var solution = GetSolution(TestState.Sources.ToArray(), TestState.AdditionalFiles.ToArray(), TestState.AdditionalReferences.ToArray());
             var project = solution.Projects.Single();
             var document = project.Documents.Single();
+            var fileMatcher = new Matcher();
+            fileMatcher.AddInclude(document.FilePath);
             var formatOptions = new FormatOptions(
                 workspaceFilePath: project.FilePath,
                 workspaceType: WorkspaceType.Folder,
                 logLevel: LogLevel.Trace,
                 saveFormattedFiles: false,
                 changesAreErrors: false,
-                pathsToInclude: ImmutableHashSet.Create(document.FilePath),
-                pathsToExclude: ImmutableHashSet.Create<string>(),
+                fileMatcher,
                 reportPath: string.Empty);
 
             var pathsToFormat = await GetOnlyFileToFormatAsync(solution, editorConfig);
