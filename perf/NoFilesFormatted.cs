@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
+using System;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
+using Microsoft.CodeAnalysis.Tools.Utilities;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.Logging;
 
@@ -10,12 +12,12 @@ namespace Microsoft.CodeAnalysis.Tools.Perf
     [SimpleJob(RuntimeMoniker.NetCoreApp21)]
     public class NoFilesFormatted
     {
-        private const string FormattedProjectPath = "tests/projects/for_code_formatter/formatted_project";
-        private const string FormattedProjectFilePath = FormattedProjectPath + "/formatted_project.csproj";
+        private const string FormattedProjectPath = "tests/projects/for_code_formatter/formatted_project/";
+        private const string FormattedProjectFilePath = FormattedProjectPath + "formatted_project.csproj";
         private const string FormattedSolutionFilePath = "tests/projects/for_code_formatter/formatted_solution/formatted_solution.sln";
 
         private static readonly EmptyLogger EmptyLogger = new EmptyLogger();
-        private static readonly Matcher FileMatcher = new Matcher();
+        private static readonly Matcher AllFileMatcher = SourceFileMatcher.CreateMatcher(Array.Empty<string>(), Array.Empty<string>());
 
         [IterationSetup]
         public void NoFilesFormattedSetup()
@@ -34,7 +36,7 @@ namespace Microsoft.CodeAnalysis.Tools.Perf
                 LogLevel.Error,
                 saveFormattedFiles: false,
                 changesAreErrors: false,
-                FileMatcher,
+                AllFileMatcher,
                 reportPath: string.Empty);
             _ = CodeFormatter.FormatWorkspaceAsync(options, EmptyLogger, default).GetAwaiter().GetResult();
         }
@@ -49,7 +51,7 @@ namespace Microsoft.CodeAnalysis.Tools.Perf
                 LogLevel.Error,
                 saveFormattedFiles: false,
                 changesAreErrors: false,
-                FileMatcher,
+                AllFileMatcher,
                 reportPath: string.Empty);
             _ = CodeFormatter.FormatWorkspaceAsync(options, EmptyLogger, default).GetAwaiter().GetResult();
         }
@@ -64,7 +66,7 @@ namespace Microsoft.CodeAnalysis.Tools.Perf
                 LogLevel.Error,
                 saveFormattedFiles: false,
                 changesAreErrors: false,
-                FileMatcher,
+                AllFileMatcher,
                 reportPath: string.Empty);
             _ = CodeFormatter.FormatWorkspaceAsync(options, EmptyLogger, default).GetAwaiter().GetResult();
         }
