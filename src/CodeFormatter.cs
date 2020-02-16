@@ -348,7 +348,7 @@ namespace Microsoft.CodeAnalysis.Tools
             Matcher fileMatcher,
             CancellationToken cancellationToken)
         {
-            if (fileMatcher is object && !fileMatcher.Match(document.FilePath).HasMatches)
+            if (!fileMatcher.Match(document.FilePath).HasMatches)
             {
                 // If a files list was passed in, then ignore files not present in the list.
                 return true;

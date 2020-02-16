@@ -15,7 +15,6 @@ using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.Tools.Formatters;
 using Microsoft.CodeAnalysis.Tools.Tests.Utilities;
 using Microsoft.CodeAnalysis.Tools.Utilities;
-using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.CodingConventions;
 using Microsoft.VisualStudio.Composition;
@@ -94,8 +93,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
             var solution = GetSolution(TestState.Sources.ToArray(), TestState.AdditionalFiles.ToArray(), TestState.AdditionalReferences.ToArray());
             var project = solution.Projects.Single();
             var document = project.Documents.Single();
-            var fileMatcher = new Matcher();
-            fileMatcher.AddInclude(document.FilePath);
+            var fileMatcher = SourceFileMatcher.CreateMatcher(new[] { document.FilePath }, exclude: Array.Empty<string>());
             var formatOptions = new FormatOptions(
                 workspaceFilePath: project.FilePath,
                 workspaceType: WorkspaceType.Folder,
