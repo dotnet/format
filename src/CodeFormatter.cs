@@ -99,6 +99,12 @@ namespace Microsoft.CodeAnalysis.Tools
                 if (exitCode == 0 && !string.IsNullOrWhiteSpace(reportPath))
                 {
                     var reportFilePath = GetReportFilePath(reportPath);
+                    var reportFolderPath = Path.GetDirectoryName(reportFilePath);
+
+                    if (!Directory.Exists(reportFolderPath))
+                    {
+                        Directory.CreateDirectory(reportFolderPath);
+                    }
 
                     logger.LogInformation(Resources.Writing_formatting_report_to_0, reportFilePath);
                     var seralizerOptions = new JsonSerializerOptions
