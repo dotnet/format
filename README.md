@@ -65,7 +65,7 @@ Add `format` after `dotnet` and before the command arguments that you want to ru
 | dotnet **format** -f &lt;folder&gt;                        | Formats a particular folder and subfolders.                                                   |
 | dotnet **format** -w &lt;workspace&gt;                     | Formats a specific project or solution.                                                       |
 | dotnet **format** -v diag                                  | Formats with very verbose logging.                                                            |
-| dotnet **format** --include Programs.cs,Utility\Logging.cs | Formats the files Program.cs and Utility\Logging.cs                                           |
+| dotnet **format** --include Programs.cs Utility\Logging.cs | Formats the files Program.cs and Utility\Logging.cs                                           |
 | dotnet **format** --check                                  | Formats but does not save. Returns a non-zero exit code if any files would have been changed. |
 | dotnet **format** --report &lt;report-path&gt;             | Formats and saves a json report file to the given directory.                                  |
 
