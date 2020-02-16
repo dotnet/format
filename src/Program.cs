@@ -35,11 +35,11 @@ namespace Microsoft.CodeAnalysis.Tools
                 },
                 new Option(new[] { "--include", "--files" }, Resources.A_list_of_relative_file_or_folder_paths_to_include_in_formatting_All_files_are_formatted_if_empty)
                 {
-                    Argument = new Argument<string[]>(() => null)
+                    Argument = new Argument<string[]>(() => Array.Empty<string>())
                 },
                 new Option(new[] { "--exclude" }, Resources.A_list_of_relative_file_or_folder_paths_to_exclude_from_formatting)
                 {
-                    Argument = new Argument<string[]>(() => null)
+                    Argument = new Argument<string[]>(() => Array.Empty<string>())
                 },
                 new Option(new[] { "--check", "--dry-run" }, Resources.Formats_files_without_saving_changes_to_disk_Terminate_with_a_non_zero_exit_code_if_any_files_were_formatted)
                 {
