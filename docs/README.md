@@ -1,5 +1,7 @@
 # Welcome to the dotnet-format docs!
 
+Another change!
+
 ## .editorconfig options
 - [Supported .editorconfig options](./Supported-.editorconfig-options.md)
 - [Unsupported Code Style options](./Unsupported-Code-Style-options.md)
