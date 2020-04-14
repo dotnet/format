@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Build.Logging;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Tools.Formatters;
@@ -33,7 +34,8 @@ namespace Microsoft.CodeAnalysis.Tools
         public static async Task<WorkspaceFormatResult> FormatWorkspaceAsync(
             FormatOptions options,
             ILogger logger,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            bool createBinaryLog = false)
         {
             var (workspaceFilePath, workspaceType, logLevel, saveFormattedFiles, _, fileMatcher, reportPath) = options;
             var logWorkspaceWarnings = logLevel == LogLevel.Trace;
@@ -44,87 +46,85 @@ namespace Microsoft.CodeAnalysis.Tools
 
             var workspaceStopwatch = Stopwatch.StartNew();
 
-            using (var workspace = await OpenWorkspaceAsync(
-                workspaceFilePath, workspaceType, fileMatcher, logWorkspaceWarnings, logger, cancellationToken).ConfigureAwait(false))
+            using var workspace = await OpenWorkspaceAsync(
+                workspaceFilePath, workspaceType, fileMatcher, logWorkspaceWarnings, logger, cancellationToken, createBinaryLog).ConfigureAwait(false);
+            if (workspace is null)
             {
-                if (workspace is null)
-                {
-                    return new WorkspaceFormatResult(filesFormatted: 0, fileCount: 0, exitCode: 1);
-                }
-
-                var loadWorkspaceMS = workspaceStopwatch.ElapsedMilliseconds;
-                logger.LogTrace(Resources.Complete_in_0_ms, workspaceStopwatch.ElapsedMilliseconds);
-
-                var projectPath = workspaceType == WorkspaceType.Project ? workspaceFilePath : string.Empty;
-                var solution = workspace.CurrentSolution;
-
-                logger.LogTrace(Resources.Determining_formattable_files);
-
-                var (fileCount, formatableFiles) = await DetermineFormattableFiles(
-                    solution, projectPath, fileMatcher, logger, cancellationToken).ConfigureAwait(false);
-
-                var determineFilesMS = workspaceStopwatch.ElapsedMilliseconds - loadWorkspaceMS;
-                logger.LogTrace(Resources.Complete_in_0_ms, determineFilesMS);
-
-                logger.LogTrace(Resources.Running_formatters);
-
-                var formattedFiles = new List<FormattedFile>();
-                var formattedSolution = await RunCodeFormattersAsync(
-                    solution, formatableFiles, options, logger, formattedFiles, cancellationToken).ConfigureAwait(false);
-
-                var formatterRanMS = workspaceStopwatch.ElapsedMilliseconds - loadWorkspaceMS - determineFilesMS;
-                logger.LogTrace(Resources.Complete_in_0_ms, formatterRanMS);
-
-                var solutionChanges = formattedSolution.GetChanges(solution);
-
-                var filesFormatted = 0;
-                foreach (var projectChanges in solutionChanges.GetProjectChanges())
-                {
-                    foreach (var changedDocumentId in projectChanges.GetChangedDocuments())
-                    {
-                        var changedDocument = solution.GetDocument(changedDocumentId);
-                        if (changedDocument?.FilePath is null)
-                            continue;
-
-                        logger.LogInformation(Resources.Formatted_code_file_0, changedDocument.FilePath);
-                        filesFormatted++;
-                    }
-                }
-
-                var exitCode = 0;
-
-                if (saveFormattedFiles && !workspace.TryApplyChanges(formattedSolution))
-                {
-                    logger.LogError(Resources.Failed_to_save_formatting_changes);
-                    exitCode = 1;
-                }
-
-                if (exitCode == 0 && !string.IsNullOrWhiteSpace(reportPath))
-                {
-                    var reportFilePath = GetReportFilePath(reportPath!); // IsNullOrEmpty is not annotated on .NET Core 2.1
-                    var reportFolderPath = Path.GetDirectoryName(reportFilePath);
-
-                    if (!Directory.Exists(reportFolderPath))
-                    {
-                        Directory.CreateDirectory(reportFolderPath);
-                    }
-
-                    logger.LogInformation(Resources.Writing_formatting_report_to_0, reportFilePath);
-                    var seralizerOptions = new JsonSerializerOptions
-                    {
-                        WriteIndented = true
-                    };
-                    var formattedFilesJson = JsonSerializer.Serialize(formattedFiles, seralizerOptions);
-
-                    File.WriteAllText(reportFilePath, formattedFilesJson);
-                }
-
-                logger.LogDebug(Resources.Formatted_0_of_1_files, filesFormatted, fileCount);
-
-                logger.LogInformation(Resources.Format_complete_in_0_ms, workspaceStopwatch.ElapsedMilliseconds);
-
-                return new WorkspaceFormatResult(filesFormatted, fileCount, exitCode);
+                return new WorkspaceFormatResult(filesFormatted: 0, fileCount: 0, exitCode: 1);
             }
+
+            var loadWorkspaceMS = workspaceStopwatch.ElapsedMilliseconds;
+            logger.LogTrace(Resources.Complete_in_0_ms, workspaceStopwatch.ElapsedMilliseconds);
+
+            var projectPath = workspaceType == WorkspaceType.Project ? workspaceFilePath : string.Empty;
+            var solution = workspace.CurrentSolution;
+
+            logger.LogTrace(Resources.Determining_formattable_files);
+
+            var (fileCount, formatableFiles) = await DetermineFormattableFiles(
+                solution, projectPath, fileMatcher, logger, cancellationToken).ConfigureAwait(false);
+
+            var determineFilesMS = workspaceStopwatch.ElapsedMilliseconds - loadWorkspaceMS;
+            logger.LogTrace(Resources.Complete_in_0_ms, determineFilesMS);
+
+            logger.LogTrace(Resources.Running_formatters);
+
+            var formattedFiles = new List<FormattedFile>();
+            var formattedSolution = await RunCodeFormattersAsync(
+                solution, formatableFiles, options, logger, formattedFiles, cancellationToken).ConfigureAwait(false);
+
+            var formatterRanMS = workspaceStopwatch.ElapsedMilliseconds - loadWorkspaceMS - determineFilesMS;
+            logger.LogTrace(Resources.Complete_in_0_ms, formatterRanMS);
+
+            var solutionChanges = formattedSolution.GetChanges(solution);
+
+            var filesFormatted = 0;
+            foreach (var projectChanges in solutionChanges.GetProjectChanges())
+            {
+                foreach (var changedDocumentId in projectChanges.GetChangedDocuments())
+                {
+                    var changedDocument = solution.GetDocument(changedDocumentId);
+                    if (changedDocument?.FilePath is null)
+                        continue;
+
+                    logger.LogInformation(Resources.Formatted_code_file_0, changedDocument.FilePath);
+                    filesFormatted++;
+                }
+            }
+
+            var exitCode = 0;
+
+            if (saveFormattedFiles && !workspace.TryApplyChanges(formattedSolution))
+            {
+                logger.LogError(Resources.Failed_to_save_formatting_changes);
+                exitCode = 1;
+            }
+
+            if (exitCode == 0 && !string.IsNullOrWhiteSpace(reportPath))
+            {
+                var reportFilePath = GetReportFilePath(reportPath!); // IsNullOrEmpty is not annotated on .NET Core 2.1
+                var reportFolderPath = Path.GetDirectoryName(reportFilePath);
+
+                if (!Directory.Exists(reportFolderPath))
+                {
+                    Directory.CreateDirectory(reportFolderPath);
+                }
+
+                logger.LogInformation(Resources.Writing_formatting_report_to_0, reportFilePath);
+                var seralizerOptions = new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                };
+                var formattedFilesJson = JsonSerializer.Serialize(formattedFiles, seralizerOptions);
+
+                File.WriteAllText(reportFilePath, formattedFilesJson);
+            }
+
+            logger.LogDebug(Resources.Formatted_0_of_1_files, filesFormatted, fileCount);
+
+            logger.LogInformation(Resources.Format_complete_in_0_ms, workspaceStopwatch.ElapsedMilliseconds);
+
+            return new WorkspaceFormatResult(filesFormatted, fileCount, exitCode);
         }
 
         private static string GetReportFilePath(string reportPath)
@@ -150,7 +150,8 @@ namespace Microsoft.CodeAnalysis.Tools
             Matcher fileMatcher,
             bool logWorkspaceWarnings,
             ILogger logger,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            bool createBinaryLog = false)
         {
             if (workspaceType == WorkspaceType.Folder)
             {
@@ -159,7 +160,7 @@ namespace Microsoft.CodeAnalysis.Tools
                 return folderWorkspace;
             }
 
-            return await OpenMSBuildWorkspaceAsync(workspacePath, workspaceType, logWorkspaceWarnings, logger, cancellationToken);
+            return await OpenMSBuildWorkspaceAsync(workspacePath, workspaceType, logWorkspaceWarnings, logger, cancellationToken, createBinaryLog);
         }
 
         private static async Task<Workspace?> OpenMSBuildWorkspaceAsync(
@@ -167,7 +168,8 @@ namespace Microsoft.CodeAnalysis.Tools
             WorkspaceType workspaceType,
             bool logWorkspaceWarnings,
             ILogger logger,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            bool createBinaryLog = false)
         {
             var properties = new Dictionary<string, string>(StringComparer.Ordinal)
             {
@@ -182,15 +184,25 @@ namespace Microsoft.CodeAnalysis.Tools
 
             var workspace = MSBuildWorkspace.Create(properties);
 
+            Build.Framework.ILogger? binlog = null;
+            if (createBinaryLog)
+            {
+                binlog = new BinaryLogger()
+                {
+                    Parameters = Path.Combine(Environment.CurrentDirectory, "formatDiagnosticLog.binlog"),
+                    Verbosity = Build.Framework.LoggerVerbosity.Diagnostic,
+                };
+            }
+
             if (workspaceType == WorkspaceType.Solution)
             {
-                await workspace.OpenSolutionAsync(solutionOrProjectPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+                await workspace.OpenSolutionAsync(solutionOrProjectPath, msbuildLogger: binlog, cancellationToken: cancellationToken).ConfigureAwait(false);
             }
             else
             {
                 try
                 {
-                    await workspace.OpenProjectAsync(solutionOrProjectPath, cancellationToken: cancellationToken).ConfigureAwait(false);
+                    await workspace.OpenProjectAsync(solutionOrProjectPath, msbuildLogger: binlog, cancellationToken: cancellationToken).ConfigureAwait(false);
                 }
                 catch (InvalidOperationException)
                 {
