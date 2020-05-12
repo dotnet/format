@@ -39,6 +39,9 @@
     <SystemRuntimeHandlesVersion>$(SystemRuntimeVersion)</SystemRuntimeHandlesVersion>
     <SystemRuntimeInteropServicesVersion>$(SystemRuntimeVersion)</SystemRuntimeInteropServicesVersion>
     <SystemTextEncodingExtensionsVersion>$(SystemRuntimeVersion)</SystemTextEncodingExtensionsVersion>
+
+    <!-- Resolves the inability to load the NugetSdkResolver from the .NET 5 SDK -->
+    <NewtonsoftJsonVersion>12.0.2</NewtonsoftJsonVersion>
   </PropertyGroup>
   <PropertyGroup>
     <DiscoverEditorConfigFiles>true</DiscoverEditorConfigFiles>

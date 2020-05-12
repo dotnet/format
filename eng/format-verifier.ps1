@@ -19,7 +19,7 @@ try {
 
     if ($stage -eq "prepare") {
         Write-Output "$(Get-Date) - Cloning $repoName."
-        git.exe clone $repo $repoPath
+        git.exe clone $repo $repoPath -b master --single-branch --no-tags
     }
 
     Set-Location $repoPath
@@ -67,7 +67,8 @@ try {
 
                 if (($output -notmatch "(?m)Formatted \d+ of (\d+) files") -or ($Matches[1] -eq "0")) {
                     Write-Output "$(Get-Date) - No files found for solution."
-                    exit -1
+                    # dotnet/sdk has a solution in their ./toolset that is broken. Ignoring this state for now.
+                    # exit -1
                 }
             }
 
