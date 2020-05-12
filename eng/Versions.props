@@ -28,6 +28,17 @@
     <MicrosoftCodeAnalysisAnalyzersVersion>3.0.0</MicrosoftCodeAnalysisAnalyzersVersion>
     <MicrosoftCodeAnalysisVersion>$(MicrosoftNETCoreCompilersPackageVersion)</MicrosoftCodeAnalysisVersion>
     <SystemTextJsonVersion>4.7.0</SystemTextJsonVersion>
+
+    <!-- Required to avoid package downgrade because CodingConventions being netstandard1.6-->
+    <SystemRuntimeVersion>4.3.0</SystemRuntimeVersion>
+    <MicrosoftWin32PrimitivesVersion>$(SystemRuntimeVersion)</MicrosoftWin32PrimitivesVersion>
+    <SystemDiagnosticsTracingVersion>$(SystemRuntimeVersion)</SystemDiagnosticsTracingVersion>
+    <SystemIOFileSystemPrimitivesVersion>$(SystemRuntimeVersion)</SystemIOFileSystemPrimitivesVersion>
+    <SystemIOFileSystemVersion>$(SystemRuntimeVersion)</SystemIOFileSystemVersion>
+    <SystemNetPrimitivesVersion>$(SystemRuntimeVersion)</SystemNetPrimitivesVersion>
+    <SystemRuntimeHandlesVersion>$(SystemRuntimeVersion)</SystemRuntimeHandlesVersion>
+    <SystemRuntimeInteropServicesVersion>$(SystemRuntimeVersion)</SystemRuntimeInteropServicesVersion>
+    <SystemTextEncodingExtensionsVersion>$(SystemRuntimeVersion)</SystemTextEncodingExtensionsVersion>
   </PropertyGroup>
   <PropertyGroup>
     <DiscoverEditorConfigFiles>true</DiscoverEditorConfigFiles>
