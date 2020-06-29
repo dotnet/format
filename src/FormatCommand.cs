@@ -34,19 +34,10 @@ namespace Microsoft.CodeAnalysis.Tools
                 {
                     Argument = new Argument<DiagnosticSeverity?>(parse: ParseDiagnosticSeverity) { Arity = ArgumentArity.ZeroOrOne }.FromAmong(SeverityLevels)
                 },
-                new Option<string[]>(new[] { "--include" }, Resources.A_list_of_relative_file_or_folder_paths_to_include_in_formatting_All_files_are_formatted_if_empty)
-                {
-                    Argument = new Argument<string[]>(() => Array.Empty<string>())
-                },
-                new Option<string[]>(new[] { "--exclude" }, Resources.A_list_of_relative_file_or_folder_paths_to_exclude_from_formatting)
-                {
-                    Argument = new Argument<string[]>(() => Array.Empty<string>())
-                },
+                new Option<string[]>(new[] { "--include" }, getDefaultValue: () => Array.Empty<string>(), description: Resources.A_list_of_relative_file_or_folder_paths_to_include_in_formatting_All_files_are_formatted_if_empty),
+                new Option<string[]>(new[] { "--exclude" }, getDefaultValue: () => Array.Empty<string>(), description: Resources.A_list_of_relative_file_or_folder_paths_to_exclude_from_formatting),
                 new Option<bool>(new[] { "--check" }, Resources.Formats_files_without_saving_changes_to_disk_Terminates_with_a_non_zero_exit_code_if_any_files_were_formatted),
-                new Option<string?>(new[] { "--report" }, Resources.Accepts_a_file_path_which_if_provided_will_produce_a_format_report_json_file_in_the_given_directory)
-                {
-                    Argument = new Argument<string?>(() => null).LegalFilePathsOnly()
-                },
+                new Option<string?>(new[] { "--report" }, getDefaultValue: () => null, description: Resources.Accepts_a_file_path_which_if_provided_will_produce_a_format_report_json_file_in_the_given_directory),
                 new Option<LogLevel?>(new[] { "--verbosity", "-v" }, Resources.Set_the_verbosity_level_Allowed_values_are_quiet_minimal_normal_detailed_and_diagnostic)
                 {
                     Argument = new Argument<LogLevel?>(parse: ParseLogLevel) { Arity = ArgumentArity.ExactlyOne }.FromAmong(VerbosityLevels)
