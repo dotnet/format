@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
@@ -41,9 +42,9 @@ namespace Microsoft.CodeAnalysis.Tools
         public static async Task<int> Run(
             string? workspace,
             bool folder,
-            string? fixStyle,
-            string? fixAnalyzers,
-            string? verbosity,
+            DiagnosticSeverity? fixStyle,
+            DiagnosticSeverity? fixAnalyzers,
+            LogLevel? verbosity,
             bool check,
             string[] include,
             string[] exclude,
@@ -57,7 +58,7 @@ namespace Microsoft.CodeAnalysis.Tools
             }
 
             // Setup logging.
-            var logLevel = GetLogLevel(verbosity);
+            var logLevel = verbosity ?? LogLevel.Information;
             var logger = SetupLogging(console, logLevel);
 
             // Hook so we can cancel and exit when ctrl+c is pressed.
@@ -131,10 +132,10 @@ namespace Microsoft.CodeAnalysis.Tools
                     workspacePath,
                     workspaceType,
                     logLevel,
-                    fixCodeStyle: s_parseResult.WasOptionUsed("--fix-style", "-fs"),
-                    codeStyleSeverity: GetSeverity(fixStyle ?? FixSeverity.Error),
-                    fixAnalyzers: s_parseResult.WasOptionUsed("--fix-analyzers", "-fa"),
-                    analyerSeverity: GetSeverity(fixAnalyzers ?? FixSeverity.Error),
+                    fixCodeStyle: fixStyle != null,
+                    codeStyleSeverity: fixStyle ?? DiagnosticSeverity.Error,
+                    fixAnalyzers: fixAnalyzers != null,
+                    analyerSeverity: fixAnalyzers ?? DiagnosticSeverity.Error,
                     saveFormattedFiles: !check,
                     changesAreErrors: check,
                     fileMatcher,
@@ -145,7 +146,7 @@ namespace Microsoft.CodeAnalysis.Tools
                     formatOptions,
                     logger,
                     cancellationTokenSource.Token,
-                    createBinaryLog: logLevel == LogLevel.Trace).ConfigureAwait(false);
+                    createBinaryLog: verbosity == LogLevel.Trace).ConfigureAwait(false);
 
                 return GetExitCode(formatResult, check);
             }
@@ -175,41 +176,6 @@ namespace Microsoft.CodeAnalysis.Tools
             }
 
             return formatResult.FilesFormatted == 0 ? 0 : CheckFailedExitCode;
-        }
-
-        internal static LogLevel GetLogLevel(string? verbosity)
-        {
-            switch (verbosity)
-            {
-                case "q":
-                case "quiet":
-                    return LogLevel.Error;
-                case "m":
-                case "minimal":
-                    return LogLevel.Warning;
-                case "n":
-                case "normal":
-                    return LogLevel.Information;
-                case "d":
-                case "detailed":
-                    return LogLevel.Debug;
-                case "diag":
-                case "diagnostic":
-                    return LogLevel.Trace;
-                default:
-                    return LogLevel.Information;
-            }
-        }
-
-        internal static DiagnosticSeverity GetSeverity(string? severity)
-        {
-            return severity?.ToLowerInvariant() switch
-            {
-                FixSeverity.Error => DiagnosticSeverity.Error,
-                FixSeverity.Warn => DiagnosticSeverity.Warning,
-                FixSeverity.Info => DiagnosticSeverity.Info,
-                _ => throw new ArgumentOutOfRangeException(nameof(severity)),
-            };
         }
 
         private static ILogger<Program> SetupLogging(IConsole console, LogLevel logLevel)

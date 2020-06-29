@@ -1,9 +1,13 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Parsing;
+using System.IO;
 using System.Linq;
+
+using Microsoft.Extensions.Logging;
 
 namespace Microsoft.CodeAnalysis.Tools
 {
@@ -21,33 +25,33 @@ namespace Microsoft.CodeAnalysis.Tools
                     Arity = ArgumentArity.ZeroOrOne,
                     Description = Resources.A_path_to_a_solution_file_a_project_file_or_a_folder_containing_a_solution_or_project_file_If_a_path_is_not_specified_then_the_current_directory_is_used
                 }.LegalFilePathsOnly(),
-                new Option(new[] { "--folder", "-f" }, Resources.Whether_to_treat_the_workspace_argument_as_a_simple_folder_of_files),
-                new Option(new[] { "--fix-style", "-fs" }, Resources.Run_code_style_analyzer_and_apply_fixes)
+                new Option<bool>(new[] { "--folder", "-f" }, Resources.Whether_to_treat_the_workspace_argument_as_a_simple_folder_of_files),
+                new Option<DiagnosticSeverity?>(new[] { "--fix-style" }, Resources.Run_code_style_analyzer_and_apply_fixes)
                 {
-                    Argument = new Argument<string?>("severity") { Arity = ArgumentArity.ZeroOrOne }.FromAmong(SeverityLevels)
+                    Argument = new Argument<DiagnosticSeverity?>(parse: ParseDiagnosticSeverity) { Arity = ArgumentArity.ZeroOrOne }.FromAmong(SeverityLevels)
                 },
-                new Option(new[] { "--fix-analyzers", "-fa" }, Resources.Run_code_style_analyzer_and_apply_fixes)
+                new Option<DiagnosticSeverity?>(new[] { "--fix-analyzers" }, Resources.Run_code_style_analyzer_and_apply_fixes)
                 {
-                    Argument = new Argument<string?>("severity") { Arity = ArgumentArity.ZeroOrOne }.FromAmong(SeverityLevels)
+                    Argument = new Argument<DiagnosticSeverity?>(parse: ParseDiagnosticSeverity) { Arity = ArgumentArity.ZeroOrOne }.FromAmong(SeverityLevels)
                 },
-                new Option(new[] { "--include" }, Resources.A_list_of_relative_file_or_folder_paths_to_include_in_formatting_All_files_are_formatted_if_empty)
-                {
-                    Argument = new Argument<string[]>(() => Array.Empty<string>())
-                },
-                new Option(new[] { "--exclude" }, Resources.A_list_of_relative_file_or_folder_paths_to_exclude_from_formatting)
+                new Option<string[]>(new[] { "--include" }, Resources.A_list_of_relative_file_or_folder_paths_to_include_in_formatting_All_files_are_formatted_if_empty)
                 {
                     Argument = new Argument<string[]>(() => Array.Empty<string>())
                 },
-                new Option(new[] { "--check" }, Resources.Formats_files_without_saving_changes_to_disk_Terminates_with_a_non_zero_exit_code_if_any_files_were_formatted),
-                new Option(new[] { "--report" }, Resources.Accepts_a_file_path_which_if_provided_will_produce_a_format_report_json_file_in_the_given_directory)
+                new Option<string[]>(new[] { "--exclude" }, Resources.A_list_of_relative_file_or_folder_paths_to_exclude_from_formatting)
+                {
+                    Argument = new Argument<string[]>(() => Array.Empty<string>())
+                },
+                new Option<bool>(new[] { "--check" }, Resources.Formats_files_without_saving_changes_to_disk_Terminates_with_a_non_zero_exit_code_if_any_files_were_formatted),
+                new Option<string?>(new[] { "--report" }, Resources.Accepts_a_file_path_which_if_provided_will_produce_a_format_report_json_file_in_the_given_directory)
                 {
                     Argument = new Argument<string?>(() => null).LegalFilePathsOnly()
                 },
-                new Option(new[] { "--verbosity", "-v" }, Resources.Set_the_verbosity_level_Allowed_values_are_quiet_minimal_normal_detailed_and_diagnostic)
+                new Option<LogLevel?>(new[] { "--verbosity", "-v" }, Resources.Set_the_verbosity_level_Allowed_values_are_quiet_minimal_normal_detailed_and_diagnostic)
                 {
-                    Argument = new Argument<string?>() { Arity = ArgumentArity.ExactlyOne }.FromAmong(VerbosityLevels)
+                    Argument = new Argument<LogLevel?>(parse: ParseLogLevel) { Arity = ArgumentArity.ExactlyOne }.FromAmong(VerbosityLevels)
                 },
-                new Option(new[] { "--include-generated" }, Resources.Include_generated_code_files_in_formatting_operations)
+                new Option<bool>(new[] { "--include-generated" }, Resources.Include_generated_code_files_in_formatting_operations)
                 {
                     IsHidden = true
                 },
@@ -58,11 +62,84 @@ namespace Microsoft.CodeAnalysis.Tools
             return rootCommand;
         }
 
-        internal static bool WasOptionUsed(this ParseResult result, params string[] aliases)
+        private static LogLevel? ParseLogLevel(ArgumentResult result)
         {
-            return result.Tokens
-                .Where(token => token.Type == TokenType.Option)
-                .Any(token => aliases.Contains(token.Value));
+            if (result.Tokens.Count > 1)
+            {
+                result.ErrorMessage = "Cannot specify verbosity more than once.";
+                return null;
+            }
+
+            if (result.Tokens.Count == 0)
+            {
+                result.ErrorMessage = "Must specify a verbostiy level.";
+                return null;
+            }
+
+            var verbosity = result.Tokens.Single();
+            return verbosity.Value.ToLowerInvariant() switch
+            {
+                "q" => LogLevel.Error,
+                "quiet" => LogLevel.Error,
+                "m" => LogLevel.Warning,
+                "minimal" => LogLevel.Warning,
+                "n" => LogLevel.Information,
+                "normal" => LogLevel.Information,
+                "d" => LogLevel.Debug,
+                "diag" => LogLevel.Debug,
+                "diagnostic" => LogLevel.Trace,
+                _ => LogLevel.Information
+            };
+        }
+
+        private static DiagnosticSeverity? ParseDiagnosticSeverity(ArgumentResult result)
+        {
+            if (result.Tokens.Count > 1)
+            {
+                result.ErrorMessage = $"Cannot specify severity more than once for {result.Argument.Name}";
+                return null;
+            }
+
+            if (result.Tokens.Count == 0)
+            {
+                // Use Defaults
+                return DiagnosticSeverity.Error;
+            }
+
+            var severityValue = result.Tokens.Single().Value;
+            if (!HasMatch(severityValue, out var severity))
+            {
+                // Assume that this means our arity is zero and the parser should re-parse accordingly
+                result.ErrorMessage = $"Cannot specify severity more than once for {result.Argument.Aliases.FirstOrDefault()}";
+                return default;
+            }
+
+            return severity;
+
+            static bool HasMatch(string? severityValue, out DiagnosticSeverity severity)
+            {
+                try
+                {
+                    severity = ParseSeverity(severityValue);
+                    return true;
+                }
+                catch (Exception)
+                {
+                    severity = default;
+                    return false;
+                }
+            }
+
+            static DiagnosticSeverity ParseSeverity(string? severityValue)
+            {
+                return severityValue?.ToLowerInvariant() switch
+                {
+                    FixSeverity.Error => DiagnosticSeverity.Error,
+                    FixSeverity.Warn => DiagnosticSeverity.Warning,
+                    FixSeverity.Info => DiagnosticSeverity.Info,
+                    _ => throw new ArgumentException(nameof(severityValue)),
+                };
+            }
         }
     }
 }

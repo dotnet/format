@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
+
+using Microsoft.Extensions.Logging;
+
 using Xunit;
 
 namespace Microsoft.CodeAnalysis.Tools.Tests
@@ -77,7 +80,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
                 i1 => Assert.Equal("exclude2", i1));
             Assert.True(result.ValueForOption<bool>("check"));
             Assert.Equal("report", result.ValueForOption("report"));
-            Assert.Equal("detailed", result.ValueForOption("verbosity"));
+            Assert.Equal(LogLevel.Information, result.ValueForOption<LogLevel>("verbosity"));
             Assert.True(result.ValueForOption<bool>("include-generated"));
         }
 
@@ -107,7 +110,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             // Assert
             Assert.Equal(0, result.Errors.Count);
             Assert.Equal("workspaceValue", result.CommandResult.GetArgumentValueOrDefault("workspace"));
-            Assert.Equal("detailed", result.ValueForOption("verbosity"));
+            Assert.Equal(LogLevel.Information, result.ValueForOption<LogLevel>("verbosity"));
         }
 
         [Fact]
@@ -122,7 +125,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             // Assert
             Assert.Equal(0, result.Errors.Count);
             Assert.Equal("workspaceValue", result.CommandResult.GetArgumentValueOrDefault("workspace"));
-            Assert.Equal("detailed", result.ValueForOption("verbosity"));
+            Assert.Equal(LogLevel.Information, result.ValueForOption<LogLevel>("verbosity"));
         }
 
         [Fact]
