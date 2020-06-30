@@ -1,10 +1,8 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Parsing;
-using System.IO;
 using System.Linq;
 
 using Microsoft.Extensions.Logging;
@@ -55,18 +53,6 @@ namespace Microsoft.CodeAnalysis.Tools
 
         private static LogLevel? ParseLogLevel(ArgumentResult result)
         {
-            if (result.Tokens.Count > 1)
-            {
-                result.ErrorMessage = "Cannot specify verbosity more than once.";
-                return null;
-            }
-
-            if (result.Tokens.Count == 0)
-            {
-                result.ErrorMessage = "Must specify a verbostiy level.";
-                return null;
-            }
-
             var verbosity = result.Tokens.Single();
             return verbosity.Value.ToLowerInvariant() switch
             {
@@ -85,12 +71,6 @@ namespace Microsoft.CodeAnalysis.Tools
 
         private static DiagnosticSeverity? ParseDiagnosticSeverity(ArgumentResult result)
         {
-            if (result.Tokens.Count > 1)
-            {
-                result.ErrorMessage = $"Cannot specify severity more than once for {result.Argument.Name}";
-                return null;
-            }
-
             if (result.Tokens.Count == 0)
             {
                 // Use Defaults
