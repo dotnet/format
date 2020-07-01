@@ -33,14 +33,14 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             return AnalyzerFinderHelpers.LoadAnalyzersAndFixers(assemblies, logger);
         }
 
-        public Task<ImmutableDictionary<Project, ImmutableArray<DiagnosticAnalyzer>>> FilterBySeverityAsync(
+        public async Task<(DiagnosticSeverity, ImmutableDictionary<Project, ImmutableArray<DiagnosticAnalyzer>>)> FilterBySeverityAsync(
             IEnumerable<Project> projects,
             ImmutableArray<DiagnosticAnalyzer> allAnalyzers,
             ImmutableHashSet<string> formattablePaths,
             FormatOptions formatOptions,
             CancellationToken cancellationToken)
         {
-            return AnalyzerFinderHelpers.FilterBySeverityAsync(projects, allAnalyzers, formattablePaths, formatOptions.AnalyzerSeverity, cancellationToken);
+            return (formatOptions.AnalyzerSeverity, await AnalyzerFinderHelpers.FilterBySeverityAsync(projects, allAnalyzers, formattablePaths, formatOptions.AnalyzerSeverity, cancellationToken));
         }
     }
 }

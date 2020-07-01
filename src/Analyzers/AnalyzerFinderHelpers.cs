@@ -68,7 +68,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 foreach (var analyzer in allAnalyzers)
                 {
                     var severity = await analyzer.GetSeverityAsync(project, formattablePaths, cancellationToken).ConfigureAwait(false);
-                    if (severity >= minimumSeverity)
+                    if (analyzer.GetType().FullName.EndsWith("NamingStyleDiagnosticAnalyzer") || severity >= minimumSeverity)
                     {
                         analyzers.Add(analyzer);
                     }

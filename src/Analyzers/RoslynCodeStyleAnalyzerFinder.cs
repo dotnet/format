@@ -17,6 +17,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
     {
         private static readonly string s_executingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
+        private readonly string _featuresPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.Features.dll");
         private readonly string _featuresCSharpPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.CSharp.Features.dll");
         private readonly string _featuresVisualBasicPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.VisualBasic.Features.dll");
 
@@ -32,6 +33,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
 
             var assemblies = new[]
             {
+                _featuresPath,
                 _featuresCSharpPath,
                 _featuresVisualBasicPath
             }.Select(path => Assembly.LoadFrom(path));
@@ -39,14 +41,14 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             return AnalyzerFinderHelpers.LoadAnalyzersAndFixers(assemblies, logger);
         }
 
-        public Task<ImmutableDictionary<Project, ImmutableArray<DiagnosticAnalyzer>>> FilterBySeverityAsync(
+        public async Task<(DiagnosticSeverity, ImmutableDictionary<Project, ImmutableArray<DiagnosticAnalyzer>>)> FilterBySeverityAsync(
             IEnumerable<Project> projects,
             ImmutableArray<DiagnosticAnalyzer> allAnalyzers,
             ImmutableHashSet<string> formattablePaths,
             FormatOptions formatOptions,
             CancellationToken cancellationToken)
         {
-            return AnalyzerFinderHelpers.FilterBySeverityAsync(projects, allAnalyzers, formattablePaths, formatOptions.CodeStyleSeverity, cancellationToken);
+            return (formatOptions.CodeStyleSeverity, await AnalyzerFinderHelpers.FilterBySeverityAsync(projects, allAnalyzers, formattablePaths, formatOptions.CodeStyleSeverity, cancellationToken));
         }
     }
 }

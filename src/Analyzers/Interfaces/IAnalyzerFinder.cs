@@ -17,7 +17,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             FormatOptions formatOptions,
             ILogger logger);
 
-        Task<ImmutableDictionary<Project, ImmutableArray<DiagnosticAnalyzer>>> FilterBySeverityAsync(
+        Task<(DiagnosticSeverity, ImmutableDictionary<Project, ImmutableArray<DiagnosticAnalyzer>>)> FilterBySeverityAsync(
             IEnumerable<Project> projects,
             ImmutableArray<DiagnosticAnalyzer> allAnalyzers,
             ImmutableHashSet<string> formattablePaths,
