@@ -1,6 +1,7 @@
 ./format.sln
---fix-style
---fix-analyzers
+--whitespace
+--style
+--analyzers
 --exclude
 ./tests/projects/
 --check
