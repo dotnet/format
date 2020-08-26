@@ -22,11 +22,12 @@ namespace Microsoft.CodeAnalysis.Tools
                     Description = Resources.A_path_to_a_solution_file_a_project_file_or_a_folder_containing_a_solution_or_project_file_If_a_path_is_not_specified_then_the_current_directory_is_used
                 }.LegalFilePathsOnly(),
                 new Option(new[] { "--folder", "-f" }, Resources.Whether_to_treat_the_workspace_argument_as_a_simple_folder_of_files),
-                new Option(new[] { "--fix-style" }, Resources.Run_code_style_analyzers_and_apply_fixes)
+                new Option(new[] { "--whitespace", "-w" }, Resources.Run_whitespace_formatting_Run_by_default_when_not_applying_fixes),
+                new Option(new[] { "--style", "-s" }, Resources.Run_code_style_analyzers_and_apply_fixes)
                 {
                     Argument = new Argument<string?>("severity") { Arity = ArgumentArity.ZeroOrOne }.FromAmong(SeverityLevels)
                 },
-                new Option(new[] { "--fix-analyzers" }, Resources.Run_3rd_party_analyzers_and_apply_fixes)
+                new Option(new[] { "--analyzers", "-a" }, Resources.Run_3rd_party_analyzers_and_apply_fixes)
                 {
                     Argument = new Argument<string?>("severity") { Arity = ArgumentArity.ZeroOrOne }.FromAmong(SeverityLevels)
                 },
@@ -63,7 +64,7 @@ namespace Microsoft.CodeAnalysis.Tools
         internal static string? EnsureFolderNotSpecifiedWhenFixingAnalyzers(CommandResult symbolResult)
         {
             var folder = symbolResult.ValueForOption<bool>("--folder");
-            var fixAnalyzers = symbolResult.OptionResult("--fix-analyzers");
+            var fixAnalyzers = symbolResult.OptionResult("--analyzers");
             return folder && fixAnalyzers != null
                 ? "Cannot specify the '--folder' option when running analyzers."
                 : null;
@@ -72,7 +73,7 @@ namespace Microsoft.CodeAnalysis.Tools
         internal static string? EnsureFolderNotSpecifiedWhenFixingStyle(CommandResult symbolResult)
         {
             var folder = symbolResult.ValueForOption<bool>("--folder");
-            var fixStyle = symbolResult.OptionResult("--fix-style");
+            var fixStyle = symbolResult.OptionResult("--style");
             return folder && fixStyle != null
                 ? "Cannot specify the '--folder' option when fixing style."
                 : null;

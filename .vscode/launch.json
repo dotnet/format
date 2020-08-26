@@ -43,7 +43,7 @@
       "justMyCode": false
     },
     {
-      "name": "format format.sln --fix-style warn --check",
+      "name": "format format.sln --style warn --check",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
@@ -51,7 +51,7 @@
       "program": "${workspaceFolder}/artifacts/bin/dotnet-format/Debug/netcoreapp2.1/dotnet-format.dll",
       "args": [
         "format.sln",
-        "--fix-style",
+        "-style",
         "warn",
         "-v",
         "diag",
@@ -64,7 +64,7 @@
       "justMyCode": false
     },
     {
-      "name": "format format.sln --fix-analyzers warn --check",
+      "name": "format format.sln --analyzers warn --check",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
@@ -72,7 +72,7 @@
       "program": "${workspaceFolder}/artifacts/bin/dotnet-format/Debug/netcoreapp2.1/dotnet-format.dll",
       "args": [
         "format.sln",
-        "--fix-analyzers",
+        "--analyzers",
         "warn",
         "-v",
         "diag",

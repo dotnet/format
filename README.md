@@ -72,8 +72,9 @@ Arguments:
 
 Options:
   --folder, -f                        Whether to treat the `<workspace>` argument as a simple folder of files.
-  --fix-style <severity>              Run code style analyzers and apply fixes.
-  --fix-analyzers <severity>          Run 3rd party analyzers and apply fixes.
+  --whitespace, -w                    Run whitespace formatting. Run by default when not applying fixes.
+  --style, -s <severity>              Run code style analyzers and apply fixes.
+  --analyzers, -a <severity>          Run 3rd party analyzers and apply fixes.
   --include <include>                 A list of relative file or folder paths to include in formatting. All files are formatted if empty.
   --exclude <exclude>                 A list of relative file or folder paths to exclude from formatting.
   --check                             Formats files without saving changes to disk. Terminates with a non-zero exit code if any files were formatted.
@@ -89,8 +90,10 @@ Add `format` after `dotnet` and before the command arguments that you want to ru
 | dotnet **format**                                          | Formats the project or solution in the current directory.                                     |
 | dotnet **format** &lt;workspace&gt;                        | Formats a specific project or solution.                                                       |
 | dotnet **format** &lt;workspace&gt; -f                     | Formats a particular folder and subfolders.                                                   |
-| dotnet **format** &lt;workspace&gt; --fix-style warn       | Formats and fixes codestyle analyzer warnings.                                                |
-| dotnet **format** &lt;workspace&gt; --fix-analyzers        | Formats and fixes 3rd party analyzer errors.                                                  |
+| dotnet **format** &lt;workspace&gt; --style warn           | Fixes codestyle analyzer warnings.                                                            |
+| dotnet **format** &lt;workspace&gt; --whitespace --style   | Formats and fixes codestyle analyzer errors.                                                  |
+| dotnet **format** &lt;workspace&gt; --analyzers            | Fixes 3rd party analyzer errors.                                                              |
+| dotnet **format** &lt;workspace&gt; -wsa                   | Formats, fixes codestyle errors, and fixes 3rd party analyzer errors.                         |
 | dotnet **format** -v diag                                  | Formats with very verbose logging.                                                            |
 | dotnet **format** --include Programs.cs Utility\Logging.cs | Formats the files Program.cs and Utility\Logging.cs                                           |
 | dotnet **format** --check                                  | Formats but does not save. Returns a non-zero exit code if any files would have been changed. |
