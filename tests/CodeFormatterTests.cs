@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis.Tools.Tests.Utilities;
 using Microsoft.CodeAnalysis.Tools.Utilities;
 using Microsoft.Extensions.Logging;
 using Xunit;
-using Xunit.Sdk;
 using Xunit.Abstractions;
 
 namespace Microsoft.CodeAnalysis.Tools.Tests

@@ -51,7 +51,7 @@
       "program": "${workspaceFolder}/artifacts/bin/dotnet-format/Debug/netcoreapp2.1/dotnet-format.dll",
       "args": [
         "format.sln",
-        "-style",
+        "--style",
         "warn",
         "-v",
         "diag",
