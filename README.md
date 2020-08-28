@@ -22,7 +22,7 @@
 
 #### Deprecations:
 - Added warning to use the default argument instead of `--workspace` option. Use `dotnet format ./format.sln` instead of `dotnet format -w ./format.sln`
-- Added warning to use the default argument to specify the folder path when using the `--folder` option. Use `dotnet format ./src -f` instead of `dotnet format -f ./src`
+- Added warning to use the default argument to specify the folder path when using the `--folder` option. Use `dotnet format ./src` instead of `dotnet format -f ./src`
 - Added warning to use `--include` instead of `--files` alias.
 - Added warning to use `--check` instead of `--dry-run` alias.
 
