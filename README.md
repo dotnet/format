@@ -89,7 +89,7 @@ Add `format` after `dotnet` and before the command arguments that you want to ru
 | dotnet **format**                                          | Formats the project or solution in the current directory.                                     |
 | dotnet **format** &lt;workspace&gt;                        | Formats a specific project or solution.                                                       |
 | dotnet **format** &lt;workspace&gt; -f                     | Formats a particular folder and subfolders.                                                   |
-| dotnet **format** &lt;workspace&gt; --fix-style warn       | Formats and fixes codestyle analyzer warnings.                                                |
+| dotnet **format** &lt;workspace&gt; --fix-style warning    | Formats and fixes codestyle analyzer warnings.                                                |
 | dotnet **format** &lt;workspace&gt; --fix-analyzers        | Formats and fixes 3rd party analyzer errors.                                                  |
 | dotnet **format** -v diag                                  | Formats with very verbose logging.                                                            |
 | dotnet **format** --include Programs.cs Utility\Logging.cs | Formats the files Program.cs and Utility\Logging.cs                                           |

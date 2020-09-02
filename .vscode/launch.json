@@ -43,7 +43,7 @@
       "justMyCode": false
     },
     {
-      "name": "format format.sln --fix-style warn --check",
+      "name": "format format.sln --fix-style warning --check",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
@@ -52,7 +52,7 @@
       "args": [
         "format.sln",
         "--fix-style",
-        "warn",
+        "warning",
         "-v",
         "diag",
         "--check"
@@ -64,7 +64,7 @@
       "justMyCode": false
     },
     {
-      "name": "format format.sln --fix-analyzers warn --check",
+      "name": "format format.sln --fix-analyzers warning --check",
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
@@ -73,7 +73,7 @@
       "args": [
         "format.sln",
         "--fix-analyzers",
-        "warn",
+        "warning",
         "-v",
         "diag",
         "--check"

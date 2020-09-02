@@ -40,8 +40,8 @@ namespace Microsoft.CodeAnalysis.Tools
         public static async Task<int> Run(
             string? workspace,
             bool folder,
-            string? fixStyle,
-            string? fixAnalyzers,
+            FixSeverity fixStyle,
+            FixSeverity fixAnalyzers,
             string? verbosity,
             bool check,
             string[] include,
@@ -138,9 +138,9 @@ namespace Microsoft.CodeAnalysis.Tools
                     workspaceType,
                     logLevel,
                     fixCodeStyle: s_parseResult.WasOptionUsed("--fix-style", "-fs"),
-                    codeStyleSeverity: GetSeverity(fixStyle ?? FixSeverity.Error),
+                    codeStyleSeverity: GetSeverity(fixStyle),
                     fixAnalyzers: s_parseResult.WasOptionUsed("--fix-analyzers", "-fa"),
-                    analyzerSeverity: GetSeverity(fixAnalyzers ?? FixSeverity.Error),
+                    analyzerSeverity: GetSeverity(fixAnalyzers),
                     saveFormattedFiles: !check,
                     changesAreErrors: check,
                     fileMatcher,
@@ -207,12 +207,12 @@ namespace Microsoft.CodeAnalysis.Tools
             }
         }
 
-        internal static DiagnosticSeverity GetSeverity(string? severity)
+        internal static DiagnosticSeverity GetSeverity(FixSeverity severity)
         {
-            return severity?.ToLowerInvariant() switch
+            return severity switch
             {
                 FixSeverity.Error => DiagnosticSeverity.Error,
-                FixSeverity.Warn => DiagnosticSeverity.Warning,
+                FixSeverity.Warning => DiagnosticSeverity.Warning,
                 FixSeverity.Info => DiagnosticSeverity.Info,
                 _ => throw new ArgumentOutOfRangeException(nameof(severity)),
             };

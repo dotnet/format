@@ -10,7 +10,6 @@ namespace Microsoft.CodeAnalysis.Tools
     internal static class FormatCommand
     {
         internal static string[] VerbosityLevels => new[] { "q", "quiet", "m", "minimal", "n", "normal", "d", "detailed", "diag", "diagnostic" };
-        internal static string[] SeverityLevels => new[] { FixSeverity.Info, FixSeverity.Warn, FixSeverity.Error };
 
         internal static RootCommand CreateCommandLineOptions()
         {
@@ -24,11 +23,11 @@ namespace Microsoft.CodeAnalysis.Tools
                 new Option(new[] { "--folder", "-f" }, Resources.Whether_to_treat_the_workspace_argument_as_a_simple_folder_of_files),
                 new Option(new[] { "--fix-style" }, Resources.Run_code_style_analyzers_and_apply_fixes)
                 {
-                    Argument = new Argument<string?>("severity") { Arity = ArgumentArity.ZeroOrOne }.FromAmong(SeverityLevels)
+                    Argument = new Argument<FixSeverity>("severity", () => FixSeverity.Error) { Arity = ArgumentArity.ZeroOrOne }
                 },
                 new Option(new[] { "--fix-analyzers" }, Resources.Run_3rd_party_analyzers_and_apply_fixes)
                 {
-                    Argument = new Argument<string?>("severity") { Arity = ArgumentArity.ZeroOrOne }.FromAmong(SeverityLevels)
+                    Argument = new Argument<FixSeverity>("severity", () => FixSeverity.Error) { Arity = ArgumentArity.ZeroOrOne }
                 },
                 new Option(new[] { "--include" }, Resources.A_list_of_relative_file_or_folder_paths_to_include_in_formatting_All_files_are_formatted_if_empty)
                 {
@@ -63,8 +62,8 @@ namespace Microsoft.CodeAnalysis.Tools
         internal static string? EnsureFolderNotSpecifiedWhenFixingAnalyzers(CommandResult symbolResult)
         {
             var folder = symbolResult.ValueForOption<bool>("--folder");
-            var fixAnalyzers = symbolResult.OptionResult("--fix-analyzers");
-            return folder && fixAnalyzers != null
+            var fixAnalyzers = symbolResult.IsExplicitOption("--fix-analyzers");
+            return folder && fixAnalyzers
                 ? "Cannot specify the '--folder' option when running analyzers."
                 : null;
         }
@@ -72,8 +71,8 @@ namespace Microsoft.CodeAnalysis.Tools
         internal static string? EnsureFolderNotSpecifiedWhenFixingStyle(CommandResult symbolResult)
         {
             var folder = symbolResult.ValueForOption<bool>("--folder");
-            var fixStyle = symbolResult.OptionResult("--fix-style");
-            return folder && fixStyle != null
+            var fixStyle = symbolResult.IsExplicitOption("--fix-style");
+            return folder && fixStyle
                 ? "Cannot specify the '--folder' option when fixing style."
                 : null;
         }
@@ -83,6 +82,14 @@ namespace Microsoft.CodeAnalysis.Tools
             return result.Tokens
                 .Where(token => token.Type == TokenType.Option)
                 .Any(token => aliases.Contains(token.Value));
+        }
+
+        internal static bool IsExplicitOption(this SymbolResult result, params string[] aliases)
+        {
+            var optionResult = result.Children
+                .OfType<OptionResult>()
+                .SingleOrDefault(optionResult => aliases.Any(alias => optionResult.Option.HasAlias(alias)));
+            return optionResult?.IsImplicit == false;
         }
     }
 }

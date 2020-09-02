@@ -2,10 +2,10 @@
 
 namespace Microsoft.CodeAnalysis.Tools
 {
-    public static class FixSeverity
+    public enum FixSeverity
     {
-        public const string Error = "error";
-        public const string Warn = "warn";
-        public const string Info = "info";
+        Info,
+        Warning,
+        Error
     }
 }

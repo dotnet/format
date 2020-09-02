@@ -29,5 +29,5 @@ dotnet_diagnostic.IDE0005.severity = warning
 
 command
 ```console
-dotnet-format ./format.sln --fix-style warn
+dotnet-format ./format.sln --fix-style warning
 ```

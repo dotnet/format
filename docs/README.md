@@ -51,7 +51,7 @@ dotnet-format ./format.sln --fix-style
 Run analysis against the dotnet-format project and fix warnings and errors.
 
 ```console
-dotnet-format ./src/dotnet-format.csproj --fix-style warn
+dotnet-format ./src/dotnet-format.csproj --fix-style warning
 ```
 
 Errors when used with the `--folder` option. Analysis requires a MSBuild solution or project.
