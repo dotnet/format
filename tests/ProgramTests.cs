@@ -175,7 +175,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             var sut = FormatCommand.CreateCommandLineOptions();
 
             // Act
-            var result = sut.Parse(new[] { "--folder", "--analyzers" });
+            var result = sut.Parse(new[] { "--folder", "--fix-analyzers" });
 
             // Assert
             Assert.Equal(1, result.Errors.Count);
@@ -188,7 +188,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             var sut = FormatCommand.CreateCommandLineOptions();
 
             // Act
-            var result = sut.Parse(new[] { "--folder", "--style" });
+            var result = sut.Parse(new[] { "--folder", "--fix-style" });
 
             // Assert
             Assert.Equal(1, result.Errors.Count);
@@ -201,7 +201,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             var sut = FormatCommand.CreateCommandLineOptions();
 
             // Act
-            var result = sut.Parse(new[] { "--analyzers", "--style" });
+            var result = sut.Parse(new[] { "--fix-analyzers", "--fix-style" });
 
             // Assert
             Assert.Equal(0, result.Errors.Count);

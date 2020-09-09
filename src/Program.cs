@@ -133,12 +133,12 @@ namespace Microsoft.CodeAnalysis.Tools
                 }
 
                 var fixType = FixCategory.None;
-                if (s_parseResult.WasOptionUsed("--style", "-s"))
+                if (s_parseResult.WasOptionUsed("--fix-style", "-s"))
                 {
                     fixType |= FixCategory.CodeStyle;
                 }
 
-                if (s_parseResult.WasOptionUsed("--analyzers", "-a"))
+                if (s_parseResult.WasOptionUsed("--fix-analyzers", "-a"))
                 {
                     fixType |= FixCategory.Analyzers;
                 }

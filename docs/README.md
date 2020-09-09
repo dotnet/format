@@ -45,7 +45,7 @@ dotnet-format ./format.sln
 Running the whitespace formatter along with code-style analysis.
 
 ```console
-dotnet-format ./format.sln --whitespace --style
+dotnet-format ./format.sln --fix-whitespace --fix-style
 ```
 
 ### Running analysis
@@ -54,33 +54,33 @@ dotnet-format ./format.sln --whitespace --style
 
 Running codestyle analysis requires the use of a MSBuild solution or project file as the workspace. Enforces the .NET [Language conventions](https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-language-conventions?view=vs-2019) and [Naming conventions](https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-naming-conventions?view=vs-2019).
 
-- `--style <severity>` - Runs analysis and attempts to fix issues with severity equal or greater than specified. If severity is not specified then severity defaults to error.
+- `--fix-style <severity>` - Runs analysis and attempts to fix issues with severity equal or greater than specified. If severity is not specified then severity defaults to error.
 
 *Example:*
 
-Run analysis against the format solution and fix errors.
+Run code-style analysis against the format solution and fix errors.
 
 ```console
-dotnet-format ./format.sln --style
+dotnet-format ./format.sln --fix-style
 ```
 
 Run analysis against the dotnet-format project and fix warnings and errors.
 
 ```console
-dotnet-format ./src/dotnet-format.csproj --style warn
+dotnet-format ./src/dotnet-format.csproj --fix-style warn
 ```
 
 Errors when used with the `--folder` option. Analysis requires a MSBuild solution or project.
 
 ```console
-dotnet-format ./src --folder --style
+dotnet-format ./src --folder --fix-style
 ```
 
 #### 3rd party analysis
 
 Running 3rd party analysis requires the use of a MSBuild solution or project file as the workspace. 3rd party analyzers are discovered from the `<PackageReferences>` specified in the workspace project files.
 
-- `--analyzers <severity>` - Runs analysis and attempts to fix issues with severity equal or greater than specified. If no severity is specified then this defaults to error.
+- `--fix-analyzers <severity>` - Runs analysis and attempts to fix issues with severity equal or greater than specified. If no severity is specified then this defaults to error.
 
 ### Filter files to format
 
