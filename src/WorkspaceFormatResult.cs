@@ -2,17 +2,8 @@
 
 namespace Microsoft.CodeAnalysis.Tools
 {
-    internal class WorkspaceFormatResult
-    {
-        public int ExitCode { get; }
-        public int FilesFormatted { get; }
-        public int FileCount { get; }
-
-        public WorkspaceFormatResult(int filesFormatted, int fileCount, int exitCode)
-        {
-            FilesFormatted = filesFormatted;
-            FileCount = fileCount;
-            ExitCode = exitCode;
-        }
-    }
+    internal record WorkspaceFormatResult(
+        int ExitCode,
+        int FilesFormatted,
+        int FileCount);
 }

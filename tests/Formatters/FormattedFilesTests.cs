@@ -55,17 +55,17 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
 
             var fileMatcher = SourceFileMatcher.CreateMatcher(new[] { document.FilePath }, exclude: Array.Empty<string>());
             var formatOptions = new FormatOptions(
-                workspaceFilePath: project.FilePath,
-                workspaceType: WorkspaceType.Folder,
-                logLevel: LogLevel.Trace,
-                fixCategory: FixCategory.Whitespace,
-                codeStyleSeverity: DiagnosticSeverity.Error,
-                analyzerSeverity: DiagnosticSeverity.Error,
-                saveFormattedFiles: false,
-                changesAreErrors: false,
+                WorkspaceFilePath: project.FilePath,
+                WorkspaceType: WorkspaceType.Folder,
+                LogLevel: LogLevel.Trace,
+                FixCategory: FixCategory.Whitespace,
+                CodeStyleSeverity: DiagnosticSeverity.Error,
+                AnalyzerSeverity: DiagnosticSeverity.Error,
+                SaveFormattedFiles: false,
+                ChangesAreErrors: false,
                 fileMatcher,
-                reportPath: string.Empty,
-                includeGeneratedFiles: false);
+                ReportPath: string.Empty,
+                IncludeGeneratedFiles: false);
 
             var pathsToFormat = GetOnlyFileToFormat(solution);
 

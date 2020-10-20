@@ -128,17 +128,17 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
 
             var fileMatcher = SourceFileMatcher.CreateMatcher(new[] { document.FilePath }, exclude: Array.Empty<string>());
             var formatOptions = new FormatOptions(
-                workspaceFilePath: project.FilePath,
-                workspaceType: WorkspaceType.Folder,
-                logLevel: LogLevel.Trace,
+                WorkspaceFilePath: project.FilePath,
+                WorkspaceType: WorkspaceType.Folder,
+                LogLevel: LogLevel.Trace,
                 fixCategory,
                 codeStyleSeverity,
                 analyzerSeverity,
-                saveFormattedFiles: true,
-                changesAreErrors: false,
+                SaveFormattedFiles: true,
+                ChangesAreErrors: false,
                 fileMatcher,
-                reportPath: string.Empty,
-                includeGeneratedFiles: false);
+                ReportPath: string.Empty,
+                IncludeGeneratedFiles: false);
 
             var pathsToFormat = GetOnlyFileToFormat(solution);
 

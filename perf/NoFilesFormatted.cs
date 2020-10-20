@@ -33,14 +33,14 @@ namespace Microsoft.CodeAnalysis.Tools.Perf
                 workspacePath,
                 workspaceType,
                 LogLevel.Error,
-                fixCategory: FixCategory.Whitespace,
-                codeStyleSeverity: DiagnosticSeverity.Error,
-                analyzerSeverity: DiagnosticSeverity.Error,
-                saveFormattedFiles: false,
-                changesAreErrors: false,
+                FixCategory: FixCategory.Whitespace,
+                CodeStyleSeverity: DiagnosticSeverity.Error,
+                AnalyzerSeverity: DiagnosticSeverity.Error,
+                SaveFormattedFiles: false,
+                ChangesAreErrors: false,
                 AllFileMatcher,
-                reportPath: string.Empty,
-                includeGeneratedFiles: false);
+                ReportPath: string.Empty,
+                IncludeGeneratedFiles: false);
             _ = CodeFormatter.FormatWorkspaceAsync(options, EmptyLogger, default).GetAwaiter().GetResult();
         }
 
@@ -52,14 +52,14 @@ namespace Microsoft.CodeAnalysis.Tools.Perf
                 workspacePath,
                 workspaceType,
                 LogLevel.Error,
-                fixCategory: FixCategory.Whitespace,
-                codeStyleSeverity: DiagnosticSeverity.Error,
-                analyzerSeverity: DiagnosticSeverity.Error,
-                saveFormattedFiles: false,
-                changesAreErrors: false,
+                FixCategory: FixCategory.Whitespace,
+                CodeStyleSeverity: DiagnosticSeverity.Error,
+                AnalyzerSeverity: DiagnosticSeverity.Error,
+                SaveFormattedFiles: false,
+                ChangesAreErrors: false,
                 AllFileMatcher,
-                reportPath: string.Empty,
-                includeGeneratedFiles: false);
+                ReportPath: string.Empty,
+                IncludeGeneratedFiles: false);
             _ = CodeFormatter.FormatWorkspaceAsync(options, EmptyLogger, default).GetAwaiter().GetResult();
         }
 
@@ -71,14 +71,14 @@ namespace Microsoft.CodeAnalysis.Tools.Perf
                 workspacePath,
                 workspaceType,
                 LogLevel.Error,
-                fixCategory: FixCategory.Whitespace,
-                codeStyleSeverity: DiagnosticSeverity.Error,
-                analyzerSeverity: DiagnosticSeverity.Error,
-                saveFormattedFiles: false,
-                changesAreErrors: false,
+                FixCategory: FixCategory.Whitespace,
+                CodeStyleSeverity: DiagnosticSeverity.Error,
+                AnalyzerSeverity: DiagnosticSeverity.Error,
+                SaveFormattedFiles: false,
+                ChangesAreErrors: false,
                 AllFileMatcher,
-                reportPath: string.Empty,
-                includeGeneratedFiles: false);
+                ReportPath: string.Empty,
+                IncludeGeneratedFiles: false);
             _ = CodeFormatter.FormatWorkspaceAsync(options, EmptyLogger, default).GetAwaiter().GetResult();
         }
 

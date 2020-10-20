@@ -155,12 +155,12 @@ namespace Microsoft.CodeAnalysis.Tools
                     workspaceType,
                     logLevel,
                     fixType,
-                    codeStyleSeverity: GetSeverity(fixStyle ?? FixSeverity.Error),
-                    analyzerSeverity: GetSeverity(fixAnalyzers ?? FixSeverity.Error),
-                    saveFormattedFiles: !check,
-                    changesAreErrors: check,
+                    CodeStyleSeverity: GetSeverity(fixStyle ?? FixSeverity.Error),
+                    AnalyzerSeverity: GetSeverity(fixAnalyzers ?? FixSeverity.Error),
+                    SaveFormattedFiles: !check,
+                    ChangesAreErrors: check,
                     fileMatcher,
-                    reportPath: report,
+                    ReportPath: report,
                     includeGenerated);
 
                 var formatResult = await CodeFormatter.FormatWorkspaceAsync(

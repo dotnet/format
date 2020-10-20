@@ -48,7 +48,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
             if (workspace is null)
             {
-                return new WorkspaceFormatResult(filesFormatted: 0, fileCount: 0, exitCode: 1);
+                return new WorkspaceFormatResult(FilesFormatted: 0, FileCount: 0, ExitCode: 1);
             }
 
             var loadWorkspaceMS = workspaceStopwatch.ElapsedMilliseconds;

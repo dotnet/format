@@ -546,10 +546,10 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
                 fixCategory,
                 codeStyleSeverity,
                 analyzerSeverity,
-                saveFormattedFiles: false,
-                changesAreErrors: false,
+                SaveFormattedFiles: false,
+                ChangesAreErrors: false,
                 fileMatcher,
-                reportPath: string.Empty,
+                ReportPath: string.Empty,
                 includeGenerated);
             var formatResult = await CodeFormatter.FormatWorkspaceAsync(formatOptions, logger, CancellationToken.None);
 

@@ -6,23 +6,5 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Microsoft.CodeAnalysis.Tools.Analyzers
 {
-    internal struct AnalyzersAndFixers
-    {
-        public ImmutableArray<DiagnosticAnalyzer> Analyzers { get; }
-        public ImmutableArray<CodeFixProvider> Fixers { get; }
-
-        public AnalyzersAndFixers(ImmutableArray<DiagnosticAnalyzer> analyzers, ImmutableArray<CodeFixProvider> fixers)
-        {
-            Analyzers = analyzers;
-            Fixers = fixers;
-        }
-
-        public void Deconstruct(
-            out ImmutableArray<DiagnosticAnalyzer> analyzers,
-            out ImmutableArray<CodeFixProvider> fixers)
-        {
-            analyzers = Analyzers;
-            fixers = Fixers;
-        }
-    }
+    internal record AnalyzersAndFixers(ImmutableArray<DiagnosticAnalyzer> Analyzers, ImmutableArray<CodeFixProvider> Fixers);
 }

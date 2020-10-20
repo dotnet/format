@@ -3,8 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <OutputType>Exe</OutputType>
-    <LangVersion>8.0</LangVersion>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>9.0</LangVersion>
     <RootNamespace>Microsoft.CodeAnalysis.Tools</RootNamespace>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <Nullable>Enable</Nullable>
