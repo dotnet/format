@@ -88,8 +88,6 @@ jobs:
         _configuration: Release
   timeoutInMinutes: 20
   steps:
-    - script: sudo locale-gen es_ES.utf8 && export LC_ALL=es_ES.UTF-8
-      displayName: Set es_ES locale
     - script: ./eng/common/cibuild.sh --configuration $(_configuration) --prepareMachine
       displayName: Build and Test
     - task: PublishTestResults@2
@@ -104,7 +102,7 @@ jobs:
       displayName: Publish Logs
       inputs:
         PathtoPublish: '$(Build.SourcesDirectory)/artifacts/log/$(_configuration)'
-        ArtifactName: 'Spanish $(_os) $(_configuration)'
+        ArtifactName: 'Spanish g$(_os) $(_configuration)'
       continueOnError: true
       condition: not(succeeded())
 
