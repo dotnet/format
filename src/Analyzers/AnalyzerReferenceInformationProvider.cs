@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+
 using Microsoft.CodeAnalysis.Tools.Utilities;
 using Microsoft.Extensions.Logging;
 
@@ -41,7 +42,11 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
 
             try
             {
-                context.AssemblyFolderPath = Path.GetDirectoryName(path);
+                var directoryName = Path.GetDirectoryName(path);
+                if (directoryName is not null)
+                {
+                    context.AssemblyFolderPath = directoryName;
+                }
 
                 // First try loading the assembly from disk.
                 return context.LoadFromAssemblyPath(path);
@@ -69,7 +74,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                     // Search for assembly based on assembly name and culture within the analyzer folder.
                     var assembly = AssemblyResolver.TryResolveAssemblyFromPaths(this, assemblyName, AssemblyFolderPath);
 
-                    if (assembly != null)
+                    if (assembly is not null)
                     {
                         return assembly;
                     }

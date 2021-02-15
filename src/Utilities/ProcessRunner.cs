@@ -84,7 +84,7 @@ namespace Microsoft.CodeAnalysis.Tools.Utilities
 
             process.OutputDataReceived += (s, e) =>
                 {
-                    if (e.Data != null)
+                    if (e.Data is not null)
                     {
                         outputLines.Add(e.Data);
                     }
@@ -92,7 +92,7 @@ namespace Microsoft.CodeAnalysis.Tools.Utilities
 
             process.ErrorDataReceived += (s, e) =>
                 {
-                    if (e.Data != null)
+                    if (e.Data is not null)
                     {
                         errorLines.Add(e.Data);
                     }
@@ -170,7 +170,7 @@ namespace Microsoft.CodeAnalysis.Tools.Utilities
                 processStartInfo.WorkingDirectory = workingDirectory;
             }
 
-            if (environmentVariables != null)
+            if (environmentVariables is not null)
             {
                 foreach (var pair in environmentVariables)
                 {

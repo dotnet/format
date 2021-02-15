@@ -32,7 +32,7 @@ namespace Microsoft.CodeAnalysis.Tools.Utilities
             }
 
             // Walk from the folder path up to the drive root addings .editorconfig files.
-            while (directory.Parent != null)
+            while (directory.Parent is not null)
             {
                 directory = directory.Parent;
 

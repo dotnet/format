@@ -127,10 +127,15 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
             var solution = await GetSolutionAsync(TestState.Sources.ToArray(), TestState.AdditionalFiles.ToArray(), TestState.AdditionalReferences.ToArray(), editorConfig, analyzerReferences);
             var project = solution.Projects.Single();
             var document = project.Documents.Single();
+            if (document.FilePath is null)
+                throw new Exception("Null document file path");
 
-            var fileMatcher = SourceFileMatcher.CreateMatcher(new[] { document.FilePath! }, exclude: Array.Empty<string>());
+            if (project.FilePath is null)
+                throw new Exception("Null project file path");
+
+            var fileMatcher = SourceFileMatcher.CreateMatcher(new[] { document.FilePath }, exclude: Array.Empty<string>());
             var formatOptions = new FormatOptions(
-                workspaceFilePath: project.FilePath!,
+                workspaceFilePath: project.FilePath,
                 workspaceType: WorkspaceType.Solution,
                 logLevel: LogLevel.Trace,
                 fixCategory,
@@ -255,6 +260,11 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
                 .AddAnalyzerReferences(projectId, analyzerReferences)
                 .AddMetadataReferences(projectId, additionalMetadataReferences);
 
+            if (solution is null)
+            {
+                throw new Exception("null solution created");
+            }
+
             for (var i = 0; i < sources.Length; i++)
             {
                 (var newFileName, var source) = sources[i];
@@ -269,7 +279,8 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Formatters
                 solution = solution.AddAdditionalDocument(documentId, newFileName, source);
             }
 
-            return solution.GetProject(projectId)!;
+            var project = solution.GetProject(projectId);
+            return project is not null ? project : throw new Exception("Unable to get project");
         }
 
         /// <summary>

@@ -19,8 +19,8 @@ namespace Microsoft.CodeAnalysis.Tools.Reflection
             {
                 return document;
             }
-
-            return await (Task<Document>)s_removeUnnecessaryImportsAsyncMethod.Invoke(obj: null, new object[] { document, cancellationToken })!;
+            var task = s_removeUnnecessaryImportsAsyncMethod.Invoke(obj: null, new object[] { document, cancellationToken });
+            return task is not null ? await (Task<Document?>)task : document;
         }
     }
 }

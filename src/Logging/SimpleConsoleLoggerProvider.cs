@@ -7,10 +7,10 @@ namespace Microsoft.CodeAnalysis.Tools.Logging
 {
     internal class SimpleConsoleLoggerProvider : ILoggerProvider
     {
-        private readonly IConsole _console;
+        private readonly IConsole? _console;
         private readonly LogLevel _logLevel;
 
-        public SimpleConsoleLoggerProvider(IConsole console, LogLevel logLevel)
+        public SimpleConsoleLoggerProvider(IConsole? console, LogLevel logLevel)
         {
             _console = console;
             _logLevel = logLevel;

@@ -80,7 +80,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 if (!diagnostic.IsSuppressed &&
                     diagnostic.Severity >= severity &&
                     diagnostic.Location.IsInSource &&
-                    diagnostic.Location.SourceTree != null &&
+                    diagnostic.Location.SourceTree is not null &&
                     formattableDocumentPaths.Contains(diagnostic.Location.SourceTree.FilePath))
                 {
                     result.AddDiagnostic(project, diagnostic);
@@ -99,7 +99,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
 
                 return project.ProjectReferences
                     .Select(projectReference => project.Solution.GetProject(projectReference.ProjectId))
-                    .All(referencedProject => referencedProject != null && AllReferencedProjectsLoaded(referencedProject));
+                    .All(referencedProject => referencedProject is not null && AllReferencedProjectsLoaded(referencedProject));
             }
         }
     }

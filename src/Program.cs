@@ -53,7 +53,7 @@ namespace Microsoft.CodeAnalysis.Tools
             string[] exclude,
             string? report,
             bool includeGenerated,
-            IConsole console = null!)
+            IConsole? console = null)
         {
             if (s_parseResult == null)
             {
@@ -236,7 +236,11 @@ namespace Microsoft.CodeAnalysis.Tools
                 for (var i = 0; Console.In.Peek() != -1; ++i)
                 {
                     Array.Resize(ref subject, subject.Length + 1);
-                    subject[i] = Console.In.ReadLine();
+                    var temp = Console.In.ReadLine();
+                    if (temp is not null)
+                    {
+                        subject[i] = temp;
+                    }
                 }
 
                 return true;
@@ -288,7 +292,7 @@ namespace Microsoft.CodeAnalysis.Tools
             };
         }
 
-        private static ILogger<Program> SetupLogging(IConsole console, LogLevel logLevel)
+        private static ILogger<Program> SetupLogging(IConsole? console, LogLevel logLevel)
         {
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddSingleton(new LoggerFactory().AddSimpleConsole(console, logLevel));
@@ -296,14 +300,13 @@ namespace Microsoft.CodeAnalysis.Tools
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
             var logger = serviceProvider.GetService<ILogger<Program>>();
-
-            return logger!;
+            return logger is not null  ? logger : throw new InvalidOperationException("Unable to setup logger");
         }
 
-        private static string GetVersion()
+        private static string? GetVersion()
         {
             return Assembly.GetExecutingAssembly()
-                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
                 .InformationalVersion;
         }
 

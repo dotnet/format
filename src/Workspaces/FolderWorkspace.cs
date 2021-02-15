@@ -54,7 +54,7 @@ namespace Microsoft.CodeAnalysis.Tools.Workspaces
         protected override void ApplyDocumentTextChanged(DocumentId documentId, SourceText text)
         {
             var document = CurrentSolution.GetDocument(documentId);
-            if (document?.FilePath != null && text.Encoding != null)
+            if (document?.FilePath is not null && text.Encoding is not null)
             {
                 SaveDocumentText(documentId, document.FilePath, text, text.Encoding);
                 OnDocumentTextChanged(documentId, text, PreservationMode.PreserveValue);

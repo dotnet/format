@@ -75,8 +75,8 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             var analysisStopwatch = Stopwatch.StartNew();
             logger.LogTrace(Resources.Running_0_analysis, _name);
 
-            var formattablePaths = formattableDocuments.Select(id => solution.GetDocument(id)!.FilePath)
-                    .OfType<string>().ToImmutableHashSet();
+            var formattablePaths = formattableDocuments.Select(id => solution.GetDocument(id)?.FilePath)
+                    .Where(x => x is not null).OfType<string>().ToImmutableHashSet();
 
             logger.LogTrace(Resources.Determining_diagnostics);
 
@@ -158,7 +158,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                     var changePosition = mappedLineSpan.StartLinePosition;
 
                     var formatMessage = $"{Path.GetRelativePath(workspaceFolder, filePath)}({changePosition.Line + 1},{changePosition.Character + 1}): {message}";
-                    formattedFiles.Add(new FormattedFile(document!, new[] { new FileChange(changePosition, message) }));
+                    formattedFiles.Add(new FormattedFile(document, new[] { new FileChange(changePosition, message) }));
 
                     if (changesAreErrors)
                     {
@@ -208,8 +208,8 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 foreach (var project in solution.Projects)
                 {
                     // Only run analysis on projects that had previously reported the diagnostic
-                    if (!projectDiagnostics.TryGetValue(project.Id, out var diagnosticIds)
-                        || !diagnosticIds.Contains(diagnosticId))
+                    if (projectDiagnostics.TryGetValue(project.Id, out var diagnosticIds)
+                        || diagnosticIds?.Contains(diagnosticId) == true)
                     {
                         continue;
                     }

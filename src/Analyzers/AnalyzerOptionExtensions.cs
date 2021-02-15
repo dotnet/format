@@ -90,8 +90,8 @@ namespace Microsoft.CodeAnalysis.Diagnostics
         public static bool IsDiagnosticSeverityConfigured(this AnalyzerConfigOptions analyzerConfigOptions, Project project, SyntaxTree tree, string diagnosticId, string? diagnosticCategory)
         {
             var optionsProvider = project.CompilationOptions?.SyntaxTreeOptionsProvider;
-            return (optionsProvider != null && optionsProvider.TryGetDiagnosticValue(tree, diagnosticId, CancellationToken.None, out _))
-                || (diagnosticCategory != null && analyzerConfigOptions.TryGetValue(GetCategoryBasedDotnetAnalyzerDiagnosticSeverityKey(diagnosticCategory), out _))
+            return (optionsProvider is not null && optionsProvider.TryGetDiagnosticValue(tree, diagnosticId, CancellationToken.None, out _))
+                || (diagnosticCategory is not null && analyzerConfigOptions.TryGetValue(GetCategoryBasedDotnetAnalyzerDiagnosticSeverityKey(diagnosticCategory), out _))
                 || analyzerConfigOptions.TryGetValue(DotnetAnalyzerDiagnosticSeverityKey, out _);
         }
 
@@ -130,14 +130,14 @@ namespace Microsoft.CodeAnalysis.Diagnostics
             // If user has explicitly configured severity for this diagnostic ID, that should be respected.
             // For example, 'dotnet_diagnostic.CA1000.severity = error'
             var optionsProvider = project.CompilationOptions?.SyntaxTreeOptionsProvider;
-            if (optionsProvider != null &&
+            if (optionsProvider is not null &&
                 optionsProvider.TryGetDiagnosticValue(tree, diagnosticId, CancellationToken.None, out severity))
             {
                 return true;
             }
 
             string? value;
-            if (diagnosticCategory != null)
+            if (diagnosticCategory is not null)
             {
                 // If user has explicitly configured default severity for the diagnostic category, that should be respected.
                 // For example, 'dotnet_analyzer_diagnostic.category-security.severity = error'

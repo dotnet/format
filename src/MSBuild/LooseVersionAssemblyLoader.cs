@@ -33,7 +33,7 @@ namespace Microsoft.CodeAnalysis.Tools.MSBuild
                     var assembly = AssemblyResolver.TryResolveAssemblyFromPaths(context, assemblyName, searchPath, s_pathsToAssemblies, logger: logger);
 
                     // Cache assembly
-                    if (assembly != null)
+                    if (assembly is not null)
                     {
                         var name = assembly.FullName;
                         if (name is null)
@@ -45,7 +45,7 @@ namespace Microsoft.CodeAnalysis.Tools.MSBuild
                         s_namesToAssemblies[name] = assembly;
                     }
 
-                    return assembly;
+                    return assembly!;
                 }
             };
         }

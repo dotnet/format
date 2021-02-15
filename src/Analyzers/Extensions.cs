@@ -39,7 +39,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                     Array.Empty<Type>(),
                     modifiers: null);
 
-                instance = defaultCtor != null
+                instance = defaultCtor is not null
                     ? (T)Activator.CreateInstance(
                         type,
                         BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
@@ -48,7 +48,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                         culture: null)!
                     : null;
 
-                return instance != null;
+                return instance is not null;
             }
             catch (Exception ex)
             {

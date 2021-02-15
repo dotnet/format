@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
+using System;
 using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis.Tools.MSBuild;
@@ -31,7 +32,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Utilities
                 Build.Locator.MSBuildLocator.RegisterInstance(msBuildInstance);
             }
 
-            return s_msBuildPath!;
+            return s_msBuildPath is not null ? s_msBuildPath : throw new InvalidOperationException("Unable to find msbuild instance");
         }
     }
 }

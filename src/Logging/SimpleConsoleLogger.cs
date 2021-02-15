@@ -13,8 +13,8 @@ namespace Microsoft.CodeAnalysis.Tools.Logging
     {
         private readonly object _gate = new object();
 
-        private readonly IConsole _console;
-        private readonly ITerminal _terminal;
+        private readonly IConsole? _console;
+        private readonly ITerminal? _terminal;
         private readonly LogLevel _logLevel;
 
         private static ImmutableDictionary<LogLevel, ConsoleColor> LogLevelColorMap => new Dictionary<LogLevel, ConsoleColor>
@@ -28,9 +28,9 @@ namespace Microsoft.CodeAnalysis.Tools.Logging
             [LogLevel.None] = ConsoleColor.White,
         }.ToImmutableDictionary();
 
-        public SimpleConsoleLogger(IConsole console, LogLevel logLevel)
+        public SimpleConsoleLogger(IConsole? console, LogLevel logLevel)
         {
-            _terminal = console.GetTerminal();
+            _terminal = console?.GetTerminal();
             _console = console;
             _logLevel = logLevel;
         }
@@ -69,14 +69,17 @@ namespace Microsoft.CodeAnalysis.Tools.Logging
         private void LogToTerminal(string message, LogLevel logLevel)
         {
             var messageColor = LogLevelColorMap[logLevel];
-            _terminal.ForegroundColor = messageColor;
-            _terminal.Out.Write($"  {message}{Environment.NewLine}");
-            _terminal.ResetColor();
+            if (_terminal is not null)
+            {
+                _terminal.ForegroundColor = messageColor;
+                _terminal.Out.Write($"  {message}{Environment.NewLine}");
+                _terminal.ResetColor();
+            }
         }
 
         private void LogToConsole(string message)
         {
-            _console.Out.Write($"  {message}{Environment.NewLine}");
+            _console?.Out.Write($"  {message}{Environment.NewLine}");
         }
     }
 }

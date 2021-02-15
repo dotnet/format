@@ -79,7 +79,7 @@ namespace Microsoft.CodeAnalysis.Tools
             {
                 var documentWithError = solution.GetDocument(documentId);
 
-                logger.LogInformation(Resources.Formatted_code_file_0, documentWithError!.FilePath);
+                logger.LogInformation(Resources.Formatted_code_file_0, documentWithError?.FilePath);
             }
 
             var exitCode = 0;
@@ -92,7 +92,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
             if (exitCode == 0 && !string.IsNullOrWhiteSpace(formatOptions.ReportPath))
             {
-                ReportWriter.Write(formatOptions.ReportPath!, formattedFiles, logger);
+                ReportWriter.Write(formatOptions.ReportPath, formattedFiles, logger);
             }
 
             logger.LogDebug(Resources.Formatted_0_of_1_files, documentIdsWithErrors.Length, fileCount);
@@ -214,7 +214,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
                     // Track files covered by an editorconfig separately from those not covered.
                     var analyzerConfigOptions = document.Project.AnalyzerOptions.AnalyzerConfigOptionsProvider.GetOptions(syntaxTree);
-                    if (analyzerConfigOptions != null)
+                    if (analyzerConfigOptions is not null)
                     {
                         if (formatOptions.IncludeGeneratedFiles ||
                             GeneratedCodeUtilities.GetIsGeneratedCodeFromOptions(analyzerConfigOptions) != true)

@@ -52,7 +52,7 @@ namespace Microsoft.CodeAnalysis.Tools.Utilities
                     }
                     catch
                     {
-                        if (assemblyName.Name != null)
+                        if (assemblyName.Name is not null)
                         {
                             // We were unable to load the assembly from the file path. It is likely that
                             // a different version of the assembly has already been loaded into the context.

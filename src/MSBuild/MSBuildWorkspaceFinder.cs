@@ -32,8 +32,8 @@ namespace Microsoft.CodeAnalysis.Tools.MSBuild
                 }
 
                 return Directory.Exists(workspacePath)
-                    ? FindWorkspace(workspacePath!) // IsNullOrEmpty is not annotated on .NET Core 2.1
-                    : FindFile(workspacePath!); // IsNullOrEmpty is not annotated on .NET Core 2.1
+                    ? FindWorkspace(workspacePath) // IsNullOrEmpty is not annotated on .NET Core 2.1
+                    : FindFile(workspacePath); // IsNullOrEmpty is not annotated on .NET Core 2.1
             }
 
             var foundSolution = FindMatchingFile(searchDirectory, FindSolutionFiles, Resources.Multiple_MSBuild_solution_files_found_in_0_Specify_which_to_use_with_the_workspace_argument);
@@ -46,12 +46,12 @@ namespace Microsoft.CodeAnalysis.Tools.MSBuild
 
             if (!string.IsNullOrEmpty(foundSolution))
             {
-                return (true, foundSolution!); // IsNullOrEmpty is not annotated on .NET Core 2.1
+                return (true, foundSolution);
             }
 
             if (!string.IsNullOrEmpty(foundProject))
             {
-                return (false, foundProject!); // IsNullOrEmpty is not annotated on .NET Core 2.1
+                return (false, foundProject);
             }
 
             throw new FileNotFoundException(string.Format(Resources.Could_not_find_a_MSBuild_project_or_solution_file_in_0_Specify_which_to_use_with_the_workspace_argument, searchDirectory));

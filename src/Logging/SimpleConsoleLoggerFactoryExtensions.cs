@@ -7,7 +7,7 @@ namespace Microsoft.CodeAnalysis.Tools.Logging
 {
     internal static class SimpleConsoleLoggerFactoryExtensions
     {
-        public static ILoggerFactory AddSimpleConsole(this ILoggerFactory factory, IConsole console, LogLevel logLevel)
+        public static ILoggerFactory AddSimpleConsole(this ILoggerFactory factory, IConsole? console, LogLevel logLevel)
         {
             factory.AddProvider(new SimpleConsoleLoggerProvider(console, logLevel));
             return factory;

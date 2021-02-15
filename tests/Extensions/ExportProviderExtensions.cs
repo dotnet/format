@@ -31,7 +31,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
                 var importMany = contract.MetadataConstraints.Contains(new KeyValuePair<string, object>("IsImportMany", true));
                 var (contractType, metadataType, isArray) = GetContractType(contract.ContractType, importMany);
 
-                if (metadataType != null)
+                if (metadataType is not null)
                 {
                     var methodInfo = (from method in _exportProvider.GetType().GetTypeInfo().GetMethods()
                                       where method.Name == nameof(ExportProvider.GetExports)

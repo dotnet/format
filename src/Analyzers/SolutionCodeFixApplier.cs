@@ -31,7 +31,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
 
             var diagnostic = result.Diagnostics
                 .SelectMany(kvp => kvp.Value)
-                .Where(diagnostic => diagnostic.Location.SourceTree != null)
+                .Where(diagnostic => diagnostic.Location.SourceTree is not null)
                 .FirstOrDefault();
 
             if (diagnostic is null)
