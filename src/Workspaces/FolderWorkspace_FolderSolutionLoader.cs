@@ -18,7 +18,7 @@ namespace Microsoft.CodeAnalysis.Tools.Workspaces
                 var absoluteFolderPath = Path.GetFullPath(folderPath, Directory.GetCurrentDirectory());
 
                 var filePaths = GetMatchingFilePaths(absoluteFolderPath, fileMatcher);
-                var editorConfigPaths = EditorConfigFinder.GetEditorConfigPaths(folderPath);
+                var editorConfigPaths = EditorConfigFinder.GetEditorConfigPaths(filePaths);
 
                 var projectInfos = ImmutableArray.CreateBuilder<ProjectInfo>(ProjectLoaders.Length);
 

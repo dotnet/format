@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 
@@ -7,39 +8,34 @@ namespace Microsoft.CodeAnalysis.Tools.Utilities
 {
     internal static class EditorConfigFinder
     {
-        public static ImmutableArray<string> GetEditorConfigPaths(string path)
+        public static ImmutableArray<string> GetEditorConfigPaths(ImmutableArray<string> paths)
         {
-            // If the path is to a file then remove the file name and process the
-            // folder path.
-            var startPath = Directory.Exists(path)
-                ? path
-                : Path.GetDirectoryName(path);
-
-            if (!Directory.Exists(startPath))
+            if (paths == default)
             {
                 return ImmutableArray<string>.Empty;
             }
 
             var editorConfigPaths = ImmutableArray.CreateBuilder<string>(16);
+            var visited = new List<string>();
 
-            var directory = new DirectoryInfo(path);
-
-            // Find .editorconfig files contained unders the folder path.
-            var files = directory.GetFiles(".editorconfig", SearchOption.AllDirectories);
-            for (var index = 0; index < files.Length; index++)
+            foreach (var path in paths)
             {
-                editorConfigPaths.Add(files[index].FullName);
-            }
+                var directoryName = Path.GetDirectoryName(path);
+                if (visited.Contains(directoryName)) continue;
 
-            // Walk from the folder path up to the drive root addings .editorconfig files.
-            while (directory.Parent != null)
-            {
-                directory = directory.Parent;
+                var directory = new DirectoryInfo(directoryName);
 
-                files = directory.GetFiles(".editorconfig", SearchOption.TopDirectoryOnly);
-                if (files.Length == 1)
+                // Walk from the folder path up to the drive root addings .editorconfig files.
+                while (directory.Parent != null)
                 {
-                    editorConfigPaths.Add(files[0].FullName);
+                    if (visited.Contains(directory.FullName)) break;
+
+                    visited.Add(directory.FullName);
+
+                    var file = Path.Combine(directory.FullName, ".editorconfig");
+                    if (File.Exists(file)) editorConfigPaths.Add(file);
+
+                    directory = directory.Parent;
                 }
             }
 
