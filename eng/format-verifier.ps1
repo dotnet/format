@@ -9,11 +9,8 @@ Param(
 )
 
 if ($stage -eq "prepare") {
-    Write-Output "$(Get-Date) - Restoring dotnet-format."
-    .\eng\common\Build.ps1 -restore
-
     Write-Output "$(Get-Date) - Building dotnet-format."
-    dotnet.exe build ./src -c Release
+    .\build.cmd -c Release
 }
 
 $currentLocation = Get-Location
