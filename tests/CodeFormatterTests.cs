@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Immutable;
@@ -120,7 +120,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
 
             var logLines = log.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
             Assert.Contains(logLines, line => line.Contains("unformatted_project.AssemblyInfo.cs"));
-            Assert.Contains(logLines, line => line.Contains("NETCoreApp,Version=v3.0.AssemblyAttributes.cs"));
+            Assert.Contains(logLines, line => line.Contains("NETCoreApp,Version=v3.1.AssemblyAttributes.cs"));
         }
 
         [MSBuildFact]
