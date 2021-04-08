@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
+// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Immutable;
@@ -361,15 +361,7 @@ namespace Microsoft.CodeAnalysis.Tools
             {
                 // Since we are running as a dotnet tool we should be able to find an instance of
                 // MSBuild in a .NET Core SDK.
-                var msBuildInstance = Build.Locator.MSBuildLocator.QueryVisualStudioInstances().First();
-
-                // Since we do not inherit msbuild.deps.json when referencing the SDK copy
-                // of MSBuild and because the SDK no longer ships with version matched assemblies, we
-                // register an assembly loader that will load assemblies from the msbuild path with
-                // equal or higher version numbers than requested.
-                LooseVersionAssemblyLoader.Register(msBuildInstance.MSBuildPath);
-                Build.Locator.MSBuildLocator.RegisterInstance(msBuildInstance);
-
+                var msBuildInstance = Build.Locator.MSBuildLocator.RegisterDefaults();
                 msBuildPath = msBuildInstance.MSBuildPath;
                 return true;
             }

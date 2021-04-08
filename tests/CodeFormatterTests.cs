@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
 using System;
 using System.Collections.Immutable;
@@ -536,7 +536,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
             }
 
             var logger = new TestLogger();
-            var msBuildPath = MSBuildRegistrar.RegisterInstance(logger);
+            var msBuildPath = MSBuildRegistrar.RegisterInstance();
 
             logger.LogDebug(Resources.The_dotnet_runtime_version_is_0, Program.GetRuntimeVersion());
             logger.LogTrace(Resources.Using_msbuildexe_located_in_0, msBuildPath);

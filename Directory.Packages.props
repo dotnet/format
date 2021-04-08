@@ -12,7 +12,7 @@
     <PackageVersion Include="BenchmarkDotNet.Annotations" Version="0.12.1" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.12.1" />
     <PackageVersion Include="Microsoft.Build.Framework" Version="$(MicrosoftBuildVersion)" />
-    <PackageVersion Include="Microsoft.Build.Locator" Version="1.2.6" />
+    <PackageVersion Include="Microsoft.Build.Locator" Version="1.4.1" />
     <PackageVersion Include="Microsoft.Build" Version="$(MicrosoftBuildVersion)"/>
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzer.Testing" Version="1.0.1-beta1.20413.3" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" />
