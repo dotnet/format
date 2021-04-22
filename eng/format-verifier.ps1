@@ -40,13 +40,22 @@ try {
 
     # We invoke build.ps1 ourselves because running `restore.cmd` invokes the build.ps1
     # in a child process which means added .NET Core SDKs aren't visible to this process.
+    if ($stage -eq "prepare") {
+        # Run build during prepare so that any projcet referenced source generator
+        # assemblies are built prior to running format.
+        $buildArgs = "-build", "-restore"
+    }
+    else {
+        $buildArgs = ,"-restore"
+    }
+
     if (Test-Path '.\eng\Build.ps1') {
         Write-Output "$(Get-Date) - Running Build.ps1 -restore"
-        .\eng\Build.ps1 -restore
+        .\eng\Build.ps1 @buildArgs
     }
     elseif (Test-Path '.\eng\common\Build.ps1') {
         Write-Output "$(Get-Date) - Running Build.ps1 -restore"
-        .\eng\common\Build.ps1 -restore
+        .\eng\common\Build.ps1 @buildArgs
     }
 
     if ($stage -eq "prepare" -or $stage -eq "format-workspace") {
