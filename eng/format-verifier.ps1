@@ -43,18 +43,18 @@ try {
     if ($stage -eq "prepare") {
         # Run build during prepare so that any projcet referenced source generator
         # assemblies are built prior to running format.
-        $buildArgs = "-build", "-restore"
+        $buildArgs = "-restore","-build"
     }
     else {
         $buildArgs = ,"-restore"
     }
 
     if (Test-Path '.\eng\Build.ps1') {
-        Write-Output "$(Get-Date) - Running Build.ps1 -restore"
+        Write-Output "$(Get-Date) - Running Build.ps1 $($buildArgs)"
         .\eng\Build.ps1 @buildArgs
     }
     elseif (Test-Path '.\eng\common\Build.ps1') {
-        Write-Output "$(Get-Date) - Running Build.ps1 -restore"
+        Write-Output "$(Get-Date) - Running Build.ps1 $($buildArgs)"
         .\eng\common\Build.ps1 @buildArgs
     }
 
