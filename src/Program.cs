@@ -4,6 +4,7 @@ using System;
 using System.Collections.Immutable;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.CommandLine.IO;
 using System.CommandLine.Parsing;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -58,8 +59,15 @@ namespace Microsoft.CodeAnalysis.Tools
             string? report,
             bool includeGenerated,
             string? binarylog,
+            bool version,
             IConsole console = null!)
         {
+            if (version)
+            {
+                console.Out.WriteLine(GetVersion());
+                return 0;
+            }
+
             if (s_parseResult == null)
             {
                 return 1;
@@ -336,7 +344,7 @@ namespace Microsoft.CodeAnalysis.Tools
         {
             return Assembly.GetExecutingAssembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-                .InformationalVersion;
+                ?.InformationalVersion ?? string.Empty;
         }
 
         private static bool TryGetDotNetCliVersion([NotNullWhen(returnValue: true)] out string? dotnetVersion)

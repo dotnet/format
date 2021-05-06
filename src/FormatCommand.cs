@@ -28,6 +28,7 @@ namespace Microsoft.CodeAnalysis.Tools
             string? report,
             bool includeGenerated,
             string? binarylog,
+            bool version,
             IConsole console);
 
         internal static string[] VerbosityLevels => new[] { "q", "quiet", "m", "minimal", "n", "normal", "d", "detailed", "diag", "diagnostic" };
@@ -75,7 +76,23 @@ namespace Microsoft.CodeAnalysis.Tools
             rootCommand.AddValidator(EnsureFolderNotSpecifiedWithNoRestore);
             rootCommand.AddValidator(EnsureFolderNotSpecifiedWhenLoggingBinlog);
 
-            return rootCommand;
+            return rootCommand.AddVersionOption();
+        }
+
+        // Workaround for https://github.com/dotnet/command-line-api/pull/1270
+        private static RootCommand AddVersionOption(this RootCommand command)
+        {
+            if (command.Children.GetByAlias("--version") != null)
+            {
+                return command;
+            }
+
+            var versionOption = new Option<bool>(
+                "--version",
+                description: "Show version information");
+            command.AddOption(versionOption);
+
+            return command;
         }
 
         internal static string? EnsureFolderNotSpecifiedWhenFixingAnalyzers(CommandResult symbolResult)

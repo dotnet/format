@@ -206,6 +206,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
                 string report,
                 bool includeGenerated,
                 string binaryLogPath,
+                bool version,
                 IConsole console = null)
             {
                 Assert.Equal("./src", workspace);
@@ -221,6 +222,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
                 Assert.Equal(new[] { "*.vb" }, exclude);
                 Assert.Equal("report.json", report);
                 Assert.True(includeGenerated);
+                Assert.False(version);
 
                 return Task.FromResult(uniqueExitCode);
             };
