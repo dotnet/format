@@ -38,10 +38,5 @@
     <PackageVersion Include="System.CommandLine.Rendering" Version="0.3.0-alpha.21256.1" />
     <PackageVersion Include="System.CommandLine" Version="2.0.0-beta1.21256.1" />
     <PackageVersion Include="System.Text.Json" Version="$(MicrosoftExtensionsVersion)" />
-
-    <!-- Avoid version conflicts during build. -->
-    <PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="$(MicrosoftExtensionsVersion)"/>
-    <PackageVersion Include="System.Security.Principal.Windows" Version="$(MicrosoftExtensionsVersion)"/>
-    <PackageVersion Include="Microsoft.Win32.Registry" Version="$(MicrosoftExtensionsVersion)" />
   </ItemGroup>
 </Project>

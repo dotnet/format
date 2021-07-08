@@ -56,11 +56,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection"  />
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing"  />
     <PackageReference Include="Microsoft.Extensions.Logging"  />
-
-    <!-- Avoid version conflicts during build. -->
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" />
-    <PackageReference Include="System.Security.Principal.Windows" />
-    <PackageReference Include="Microsoft.Win32.Registry" />
   </ItemGroup>
 
   <ItemGroup>
