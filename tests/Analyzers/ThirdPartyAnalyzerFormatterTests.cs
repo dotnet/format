@@ -10,7 +10,6 @@ using Microsoft.CodeAnalysis.Tools.Analyzers;
 using Microsoft.CodeAnalysis.Tools.Formatters;
 using Microsoft.CodeAnalysis.Tools.Tests.Formatters;
 using Microsoft.CodeAnalysis.Tools.Tests.Utilities;
-using Microsoft.CodeAnalysis.Tools.Tests.XUnit;
 using Microsoft.CodeAnalysis.Tools.Workspaces;
 using Xunit;
 using Xunit.Abstractions;
