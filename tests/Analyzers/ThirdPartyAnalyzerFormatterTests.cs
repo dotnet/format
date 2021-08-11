@@ -122,7 +122,7 @@ class C
             await AssertCodeChangedAsync(testCode, expectedCode, editorConfig, fixCategory: FixCategory.Analyzers, analyzerReferences: analyzerReferences);
         }
 
-        [ConditionalFact(typeof(WindowsOnly))]
+        [Fact]
         public async Task TestIDisposableAnalyzer_AddsUsing()
         {
             var analyzerReferences = GetAnalyzerReferences("IDisposable");
