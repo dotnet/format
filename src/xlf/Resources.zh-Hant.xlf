@@ -382,6 +382,11 @@
         <target state="translated">無法組織 '{0}' 的匯入。文件太複雜。</target>
         <note />
       </trans-unit>
+      <trans-unit id="Unrecognized_command_or_argument_0">
+        <source>Unrecognized command or argument '{0}'</source>
+        <target state="new">Unrecognized command or argument '{0}'</target>
+        <note />
+      </trans-unit>
       <trans-unit id="Using_msbuildexe_located_in_0">
         <source>Using MSBuild.exe located in '{0}'.</source>
         <target state="translated">正在使用位於 '{0}' 的 MSBuild.exe。</target>

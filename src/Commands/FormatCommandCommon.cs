@@ -3,6 +3,7 @@
 using System;
 using System.CommandLine;
 using System.CommandLine.Parsing;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Tools.Commands;
 using Microsoft.CodeAnalysis.Tools.Logging;
 using Microsoft.CodeAnalysis.Tools.Utilities;
 using Microsoft.CodeAnalysis.Tools.Workspaces;
@@ -32,7 +34,7 @@ namespace Microsoft.CodeAnalysis.Tools
         {
             Description = Resources.SolutionOrProjectArgumentDescription,
             Arity = ArgumentArity.ZeroOrOne
-        }.DefaultToCurrentDirectory();
+        }.DefaultToCurrentDirectory().LegalFilePathsOnly().PathIsNotOptionLike();
 
         internal static readonly Option<bool> FolderOption = new(new[] { "--folder" }, Resources.Whether_to_treat_the_workspace_argument_as_a_simple_folder_of_files);
         internal static readonly Option<bool> NoRestoreOption = new(new[] { "--no-restore" }, Resources.Doesnt_execute_an_implicit_restore_before_formatting);
@@ -95,7 +97,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
         public static void AddCommonOptions(this Command command)
         {
-            command.AddArgument(SlnOrProjectArgument);
+            //command.AddArgument(SlnOrProjectArgument);
             command.AddOption(NoRestoreOption);
             command.AddOption(VerifyNoChanges);
             command.AddOption(IncludeOption);
@@ -109,6 +111,39 @@ namespace Microsoft.CodeAnalysis.Tools
         public static Argument<T> DefaultToCurrentDirectory<T>(this Argument<T> arg)
         {
             arg.SetDefaultValue(EnsureTrailingSlash(Directory.GetCurrentDirectory()));
+            return arg;
+        }
+
+        public static Argument<T> PathIsNotOptionLike<T>(this Argument<T> arg)
+        {
+            // Hyphens are valid path characters so options that exist in other subcommands or don't
+            // exist at all will be considered valid values for the ProjectOrSolution argument.
+            // This validator ensures that we show the user an "unrecognized command" message when
+            // they mistype or misuse options.
+
+            arg.AddValidator(symbol =>
+            {
+                // Look at each token. In practice this should be a single token since the
+                // ProjectOrSolution argument accepts at most one value.
+                foreach (var token in symbol.Tokens)
+                {
+                    // If the path looks like an option and doesn't look like a relative path, ensure
+                    // a folder exists with the same name.
+                    if (token.Value.StartsWith('-') &&
+                        !token.Value.Contains('\\') &&
+                        !token.Value.Contains('/'))
+                    {
+                        var path = Path.GetFullPath(token.Value, Environment.CurrentDirectory);
+                        if (!Directory.Exists(path))
+                        {
+                            return string.Format(Resources.Unrecognized_command_or_argument_0, token.Value);
+                        }
+                    }
+                }
+
+                return null;
+            });
+
             return arg;
         }
 

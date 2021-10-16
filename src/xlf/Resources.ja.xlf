@@ -382,6 +382,11 @@
         <target state="translated">'{0}' のインポートを整理できません。ドキュメントが複雑すぎます。</target>
         <note />
       </trans-unit>
+      <trans-unit id="Unrecognized_command_or_argument_0">
+        <source>Unrecognized command or argument '{0}'</source>
+        <target state="new">Unrecognized command or argument '{0}'</target>
+        <note />
+      </trans-unit>
       <trans-unit id="Using_msbuildexe_located_in_0">
         <source>Using MSBuild.exe located in '{0}'.</source>
         <target state="translated">'{0}' にある MSBuild.exe を使用しています。</target>

@@ -130,26 +130,13 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
         }
 
         [Fact]
-        public void CommandLine_FolderValidation_FailsIfFixAnalyzersSpecified()
+        public void CommandLine_ProjectOrSolutionArgumentValidation_FailsIfInvalidOptionIsSpecified()
         {
             // Arrange
             var sut = RootFormatCommand.GetCommand();
 
             // Act
-            var result = sut.Parse(new[] { "--folder", "--fix-analyzers" });
-
-            // Assert
-            Assert.Equal(1, result.Errors.Count);
-        }
-
-        [Fact]
-        public void CommandLine_FolderValidation_FailsIfFixStyleSpecified()
-        {
-            // Arrange
-            var sut = RootFormatCommand.GetCommand();
-
-            // Act
-            var result = sut.Parse(new[] { "--folder", "--fix-style" });
+            var result = sut.Parse(new[] { "--folder" });
 
             // Assert
             Assert.Equal(1, result.Errors.Count);

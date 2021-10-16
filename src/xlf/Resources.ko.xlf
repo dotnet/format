@@ -382,6 +382,11 @@
         <target state="translated">'{0}'에 대한 가져오기를 구성할 수 없습니다. 문서가 너무 복잡합니다.</target>
         <note />
       </trans-unit>
+      <trans-unit id="Unrecognized_command_or_argument_0">
+        <source>Unrecognized command or argument '{0}'</source>
+        <target state="new">Unrecognized command or argument '{0}'</target>
+        <note />
+      </trans-unit>
       <trans-unit id="Using_msbuildexe_located_in_0">
         <source>Using MSBuild.exe located in '{0}'.</source>
         <target state="translated">'{0}'에 있는 MSBuild.exe를 사용합니다.</target>

@@ -382,6 +382,11 @@
         <target state="translated">Importe für "{0}" können nicht organisiert werden. Das Dokument ist zu komplex.</target>
         <note />
       </trans-unit>
+      <trans-unit id="Unrecognized_command_or_argument_0">
+        <source>Unrecognized command or argument '{0}'</source>
+        <target state="new">Unrecognized command or argument '{0}'</target>
+        <note />
+      </trans-unit>
       <trans-unit id="Using_msbuildexe_located_in_0">
         <source>Using MSBuild.exe located in '{0}'.</source>
         <target state="translated">MSBuild.exe in "{0}" wird verwendet.</target>
