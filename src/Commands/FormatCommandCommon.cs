@@ -3,7 +3,6 @@
 using System;
 using System.CommandLine;
 using System.CommandLine.Parsing;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -11,7 +10,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Tools.Commands;
 using Microsoft.CodeAnalysis.Tools.Logging;
 using Microsoft.CodeAnalysis.Tools.Utilities;
 using Microsoft.CodeAnalysis.Tools.Workspaces;
