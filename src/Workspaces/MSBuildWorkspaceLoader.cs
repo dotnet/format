@@ -29,6 +29,9 @@ namespace Microsoft.CodeAnalysis.Tools.Workspaces
                 // rather than a separate one. Any tasks isolated in AppDomains or tasks that create
                 // AppDomains will likely not work due to https://github.com/Microsoft/MSBuildLocator/issues/16.
                 { "AlwaysCompileMarkupFilesInSeparateDomain", bool.FalseString },
+                // This property allows the MarkuuCompilePass1 target to be invoked which generates
+                // the *.g.cs files from .xaml files.
+                { "BuildingInsideVisualStudio", bool.TrueString },
             };
 
             var workspace = MSBuildWorkspace.Create(properties);
