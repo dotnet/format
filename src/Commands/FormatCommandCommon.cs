@@ -97,7 +97,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
         public static void AddCommonOptions(this Command command)
         {
-            //command.AddArgument(SlnOrProjectArgument);
+            command.AddArgument(SlnOrProjectArgument);
             command.AddOption(NoRestoreOption);
             command.AddOption(VerifyNoChanges);
             command.AddOption(IncludeOption);
