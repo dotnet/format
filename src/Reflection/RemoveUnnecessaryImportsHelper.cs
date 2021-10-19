@@ -9,7 +9,7 @@ namespace Microsoft.CodeAnalysis.Tools.Reflection
 {
     internal static class RemoveUnnecessaryImportsHelper
     {
-        private static readonly Assembly? s_microsoftCodeAnalysisFeaturesAssembly = Assembly.Load(new AssemblyName("Microsoft.CodeAnalysis.Features"));
+        private static readonly Assembly? s_microsoftCodeAnalysisFeaturesAssembly = Assembly.Load(new AssemblyName("Microsoft.CodeAnalysis.CodeStyle"));
         private static readonly Type? s_abstractRemoveUnnecessaryImportsCodeFixProviderType = s_microsoftCodeAnalysisFeaturesAssembly?.GetType("Microsoft.CodeAnalysis.RemoveUnnecessaryImports.AbstractRemoveUnnecessaryImportsCodeFixProvider");
         private static readonly MethodInfo? s_removeUnnecessaryImportsAsyncMethod = s_abstractRemoveUnnecessaryImportsCodeFixProviderType?.GetMethod("RemoveUnnecessaryImportsAsync", BindingFlags.Static | BindingFlags.NonPublic);
 

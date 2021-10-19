@@ -12,9 +12,9 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
     {
         private static readonly string s_executingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
-        private readonly string _featuresPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.Features.dll");
-        private readonly string _featuresCSharpPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.CSharp.Features.dll");
-        private readonly string _featuresVisualBasicPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.VisualBasic.Features.dll");
+        private readonly string _featuresPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.CodeStyle.dll");
+        private readonly string _featuresCSharpPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.CSharp.CodeStyle.dll");
+        private readonly string _featuresVisualBasicPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.VisualBasic.CodeStyle.dll");
 
         public ImmutableDictionary<ProjectId, AnalyzersAndFixers> GetAnalyzersAndFixers(
             Solution solution,

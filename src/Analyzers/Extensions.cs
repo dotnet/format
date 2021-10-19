@@ -21,7 +21,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
 
         static Extensions()
         {
-            MicrosoftCodeAnalysisFeaturesAssembly = Assembly.Load(new AssemblyName("Microsoft.CodeAnalysis.Features"));
+            MicrosoftCodeAnalysisFeaturesAssembly = Assembly.Load(new AssemblyName("Microsoft.CodeAnalysis.CodeStyle"));
             IDEDiagnosticIdToOptionMappingHelperType = MicrosoftCodeAnalysisFeaturesAssembly.GetType("Microsoft.CodeAnalysis.Diagnostics.IDEDiagnosticIdToOptionMappingHelper")!;
             TryGetMappedOptionsMethod = IDEDiagnosticIdToOptionMappingHelperType.GetMethod("TryGetMappedOptions", BindingFlags.Static | BindingFlags.Public)!;
         }
