@@ -56,14 +56,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="$(PkgMicrosoft_CodeAnalysis_CSharp_CodeStyle)\analyzers\dotnet\cs\**\*.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </Content>
-    <Content Include="$(PkgMicrosoft_CodeAnalysis_VisualBasic_CodeStyle)\analyzers\dotnet\vb\**\*.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </Content>
+    <Reference Include="$(PkgMicrosoft_CodeAnalysis_CSharp_CodeStyle)\analyzers\dotnet\cs\*.dll" />
+    <Reference Include="$(PkgMicrosoft_CodeAnalysis_VisualBasic_CodeStyle)\analyzers\dotnet\vb\*VisualBasic*.dll" />
   </ItemGroup>
 
   <ItemGroup>
