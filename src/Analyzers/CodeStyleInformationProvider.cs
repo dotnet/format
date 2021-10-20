@@ -12,9 +12,12 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
     {
         private static readonly string s_executingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? string.Empty;
 
-        private readonly string _featuresPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.Features.dll");
-        private readonly string _featuresCSharpPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.CSharp.Features.dll");
-        private readonly string _featuresVisualBasicPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.VisualBasic.Features.dll");
+        private readonly string _codeStylePath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.CodeStyle.dll");
+        private readonly string _codeStyleFixesPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.CodeStyle.Fixes.dll");
+        private readonly string _csharpCodeStylePath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.CSharp.CodeStyle.dll");
+        private readonly string _csharpCodeStyleFixesPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.CSharp.CodeStyle.Fixes.dll");
+        private readonly string _visualBasicCodeStylePath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.VisualBasic.CodeStyle.dll");
+        private readonly string _visualBasicCodeStyleFixesPath = Path.Combine(s_executingPath, "Microsoft.CodeAnalysis.VisualBasic.CodeStyle.Fixes.dll");
 
         public ImmutableDictionary<ProjectId, AnalyzersAndFixers> GetAnalyzersAndFixers(
             Solution solution,
@@ -23,9 +26,12 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
         {
             var assemblies = new[]
             {
-                _featuresPath,
-                _featuresCSharpPath,
-                _featuresVisualBasicPath
+                _codeStylePath,
+                _codeStyleFixesPath,
+                _csharpCodeStylePath,
+                _csharpCodeStyleFixesPath,
+                _visualBasicCodeStylePath,
+                _visualBasicCodeStyleFixesPath
             }.Select(path => Assembly.LoadFrom(path));
 
             var analyzersAndFixers = AnalyzerFinderHelpers.LoadAnalyzersAndFixers(assemblies);

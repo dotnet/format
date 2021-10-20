@@ -9,21 +9,24 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Options;
 
 namespace Microsoft.CodeAnalysis.Tools.Analyzers
 {
     public static class Extensions
     {
-        private static Assembly MicrosoftCodeAnalysisFeaturesAssembly { get; }
+        private static Assembly MicrosoftCodeAnalysisCodeStyleAssembly { get; }
         private static Type IDEDiagnosticIdToOptionMappingHelperType { get; }
         private static MethodInfo TryGetMappedOptionsMethod { get; }
 
+        private static Type IEditorConfigStorageLocation2Type { get; }
+
         static Extensions()
         {
-            MicrosoftCodeAnalysisFeaturesAssembly = Assembly.Load(new AssemblyName("Microsoft.CodeAnalysis.Features"));
-            IDEDiagnosticIdToOptionMappingHelperType = MicrosoftCodeAnalysisFeaturesAssembly.GetType("Microsoft.CodeAnalysis.Diagnostics.IDEDiagnosticIdToOptionMappingHelper")!;
+            MicrosoftCodeAnalysisCodeStyleAssembly = Assembly.Load(new AssemblyName("Microsoft.CodeAnalysis.CodeStyle"));
+            IDEDiagnosticIdToOptionMappingHelperType = MicrosoftCodeAnalysisCodeStyleAssembly.GetType("Microsoft.CodeAnalysis.Diagnostics.IDEDiagnosticIdToOptionMappingHelper")!;
             TryGetMappedOptionsMethod = IDEDiagnosticIdToOptionMappingHelperType.GetMethod("TryGetMappedOptions", BindingFlags.Static | BindingFlags.Public)!;
+
+            IEditorConfigStorageLocation2Type = MicrosoftCodeAnalysisCodeStyleAssembly.GetType("Microsoft.CodeAnalysis.Options.IEditorConfigStorageLocation2")!;
         }
 
         public static bool Any(this SolutionChanges solutionChanges)
@@ -53,7 +56,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException($"Failed to create instrance of {type.FullName} in {type.AssemblyQualifiedName}.", ex);
+                throw new InvalidOperationException($"Failed to create instance of {type.FullName} in {type.AssemblyQualifiedName}.", ex);
             }
         }
 
@@ -81,9 +84,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                     continue;
                 }
 
-                var options = await document.GetOptionsAsync(cancellationToken).ConfigureAwait(false);
-
-                var documentSeverity = analyzer.GetSeverity(document, project.AnalyzerOptions, options, compilation);
+                var documentSeverity = analyzer.GetSeverity(document, project.AnalyzerOptions, compilation);
                 if (documentSeverity > severity)
                 {
                     severity = documentSeverity;
@@ -107,8 +108,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
         private static DiagnosticSeverity GetSeverity(
             this DiagnosticAnalyzer analyzer,
             Document document,
-            AnalyzerOptions? analyzerOptions,
-            OptionSet options,
+            AnalyzerOptions analyzerOptions,
             Compilation compilation)
         {
             var severity = DiagnosticSeverity.Hidden;
@@ -117,6 +117,8 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             {
                 return severity;
             }
+
+            var options = analyzerOptions.AnalyzerConfigOptionsProvider.GetOptions(tree);
 
             foreach (var descriptor in analyzer.SupportedDiagnostics)
             {
@@ -152,10 +154,16 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             static bool TryGetSeverityFromCodeStyleOption(
                 DiagnosticDescriptor descriptor,
                 Compilation compilation,
-                OptionSet options,
+                AnalyzerConfigOptions options,
                 out DiagnosticSeverity severity)
             {
                 severity = DiagnosticSeverity.Hidden;
+
+                if (options.GetType().GetField("_backing", BindingFlags.Instance | BindingFlags.NonPublic)
+                    ?.GetValue(options) is not IDictionary backingOptions)
+                {
+                    return false;
+                }
 
                 var parameters = new object?[] { descriptor.Id, compilation.Language, null };
                 var result = (bool)(TryGetMappedOptionsMethod.Invoke(null, parameters) ?? false);
@@ -168,33 +176,64 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 var codeStyleOptions = (IEnumerable)parameters[2]!;
                 foreach (var codeStyleOptionObj in codeStyleOptions)
                 {
-                    var codeStyleOption = (IOption)codeStyleOptionObj!;
-                    var option = options.GetOption(new OptionKey(codeStyleOption, codeStyleOption.IsPerLanguage ? compilation.Language : null));
-                    if (option is null)
+                    if (!TryGetEditorConfigStorage(codeStyleOptionObj, out var editorConfigStorage))
                     {
                         continue;
                     }
 
-                    var notificationProperty = option.GetType().GetProperty("Notification");
-                    if (notificationProperty is null)
-                    {
-                        continue;
-                    }
+                    var optionType = editorConfigStorage.GetType().GetGenericArguments()[0];
+                    var args = new object?[] { backingOptions, optionType, null };
 
-                    var notification = notificationProperty.GetValue(option);
-                    var reportDiagnosticValue = notification?.GetType().GetProperty("Severity")?.GetValue(notification);
-                    if (reportDiagnosticValue is null)
-                    {
-                        continue;
-                    }
-
-                    var codeStyleSeverity = ToSeverity((ReportDiagnostic)reportDiagnosticValue);
-                    if (codeStyleSeverity > severity)
+                    var gotOption = editorConfigStorage.GetType().GetMethod("TryGetOption")
+                        ?.Invoke(editorConfigStorage, args) is true;
+                    if (gotOption &&
+                        TryGetOptionSeverity(args[2]!, out var codeStyleSeverity) &&
+                        codeStyleSeverity > severity)
                     {
                         severity = codeStyleSeverity;
                     }
                 }
 
+                return severity != DiagnosticSeverity.Hidden;
+            }
+
+            static bool TryGetEditorConfigStorage(object optionObject, [NotNullWhen(returnValue: true)] out object? storage)
+            {
+                if (optionObject.GetType().GetProperty("StorageLocations")
+                    ?.GetValue(optionObject) is IList storageLocations)
+                {
+                    foreach (var storageObj in storageLocations)
+                    {
+                        if (storageObj.GetType().IsAssignableTo(IEditorConfigStorageLocation2Type))
+                        {
+                            storage = storageObj;
+                            return true;
+                        }
+                    }
+                }
+
+                storage = null;
+                return false;
+            }
+
+            static bool TryGetOptionSeverity(object option, out DiagnosticSeverity severity)
+            {
+                var notificationProperty = option?.GetType().GetProperty("Notification");
+                if (notificationProperty is null)
+                {
+                    severity = DiagnosticSeverity.Hidden;
+                    return false;
+                }
+
+                var notification = notificationProperty.GetValue(option);
+                if (notification?.GetType().GetProperty("Severity")
+                    ?.GetValue(notification) is not ReportDiagnostic reportDiagnosticValue)
+                {
+                    severity = DiagnosticSeverity.Hidden;
+                    return false;
+                }
+
+                severity = ToSeverity(reportDiagnosticValue);
                 return true;
             }
         }

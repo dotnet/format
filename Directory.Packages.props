@@ -16,11 +16,10 @@
     <PackageVersion Include="Microsoft.Build" Version="$(MicrosoftBuildVersion)"/>
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzer.Testing" Version="1.1.1-beta1.21413.1" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(MicrosoftNETCoreCompilersPackageVersion)" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="$(MicrosoftNETCoreCompilersPackageVersion)" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(MicrosoftNETCoreCompilersPackageVersion)" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="$(MicrosoftNETCoreCompilersPackageVersion)" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Features" Version="$(MicrosoftNETCoreCompilersPackageVersion)" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Features" Version="$(MicrosoftNETCoreCompilersPackageVersion)" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.CodeStyle" Version="$(MicrosoftNETCoreCompilersPackageVersion)" />
     <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(MicrosoftNETCoreCompilersPackageVersion)" />
     <PackageVersion Include="Microsoft.CodeAnalysis.VisualBasic" Version="$(MicrosoftNETCoreCompilersPackageVersion)" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(MicrosoftNETCoreCompilersPackageVersion)" />
