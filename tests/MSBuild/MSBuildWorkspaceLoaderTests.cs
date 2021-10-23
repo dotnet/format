@@ -30,9 +30,8 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.MSBuild
         [MSBuildTheory(typeof(WindowsOnly))]
         [InlineData("winforms")]
         [InlineData("winformslib")]
-        // Skip="https://github.com/dotnet/format/issues/1402"
-        // [InlineData("wpf")]
-        // [InlineData("wpfusercontrollib")]
+        [InlineData("wpf")]
+        [InlineData("wpfusercontrollib")]
         [InlineData("wpflib")]
         [InlineData("wpfcustomcontrollib")]
         public async Task CSharpTemplateProject_WindowsOnly_LoadWithNoDiagnostics(string templateName)
