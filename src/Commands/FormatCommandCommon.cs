@@ -285,7 +285,7 @@ namespace Microsoft.CodeAnalysis.Tools
         {
             var currentDirectory = Environment.CurrentDirectory;
 
-            if (parseResult.ValueForArgument<string>(SlnOrProjectArgument) is string { Length: > 0 } slnOrProject)
+            if (parseResult.GetValueForArgument<string>(SlnOrProjectArgument) is string { Length: > 0 } slnOrProject)
             {
                 if (parseResult.HasOption(FolderOption))
                 {

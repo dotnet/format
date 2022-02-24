@@ -30,10 +30,11 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.MSBuild
         [MSBuildTheory(typeof(WindowsOnly))]
         [InlineData("winforms")]
         [InlineData("winformslib")]
-        [InlineData("wpf")]
-        [InlineData("wpfusercontrollib")]
-        [InlineData("wpflib")]
-        [InlineData("wpfcustomcontrollib")]
+        // Skip="https://github.com/dotnet/format/issues/1402"
+        // [InlineData("wpf")]
+        // [InlineData("wpfusercontrollib")]
+        // [InlineData("wpflib")]
+        // [InlineData("wpfcustomcontrollib")]
         public async Task CSharpTemplateProject_WindowsOnly_LoadWithNoDiagnostics(string templateName)
         {
             await AssertTemplateProjectLoadsCleanlyAsync(templateName, LanguageNames.CSharp);
@@ -107,7 +108,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.MSBuild
             var projectPath = GetProjectPath(templateName, languageName);
             var projectFilePath = GetProjectFilePath(projectPath, languageName);
 
-            var exitCode = await DotNetHelper.NewProject(templateName, projectPath, languageName, outputHelper);
+            var exitCode = await DotNetHelper.NewProjectAsync(templateName, projectPath, languageName, outputHelper);
             Assert.Equal(0, exitCode);
 
             return projectFilePath;
