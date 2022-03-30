@@ -2,7 +2,7 @@
 <Project>
   <PropertyGroup>
     <MajorVersion>6</MajorVersion>
-    <MinorVersion>0</MinorVersion>
+    <MinorVersion>3</MinorVersion>
     <!-- Build release-only package. -->
     <PreReleaseVersionLabel>
     </PreReleaseVersionLabel>
@@ -13,8 +13,11 @@
     <AutoGenerateAssemblyVersion>true</AutoGenerateAssemblyVersion>
   </PropertyGroup>
   <PropertyGroup>
+    <MicrosoftBuildVersion>16.11.0</MicrosoftBuildVersion>
+    <MicrosoftCodeAnalysisAnalyzersVersion>3.3.3</MicrosoftCodeAnalysisAnalyzersVersion>
+    <MicrosoftExtensionsDependencyInjectionVersion>5.0.0</MicrosoftExtensionsDependencyInjectionVersion>
     <!-- Dependencies from https://github.com/dotnet/roslyn -->
-    <MicrosoftNETCoreCompilersPackageVersion>4.0.0-5.21508.3</MicrosoftNETCoreCompilersPackageVersion>
+    <MicrosoftNETCoreCompilersPackageVersion>4.2.0-2.22171.5</MicrosoftNETCoreCompilersPackageVersion>
     <!-- Dependencies from https://github.com/dotnet/command-line-api -->
     <SystemCommandLineVersion>2.0.0-beta1.21473.1</SystemCommandLineVersion>
     <SystemCommandLineRenderingVersion>0.3.0-alpha.21473.1</SystemCommandLineRenderingVersion>
@@ -24,5 +27,7 @@
   -->
   <PropertyGroup>
     <DiscoverEditorConfigFiles>true</DiscoverEditorConfigFiles>
+    <!-- MSBuildTheory test discovery fails from ./test.sh without this set. -->
+    <UseVSTestRunner>true</UseVSTestRunner>
   </PropertyGroup>
 </Project>

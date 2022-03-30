@@ -18,6 +18,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
         public static AnalyzerFormatter CodeStyleFormatter => new AnalyzerFormatter(
             Resources.Code_Style,
             FixCategory.CodeStyle,
+            includeCompilerDiagnostics: false,
             new CodeStyleInformationProvider(),
             new AnalyzerRunner(),
             new SolutionCodeFixApplier());
@@ -25,11 +26,13 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
         public static AnalyzerFormatter ThirdPartyFormatter => new AnalyzerFormatter(
             Resources.Analyzer_Reference,
             FixCategory.Analyzers,
+            includeCompilerDiagnostics: true,
             new AnalyzerReferenceInformationProvider(),
             new AnalyzerRunner(),
             new SolutionCodeFixApplier());
 
         private readonly string _name;
+        private readonly bool _includeCompilerDiagnostics;
         private readonly IAnalyzerInformationProvider _informationProvider;
         private readonly IAnalyzerRunner _runner;
         private readonly ICodeFixApplier _applier;
@@ -39,12 +42,14 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
         public AnalyzerFormatter(
             string name,
             FixCategory category,
+            bool includeCompilerDiagnostics,
             IAnalyzerInformationProvider informationProvider,
             IAnalyzerRunner runner,
             ICodeFixApplier applier)
         {
             _name = name;
             Category = category;
+            _includeCompilerDiagnostics = includeCompilerDiagnostics;
             _informationProvider = informationProvider;
             _runner = runner;
             _applier = applier;
@@ -67,10 +72,12 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             var allFixers = projectAnalyzersAndFixers.Values.SelectMany(analyzersAndFixers => analyzersAndFixers.Fixers).ToImmutableArray();
 
             // Only include compiler diagnostics if we have an associated fixer that supports FixAllScope.Solution
-            var fixableCompilerDiagnostics = allFixers
-                .Where(codefix => codefix.GetFixAllProvider()?.GetSupportedFixAllScopes()?.Contains(FixAllScope.Solution) == true)
-                .SelectMany(codefix => codefix.FixableDiagnosticIds.Where(id => id.StartsWith("CS") || id.StartsWith("BC")))
-                .ToImmutableHashSet();
+            var fixableCompilerDiagnostics = _includeCompilerDiagnostics
+                ? allFixers
+                    .Where(codefix => codefix.GetFixAllProvider()?.GetSupportedFixAllScopes()?.Contains(FixAllScope.Solution) == true)
+                    .SelectMany(codefix => codefix.FixableDiagnosticIds.Where(id => id.StartsWith("CS") || id.StartsWith("BC")))
+                    .ToImmutableHashSet()
+                : ImmutableHashSet<string>.Empty;
 
             // Filter compiler diagnostics
             if (!fixableCompilerDiagnostics.IsEmpty && !formatOptions.Diagnostics.IsEmpty)
@@ -80,16 +87,14 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
 
             var analysisStopwatch = Stopwatch.StartNew();
             logger.LogTrace(Resources.Running_0_analysis, _name);
-
-            var formattablePaths = formattableDocuments.Select(id => solution.GetDocument(id)!.FilePath)
-                    .OfType<string>().ToImmutableHashSet();
+            var formattablePaths = await GetFormattablePathsAsync(solution, formattableDocuments, cancellationToken).ConfigureAwait(false);
 
             logger.LogTrace(Resources.Determining_diagnostics);
 
             var severity = _informationProvider.GetSeverity(formatOptions);
 
             // Filter to analyzers that report diagnostics with equal or greater severity.
-            var projectAnalyzers = await FilterAnalyzersAsync(solution, projectAnalyzersAndFixers, formattablePaths, severity, formatOptions.Diagnostics, cancellationToken).ConfigureAwait(false);
+            var projectAnalyzers = await FilterAnalyzersAsync(solution, projectAnalyzersAndFixers, formattablePaths, severity, formatOptions.Diagnostics, formatOptions.ExcludeDiagnostics, cancellationToken).ConfigureAwait(false);
 
             // Determine which diagnostics are being reported for each project.
             var projectDiagnostics = await GetProjectDiagnosticsAsync(solution, projectAnalyzers, formattablePaths, formatOptions, severity, fixableCompilerDiagnostics, logger, formattedFiles, cancellationToken).ConfigureAwait(false);
@@ -103,7 +108,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 logger.LogTrace(Resources.Fixing_diagnostics);
 
                 // Run each analyzer individually and apply fixes if possible.
-                solution = await FixDiagnosticsAsync(solution, projectAnalyzers, allFixers, projectDiagnostics, formattablePaths, severity, fixableCompilerDiagnostics, logger, cancellationToken).ConfigureAwait(false);
+                solution = await FixDiagnosticsAsync(solution, projectAnalyzers, allFixers, projectDiagnostics, formattablePaths, formatOptions, severity, fixableCompilerDiagnostics, logger, cancellationToken).ConfigureAwait(false);
 
                 var fixDiagnosticsMS = analysisStopwatch.ElapsedMilliseconds - projectDiagnosticsMS;
                 logger.LogTrace(Resources.Complete_in_0_ms, fixDiagnosticsMS);
@@ -112,6 +117,29 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             logger.LogTrace(Resources.Analysis_complete_in_0ms_, analysisStopwatch.ElapsedMilliseconds);
 
             return solution;
+
+            async static Task<ImmutableHashSet<string>> GetFormattablePathsAsync(Solution solution, ImmutableArray<DocumentId> formattableDocuments, CancellationToken cancellationToken)
+            {
+                var formattablePaths = ImmutableHashSet.CreateBuilder<string>();
+
+                foreach (var documentId in formattableDocuments)
+                {
+                    var document = solution.GetDocument(documentId);
+                    if (document is null)
+                    {
+                        document = await solution.GetSourceGeneratedDocumentAsync(documentId, cancellationToken).ConfigureAwait(false);
+
+                        if (document is null)
+                        {
+                            continue;
+                        }
+                    }
+
+                    formattablePaths.Add(document.FilePath!);
+                }
+
+                return formattablePaths.ToImmutable();
+            }
         }
 
         private async Task<ImmutableDictionary<ProjectId, ImmutableHashSet<string>>> GetProjectDiagnosticsAsync(
@@ -125,7 +153,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             List<FormattedFile> formattedFiles,
             CancellationToken cancellationToken)
         {
-            var result = new CodeAnalysisResult();
+            var result = new CodeAnalysisResult(options.Diagnostics, options.ExcludeDiagnostics);
             var projects = options.WorkspaceType == WorkspaceType.Solution
                 ? solution.Projects
                 : solution.Projects.Where(project => project.FilePath == options.WorkspaceFilePath);
@@ -174,6 +202,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             ImmutableArray<CodeFixProvider> allFixers,
             ImmutableDictionary<ProjectId, ImmutableHashSet<string>> projectDiagnostics,
             ImmutableHashSet<string> formattablePaths,
+            FormatOptions options,
             DiagnosticSeverity severity,
             ImmutableHashSet<string> fixableCompilerDiagnostics,
             ILogger logger,
@@ -200,7 +229,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                     continue;
                 }
 
-                var result = new CodeAnalysisResult();
+                var result = new CodeAnalysisResult(options.Diagnostics, options.ExcludeDiagnostics);
                 foreach (var project in solution.Projects)
                 {
                     // Only run analysis on projects that had previously reported the diagnostic
@@ -250,6 +279,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             ImmutableHashSet<string> formattablePaths,
             DiagnosticSeverity minimumSeverity,
             ImmutableHashSet<string> diagnostics,
+            ImmutableHashSet<string> excludeDiagnostics,
             CancellationToken cancellationToken)
         {
             // We only want to run analyzers for each project that have the potential for reporting a diagnostic with
@@ -270,6 +300,13 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                     .Where(analyzer => DoesAnalyzerSupportLanguage(analyzer, project.Language));
                 foreach (var analyzer in filteredAnalyzer)
                 {
+                    // Filter by excluded diagnostics
+                    if (!excludeDiagnostics.IsEmpty &&
+                        analyzer.SupportedDiagnostics.All(descriptor => excludeDiagnostics.Contains(descriptor.Id)))
+                    {
+                        continue;
+                    }
+
                     // Filter by diagnostics
                     if (!diagnostics.IsEmpty &&
                         !analyzer.SupportedDiagnostics.Any(descriptor => diagnostics.Contains(descriptor.Id)))
