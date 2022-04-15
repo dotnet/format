@@ -14,9 +14,7 @@ if ($stage -eq "prepare") {
 }
 
 $currentLocation = Get-Location
-
 $dotnetPath = Join-Path $currentLocation ".dotnet"
-$env:PATH = "$dotnetPath;$env:PATH"
 
 if (!(Test-Path $testPath)) {
     New-Item -ItemType Directory -Force -Path $testPath | Out-Null
@@ -51,6 +49,8 @@ try {
         Write-Output "$(Get-Date) - Running Build.ps1 -restore"
         .\eng\common\Build.ps1 -restore
     }
+
+    $env:PATH = "$dotnetPath;$env:PATH"
 
     if ($stage -eq "prepare" -or $stage -eq "format-workspace") {
         Write-Output "$(Get-Date) - Finding solutions."
