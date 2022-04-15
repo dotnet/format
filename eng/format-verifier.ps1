@@ -15,6 +15,9 @@ if ($stage -eq "prepare") {
 
 $currentLocation = Get-Location
 
+$dotnetPath = Join-Path $currentLocation ".dotnet"
+$env:PATH = "$dotnetPath;$env:PATH"
+
 if (!(Test-Path $testPath)) {
     New-Item -ItemType Directory -Force -Path $testPath | Out-Null
 }
