@@ -35,6 +35,7 @@
   <ItemGroup>
     <PackageReference Include="System.CommandLine" />
     <PackageReference Include="System.CommandLine.Rendering" />
+    <PackageReference Include="System.Private.Uri" />
 
     <PackageReference Include="Microsoft.Build" ExcludeAssets="Runtime" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="Runtime" PrivateAssets="All" />

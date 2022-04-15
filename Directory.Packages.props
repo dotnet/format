@@ -35,5 +35,6 @@
     <PackageVersion Include="NuGet.Versioning" Version="$(NuGetVersion)" />
     <PackageVersion Include="System.CommandLine" Version="$(SystemCommandLineVersion)" />
     <PackageVersion Include="System.CommandLine.Rendering" Version="$(SystemCommandLineRenderingVersion)" />
+    <PackageVersion Include="System.Private.Uri" Version="4.3.2" />
   </ItemGroup>
 </Project>
