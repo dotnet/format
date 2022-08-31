@@ -60,7 +60,7 @@ jobs:
         _targetSolution: "All.sln"
         _branchName: "main"
         _sha: "929cab1e250e50751551d628c4d7208de1155af6"
-      ef6:
+      razor-tooling:
         _repo: "https://github.com/dotnet/razor-tooling"
         _repoName: "dotnet/razor-tooling"
         _targetSolution: "Razor.sln"
@@ -68,11 +68,11 @@ jobs:
         _sha: "da152bfa9c519efd4e0038fbd7804af3fd27056d"
   timeoutInMinutes: 60
   steps:
-    - script: eng\integration-test.cmd -repo '$(_repo)' -branchName '$(_branchName)' -sha '$(_sha)' -targetSolution '$(_targetSolution)' -testPath '$(Build.SourcesDirectory)\temp' -stage 'prepare'
+    - script: eng\integration-test.cmd -repo '$(_repo)' -branchName '$(_branchName)' -sha '$(_sha)' -targetSolution '$(_targetSolution)' -testPath '$(Agent.TempDirectory)\temp' -stage 'prepare'
       displayName: Prepare $(_repoName) for formatting
 
-    - script: eng\integration-test.cmd -repo '$(_repo)' -branchName '$(_branchName)' -sha '$(_sha)' -targetSolution '$(_targetSolution)' -testPath '$(Build.SourcesDirectory)\temp' -stage 'format-workspace'
+    - script: eng\integration-test.cmd -repo '$(_repo)' -branchName '$(_branchName)' -sha '$(_sha)' -targetSolution '$(_targetSolution)' -testPath '$(Agent.TempDirectory)\temp' -stage 'format-workspace'
       displayName: Run dotnet-format on $(_repoName) $(_targetSolution)
 
-    - script: eng\integration-test.cmd -repo '$(_repo)' -branchName '$(_branchName)' -sha '$(_sha)' -targetSolution '$(_targetSolution)' -testPath '$(Build.SourcesDirectory)\temp' -stage 'format-folder'
+    - script: eng\integration-test.cmd -repo '$(_repo)' -branchName '$(_branchName)' -sha '$(_sha)' -targetSolution '$(_targetSolution)' -testPath '$(Agent.TempDirectory)\temp' -stage 'format-folder'
       displayName: Run dotnet-format on $(_repoName) repo folder
