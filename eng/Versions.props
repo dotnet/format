@@ -19,7 +19,7 @@
     <MicrosoftExtensionsFileSystemGlobbingVersion>7.0.0-rc.1.22426.10</MicrosoftExtensionsFileSystemGlobbingVersion>
     <MicrosoftExtensionsLoggingVersion>7.0.0-rc.1.22426.10</MicrosoftExtensionsLoggingVersion>
     <!-- Dependencies from https://github.com/dotnet/roslyn -->
-    <MicrosoftNetCompilersToolsetPackageVersion>4.4.0-3.22431.2</MicrosoftNetCompilersToolsetPackageVersion>
+    <MicrosoftNetCompilersToolsetPackageVersion>4.4.0-3.22514.7</MicrosoftNetCompilersToolsetPackageVersion>
     <!-- Dependencies from https://github.com/dotnet/command-line-api -->
     <SystemCommandLineVersion>2.0.0-beta4.22430.1</SystemCommandLineVersion>
     <SystemCommandLineRenderingVersion>0.4.0-alpha.22430.1</SystemCommandLineRenderingVersion>
