@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Dependencies>
   <ProductDependencies>
-    <Dependency Name="Microsoft.Net.Compilers.Toolset" Version="4.6.0-2.23125.2">
+    <Dependency Name="Microsoft.Net.Compilers.Toolset" Version="4.6.0-2.23126.1">
       <Uri>https://github.com/dotnet/roslyn</Uri>
-      <Sha>286d4ed006c381cfa6419f74f529a04b09c66186</Sha>
+      <Sha>87debaebbb0b3d3d2ff0a74bd872b8b9c17fb917</Sha>
     </Dependency>
     <Dependency Name="System.CommandLine" Version="2.0.0-beta4.22564.1">
       <Uri>https://github.com/dotnet/command-line-api</Uri>
