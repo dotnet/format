@@ -587,9 +587,13 @@ namespace Microsoft.CodeAnalysis.Tools.Tests
         [MSBuildFact]
         public async Task GeneratorSolution_AdditionalDocumentsUpdated_WhenIncludingGenerated()
         {
-            const string ExpectedPublicApi = @"Greeter
-Greeter.Greet() -> void
-Greeter.Greeter() -> void";
+            var sb = new System.Text.StringBuilder();
+            sb.Append("Greeter");
+            sb.Append(Environment.NewLine);
+            sb.Append("Greeter.Greet() -> void");
+            sb.Append(Environment.NewLine);
+            sb.Append("Greeter.Greeter() -> void");
+            var expectedPublicApi = sb.ToString();
 
             // Copy solution to temp folder so we can write changes to disk.
             var solutionPath = CopyToTempFolder(s_generatorSolutionPath);
@@ -617,7 +621,7 @@ Greeter.Greeter() -> void";
 
                 // Verify that changes were persisted to disk.
                 var unshippedPublicApi = File.ReadAllText(Path.Combine(solutionPath, "console_app", "PublicAPI.Unshipped.txt"));
-                Assert.Equal(ExpectedPublicApi, unshippedPublicApi);
+                Assert.Equal(expectedPublicApi, unshippedPublicApi);
             }
             finally
             {

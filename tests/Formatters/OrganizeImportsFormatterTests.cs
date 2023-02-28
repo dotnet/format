@@ -41,7 +41,7 @@ class C
 
             var editorConfig = new Dictionary<string, string>()
             {
-                ["end_of_line"] = EndOfLineFormatter.GetEndOfLineOption(Environment.NewLine),
+                ["end_of_line"] = EndOfLineFormatter.GetEndOfLineOption("\n"),
                 ["dotnet_sort_system_directives_first"] = "false",
                 ["dotnet_separate_import_directive_groups"] = "false"
             };
@@ -72,7 +72,7 @@ class C
 
             var editorConfig = new Dictionary<string, string>()
             {
-                ["end_of_line"] = EndOfLineFormatter.GetEndOfLineOption(Environment.NewLine),
+                ["end_of_line"] = EndOfLineFormatter.GetEndOfLineOption("\n"),
                 ["dotnet_sort_system_directives_first"] = "true",
                 ["dotnet_separate_import_directive_groups"] = "false"
             };
@@ -104,7 +104,7 @@ class C
 
             var editorConfig = new Dictionary<string, string>()
             {
-                ["end_of_line"] = EndOfLineFormatter.GetEndOfLineOption(Environment.NewLine),
+                ["end_of_line"] = EndOfLineFormatter.GetEndOfLineOption("\n"),
                 ["dotnet_sort_system_directives_first"] = "false",
                 ["dotnet_separate_import_directive_groups"] = "true"
             };
@@ -136,7 +136,7 @@ class C
 
             var editorConfig = new Dictionary<string, string>()
             {
-                ["end_of_line"] = EndOfLineFormatter.GetEndOfLineOption(Environment.NewLine),
+                ["end_of_line"] = EndOfLineFormatter.GetEndOfLineOption("\n"),
                 ["dotnet_sort_system_directives_first"] = "true",
                 ["dotnet_separate_import_directive_groups"] = "true"
             };
@@ -158,7 +158,7 @@ class C
 
             var editorConfig = new Dictionary<string, string>()
             {
-                ["end_of_line"] = EndOfLineFormatter.GetEndOfLineOption(Environment.NewLine)
+                ["end_of_line"] = EndOfLineFormatter.GetEndOfLineOption("\n")
             };
 
             await AssertCodeUnchangedAsync(code, editorConfig);

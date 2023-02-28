@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the MIT license.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -86,21 +87,26 @@ class C
 
         int count = 5;
 
+
+        count = 6;
+
     }
 
 }
 ";
 
-            var expectedCode = @"
+            // Hack for Windows: StyleCop uses the Environment NewLine for its replacement,
+            // so we have take care of it
+            var expectedCode = @$"
 class C
-{
+{{
     void M()
-    {
+    {{
         object obj = new object();
-
-        int count = 5;
-    }
-}
+{Environment.NewLine}        int count = 5;
+{Environment.NewLine}        count = 6;
+    }}
+}}
 ";
 
             var editorConfig = new Dictionary<string, string>()
@@ -163,6 +169,9 @@ class C
 
                 // Prefer using. IDISP017
                 ["dotnet_diagnostic.IDISP017.severity"] = "error",
+
+                // We expect new line as end_of_line in this test
+                ["end_of_line"] = EndOfLineFormatter.GetEndOfLineOption("\n"),
             };
 
             await AssertCodeChangedAsync(testCode, expectedCode, editorConfig, fixCategory: FixCategory.Analyzers, analyzerReferences: analyzerReferences);
@@ -210,6 +219,9 @@ class C
 
                 // Prefer using. IDISP017
                 ["dotnet_diagnostic.IDISP017.severity"] = "error",
+
+                // We expect new line as end_of_line in this test
+                ["end_of_line"] = EndOfLineFormatter.GetEndOfLineOption("\n"),
             };
 
             await AssertCodeChangedAsync(testCode, expectedCode, editorConfig, fixCategory: FixCategory.Analyzers, analyzerReferences: analyzerReferences);
