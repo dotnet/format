@@ -51,6 +51,9 @@ namespace Microsoft.CodeAnalysis.Tools.Workspaces
             {
                 try
                 {
+                    // In the case of loading a specific project, we don't want to load referenced projects, which is very time consuming, when there is already
+                    // a build on disk we can pull metadata from.
+                    workspace.LoadMetadataForReferencedProjects = true;
                     await workspace.OpenProjectAsync(solutionOrProjectPath, msbuildLogger: binlog, cancellationToken: cancellationToken).ConfigureAwait(false);
                 }
                 catch (InvalidOperationException)
