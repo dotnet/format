@@ -25,12 +25,12 @@
     <PackageVersion Include="Microsoft.VisualBasic" Version="$(MicrosoftVisualBasicVersion)" />
     <PackageVersion Include="Microsoft.VisualStudio.Composition" Version="$(MicrosoftVisualStudioCompositionVersion)" />
     <PackageVersion Include="NETStandard.Library" Version="$(NETStandardLibraryVersion)" />
-    <PackageVersion Include="NuGet.Common" Version="$(NuGetVersion)" />
-    <PackageVersion Include="NuGet.Configuration" Version="$(NuGetVersion)" />
-    <PackageVersion Include="NuGet.Frameworks" Version="$(NuGetVersion)" />
-    <PackageVersion Include="NuGet.Packaging" Version="$(NuGetVersion)" />
-    <PackageVersion Include="NuGet.Protocol" Version="$(NuGetVersion)" />
-    <PackageVersion Include="NuGet.Versioning" Version="$(NuGetVersion)" />
+    <PackageVersion Include="NuGet.Common" Version="$(NuGetCommonVersion)" />
+    <PackageVersion Include="NuGet.Configuration" Version="$(NuGetCommonVersion)" />
+    <PackageVersion Include="NuGet.Frameworks" Version="$(NuGetCommonVersion)" />
+    <PackageVersion Include="NuGet.Packaging" Version="$(NuGetCommonVersion)" />
+    <PackageVersion Include="NuGet.Protocol" Version="$(NuGetCommonVersion)" />
+    <PackageVersion Include="NuGet.Versioning" Version="$(NuGetCommonVersion)" />
     <PackageVersion Include="System.CommandLine" Version="$(SystemCommandLineVersion)" />
     <PackageVersion Include="System.CommandLine.Rendering" Version="$(SystemCommandLineRenderingVersion)" />
   </ItemGroup>

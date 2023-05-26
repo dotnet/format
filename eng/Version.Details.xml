@@ -30,6 +30,10 @@
       <Sha>8374d5fca634a93458c84414b1604c12f765d1ab</Sha>
       <SourceBuild RepoName="command-line-api" ManagedOnly="true" />
     </Dependency>
+    <Dependency Name="NuGet.Common" Version="6.7.0-preview.1.20">
+      <Uri>https://github.com/nuget/nuget.client</Uri>
+      <Sha>f1757fe7a9a3e178562518f4535f71348a117010</Sha>
+    </Dependency>
     <Dependency Name="System.CommandLine" Version="2.0.0-beta4.22564.1">
       <Uri>https://github.com/dotnet/command-line-api</Uri>
       <Sha>8374d5fca634a93458c84414b1604c12f765d1ab</Sha>
