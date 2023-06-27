@@ -5,13 +5,13 @@
       <Uri>https://github.com/dotnet/roslyn</Uri>
       <Sha>41a5af9d2c459a06c0795bf21a1c046200f375bf</Sha>
     </Dependency>
-    <Dependency Name="System.CommandLine" Version="2.0.0-beta4.23319.1">
+    <Dependency Name="System.CommandLine" Version="2.0.0-beta4.23326.1">
       <Uri>https://github.com/dotnet/command-line-api</Uri>
-      <Sha>6daed85086c41a1cd72a97f298f9cfe2beafa3f4</Sha>
+      <Sha>f6ff2f1a94a58617e744f8fe0d469a2a420a6259</Sha>
     </Dependency>
-    <Dependency Name="System.CommandLine.Rendering" Version="0.4.0-alpha.23319.1">
+    <Dependency Name="System.CommandLine.Rendering" Version="0.4.0-alpha.23326.1">
       <Uri>https://github.com/dotnet/command-line-api</Uri>
-      <Sha>6daed85086c41a1cd72a97f298f9cfe2beafa3f4</Sha>
+      <Sha>f6ff2f1a94a58617e744f8fe0d469a2a420a6259</Sha>
     </Dependency>
   </ProductDependencies>
   <ToolsetDependencies>
