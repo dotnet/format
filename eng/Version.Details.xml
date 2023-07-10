@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Dependencies>
   <ProductDependencies>
-    <Dependency Name="Microsoft.CodeAnalysis" Version="4.7.0-3.23329.1">
+    <Dependency Name="Microsoft.CodeAnalysis" Version="4.7.0-3.23360.5">
       <Uri>https://github.com/dotnet/roslyn</Uri>
       <Sha>b2bd4936daed91d4efd10c71177f7766823e615c</Sha>
       <SourceBuild RepoName="roslyn" ManagedOnly="true" />
