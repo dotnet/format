@@ -37,7 +37,7 @@ namespace Microsoft.CodeAnalysis.Tools.Logging
             _minimalErrorLevel = minimalErrorLevel;
         }
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
             if (!IsEnabled(logLevel))
             {
@@ -64,7 +64,7 @@ namespace Microsoft.CodeAnalysis.Tools.Logging
             return (int)logLevel >= (int)_minimalLogLevel;
         }
 
-        public IDisposable BeginScope<TState>(TState state)
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull
         {
             return NullScope.Instance;
         }

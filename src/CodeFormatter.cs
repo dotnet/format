@@ -10,7 +10,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Tools.Analyzers;
 using Microsoft.CodeAnalysis.Tools.Formatters;
-using Microsoft.CodeAnalysis.Tools.Tests.Utilities;
 using Microsoft.CodeAnalysis.Tools.Utilities;
 using Microsoft.CodeAnalysis.Tools.Workspaces;
 using Microsoft.Extensions.Logging;
@@ -26,8 +25,7 @@ namespace Microsoft.CodeAnalysis.Tools
             new CharsetFormatter(),
             new OrganizeImportsFormatter(),
             AnalyzerFormatter.CodeStyleFormatter,
-            AnalyzerFormatter.ThirdPartyFormatter,
-            new UnnecessaryImportsFormatter());
+            AnalyzerFormatter.ThirdPartyFormatter);
 
         public static async Task<WorkspaceFormatResult> FormatWorkspaceAsync(
             FormatOptions formatOptions,
@@ -81,7 +79,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
             var formattedFiles = new List<FormattedFile>(fileCount);
             var formattedSolution = await RunCodeFormattersAsync(
-                solution, formatableFiles, formatOptions, logger, formattedFiles, cancellationToken).ConfigureAwait(false);
+                workspace, solution, formatableFiles, formatOptions, logger, formattedFiles, cancellationToken).ConfigureAwait(false);
 
             var formatterRanMS = workspaceStopwatch.ElapsedMilliseconds - loadWorkspaceMS - determineFilesMS;
             logger.LogTrace(Resources.Complete_in_0_ms, formatterRanMS);
@@ -90,6 +88,10 @@ namespace Microsoft.CodeAnalysis.Tools
             foreach (var documentId in documentIdsWithErrors)
             {
                 var documentWithError = solution.GetDocument(documentId);
+                if (documentWithError is null)
+                {
+                    documentWithError = await solution.GetSourceGeneratedDocumentAsync(documentId, cancellationToken).ConfigureAwait(false);
+                }
 
                 logger.LogInformation(Resources.Formatted_code_file_0, documentWithError!.FilePath);
             }
@@ -142,6 +144,7 @@ namespace Microsoft.CodeAnalysis.Tools
         }
 
         private static async Task<Solution> RunCodeFormattersAsync(
+            Workspace workspace,
             Solution solution,
             ImmutableArray<DocumentId> formattableDocuments,
             FormatOptions formatOptions,
@@ -159,7 +162,7 @@ namespace Microsoft.CodeAnalysis.Tools
                     continue;
                 }
 
-                formattedSolution = await s_codeFormatters[index].FormatAsync(formattedSolution, formattableDocuments, formatOptions, logger, formattedFiles, cancellationToken).ConfigureAwait(false);
+                formattedSolution = await s_codeFormatters[index].FormatAsync(workspace, formattedSolution, formattableDocuments, formatOptions, logger, formattedFiles, cancellationToken).ConfigureAwait(false);
             }
 
             return formattedSolution;
@@ -177,6 +180,7 @@ namespace Microsoft.CodeAnalysis.Tools
 
             var documentsCoveredByEditorConfig = ImmutableArray.CreateBuilder<DocumentId>(totalFileCount);
             var documentsNotCoveredByEditorConfig = ImmutableArray.CreateBuilder<DocumentId>(totalFileCount);
+            var sourceGeneratedDocuments = ImmutableArray.CreateBuilder<DocumentId>();
 
             var addedFilePaths = new HashSet<string>(totalFileCount);
 
@@ -227,10 +231,16 @@ namespace Microsoft.CodeAnalysis.Tools
                         throw new Exception($"Unable to get a syntax tree for '{document.Name}'");
                     }
 
-                    if (!formatOptions.IncludeGeneratedFiles &&
-                        await GeneratedCodeUtilities.IsGeneratedCodeAsync(syntaxTree, cancellationToken).ConfigureAwait(false))
+                    if (await GeneratedCodeUtilities.IsGeneratedCodeAsync(syntaxTree, cancellationToken).ConfigureAwait(false))
                     {
-                        continue;
+                        if (!formatOptions.IncludeGeneratedFiles)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"Including generated file '{document.FilePath}'.");
+                        }
                     }
 
                     // Track files covered by an editorconfig separately from those not covered.
@@ -248,6 +258,16 @@ namespace Microsoft.CodeAnalysis.Tools
                         documentsNotCoveredByEditorConfig.Add(document.Id);
                     }
                 }
+
+                if (formatOptions.IncludeGeneratedFiles)
+                {
+                    var generatedDocuments = await project.GetSourceGeneratedDocumentsAsync(cancellationToken).ConfigureAwait(false);
+                    foreach (var generatedDocument in generatedDocuments)
+                    {
+                        Debug.WriteLine($"Including source generated file '{generatedDocument.FilePath}'.");
+                        sourceGeneratedDocuments.Add(generatedDocument.Id);
+                    }
+                }
             }
 
             // Initially we would format all documents in a workspace, even if some files weren't covered by an
@@ -258,9 +278,12 @@ namespace Microsoft.CodeAnalysis.Tools
 
             // If no files are covered by an editorconfig, then return them all. Otherwise only return
             // files that are covered by an editorconfig.
-            return documentsCoveredByEditorConfig.Count == 0
-                ? (projectFileCount, documentsNotCoveredByEditorConfig.ToImmutable())
-                : (projectFileCount, documentsCoveredByEditorConfig.ToImmutable());
+            var formattableDocuments = documentsCoveredByEditorConfig.Count == 0
+                ? documentsNotCoveredByEditorConfig
+                : documentsCoveredByEditorConfig;
+
+            formattableDocuments.AddRange(sourceGeneratedDocuments);
+            return (projectFileCount + sourceGeneratedDocuments.Count, formattableDocuments.ToImmutable());
         }
     }
 }

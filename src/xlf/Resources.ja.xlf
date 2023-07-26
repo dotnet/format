@@ -17,6 +17,11 @@
         <target state="translated">ソリューション ファイル、プロジェクト ファイル、またはソリューション ファイルかプロジェクト ファイルを含むフォルダーへのパス。パスが指定されていない場合は、現在のディレクトリが使用されます。</target>
         <note />
       </trans-unit>
+      <trans-unit id="A_space_separated_list_of_diagnostic_ids_to_ignore_when_fixing_code_style_or_3rd_party_issues">
+        <source>A space separated list of diagnostic ids to ignore when fixing code style or 3rd party issues.</source>
+        <target state="new">A space separated list of diagnostic ids to ignore when fixing code style or 3rd party issues.</target>
+        <note />
+      </trans-unit>
       <trans-unit id="A_space_separated_list_of_diagnostic_ids_to_use_as_a_filter_when_fixing_code_style_or_3rd_party_issues">
         <source>A space separated list of diagnostic ids to use as a filter when fixing code style or 3rd party issues.</source>
         <target state="new">A space separated list of diagnostic ids to use as a filter when fixing code style or 3rd party issues.</target>
@@ -43,7 +48,7 @@
         <note />
       </trans-unit>
       <trans-unit id="Both_a_MSBuild_project_file_and_solution_file_found_in_0_Specify_which_to_use_with_the_workspace_argument">
-        <source>Both a MSBuild project file and solution file found in '{0}'. Specify which to use with the &lt;workspace&gt; agrument.</source>
+        <source>Both a MSBuild project file and solution file found in '{0}'. Specify which to use with the &lt;workspace&gt; argument.</source>
         <target state="translated">MSBuild のプロジェクト ファイルとソリューション ファイルの両方が '{0}' で見つかりました。使用するものを &lt;workspace&gt; 引数で指定してください。</target>
         <note />
       </trans-unit>

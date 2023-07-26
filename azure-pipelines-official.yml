@@ -16,17 +16,17 @@ trigger:
 stages:
 - stage: build
   displayName: Build and Test
+  pool:
+    name: VSEngSS-MicroBuild2022-1ES
+    demands:
+    - cmd
 
   jobs:
   - job: OfficialBuild
     displayName: Official Build
-    pool:
-      name: VSEngSS-MicroBuild2019-1ES
-      demands:
-      - cmd
 
     steps:
-    - task: ms-vseng.MicroBuildTasks.30666190-6959-11e5-9f96-f56098202fef.MicroBuildSigningPlugin@1
+    - task: ms-vseng.MicroBuildTasks.30666190-6959-11e5-9f96-f56098202fef.MicroBuildSigningPlugin@3
       displayName: Install Signing Plugin
       inputs:
         signType: $(SignType)
@@ -45,11 +45,13 @@ stages:
                 /p:DotnetPublishUsingPipelines=true
       displayName: Build
 
+    - template: eng\common\templates\steps\generate-sbom.yml
+
     - task: PublishTestResults@2
       displayName: Publish XUnit Test Results
       inputs:
         testRunner: XUnit
-        testResultsFiles: '$(Build.SourcesDirectory)\artifacts\TestResults\$(BuildConfiguration)\*.xml'
+        testResultsFiles: '$(Build.SourcesDirectory)\artifacts\TestResults\$(BuildConfiguration)\*.trx'
         mergeTestResults: true
         testRunTitle: 'Unit Tests'
       condition: always()
@@ -57,7 +59,7 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: Publish Logs
       inputs:
-        PathtoPublish: '$(Build.SourcesDirectory)\artifacts\log\$(_configuration)'
+        PathtoPublish: '$(Build.SourcesDirectory)\artifacts\log\$(BuildConfiguration)'
         ArtifactName: 'Logs'
         publishLocation: Container
       continueOnError: true
@@ -66,7 +68,7 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: Publish Logs
       inputs:
-        PathtoPublish: '$(Build.SourcesDirectory)\artifacts\TestResults\$(_configuration)'
+        PathtoPublish: '$(Build.SourcesDirectory)\artifacts\TestResults\$(BuildConfiguration)'
         ArtifactName: 'TestResults'
         publishLocation: Container
       condition: not(succeeded())
@@ -100,14 +102,49 @@ stages:
         publishLocation: Container
       condition: succeededOrFailed()
 
+  - job: codeql
+    displayName: CodeQL
+    pool:
+      name: VSEngSS-MicroBuild2022-1ES
+      demands:
+      - cmd
+    variables:
+      # CG is handled in the primary CI pipeline
+    - name: skipComponentGovernanceDetection
+      value: true
+      # Force CodeQL enabled so it may be run on any branch
+    - name: Codeql.Enabled
+      value: true
+      # Do not let CodeQL 3000 Extension gate scan frequency
+    - name: Codeql.Cadence
+      value: 0
+    - name: Codeql.TSAEnabled
+      value: true
+    steps:
+      - task: UseDotNet@2
+        inputs:
+          useGlobalJson: true
+      - task: CodeQL3000Init@0
+        displayName: CodeQL Initialize
+      - script: eng\common\cibuild.cmd
+          -configuration Release
+          -prepareMachine
+          /p:Test=false
+        displayName: Windows Build
+      - task: CodeQL3000Finalize@0
+        displayName: CodeQL Finalize
+
+  - template: /eng/common/templates/jobs/source-build.yml
+
   # Publish to Build Asset Registry
   - template: /eng/common/templates/job/publish-build-assets.yml
     parameters:
       publishUsingPipelines: true
       dependsOn:
         - OfficialBuild
-      queue:
-        name: Hosted VS2017
+        - Source_Build_Managed
+      pool:
+        vmImage: windows-2019
 
 - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
   - template: eng\common\templates\post-build\post-build.yml
