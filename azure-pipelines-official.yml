@@ -26,7 +26,7 @@ stages:
     displayName: Official Build
 
     steps:
-    - task: ms-vseng.MicroBuildTasks.30666190-6959-11e5-9f96-f56098202fef.MicroBuildSigningPlugin@1
+    - task: ms-vseng.MicroBuildTasks.30666190-6959-11e5-9f96-f56098202fef.MicroBuildSigningPlugin@3
       displayName: Install Signing Plugin
       inputs:
         signType: $(SignType)
@@ -44,6 +44,8 @@ stages:
                 /p:DotNetArtifactsCategory=$(_DotNetArtifactsCategory)
                 /p:DotnetPublishUsingPipelines=true
       displayName: Build
+
+    - template: eng\common\templates\steps\generate-sbom.yml
 
     - task: PublishTestResults@2
       displayName: Publish XUnit Test Results
@@ -100,12 +102,47 @@ stages:
         publishLocation: Container
       condition: succeededOrFailed()
 
+  - job: codeql
+    displayName: CodeQL
+    pool:
+      name: VSEngSS-MicroBuild2022-1ES
+      demands:
+      - cmd
+    variables:
+      # CG is handled in the primary CI pipeline
+    - name: skipComponentGovernanceDetection
+      value: true
+      # Force CodeQL enabled so it may be run on any branch
+    - name: Codeql.Enabled
+      value: true
+      # Do not let CodeQL 3000 Extension gate scan frequency
+    - name: Codeql.Cadence
+      value: 0
+    - name: Codeql.TSAEnabled
+      value: true
+    steps:
+      - task: UseDotNet@2
+        inputs:
+          useGlobalJson: true
+      - task: CodeQL3000Init@0
+        displayName: CodeQL Initialize
+      - script: eng\common\cibuild.cmd
+          -configuration Release
+          -prepareMachine
+          /p:Test=false
+        displayName: Windows Build
+      - task: CodeQL3000Finalize@0
+        displayName: CodeQL Finalize
+
+  - template: /eng/common/templates/jobs/source-build.yml
+
   # Publish to Build Asset Registry
   - template: /eng/common/templates/job/publish-build-assets.yml
     parameters:
       publishUsingPipelines: true
       dependsOn:
         - OfficialBuild
+        - Source_Build_Managed
       pool:
         vmImage: windows-2019
 

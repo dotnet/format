@@ -56,6 +56,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
         }
 
         public async Task<Solution> FormatAsync(
+            Workspace workspace,
             Solution solution,
             ImmutableArray<DocumentId> formattableDocuments,
             FormatOptions formatOptions,
@@ -63,7 +64,7 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
             List<FormattedFile> formattedFiles,
             CancellationToken cancellationToken)
         {
-            var projectAnalyzersAndFixers = _informationProvider.GetAnalyzersAndFixers(solution, formatOptions, logger);
+            var projectAnalyzersAndFixers = _informationProvider.GetAnalyzersAndFixers(workspace, solution, formatOptions, logger);
             if (projectAnalyzersAndFixers.IsEmpty)
             {
                 return solution;
@@ -268,8 +269,19 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 return diagnosticIds.ToImmutableDictionary(
                     id => id,
                     id => fixers
-                        .Where(fixer => fixer.FixableDiagnosticIds.Contains(id))
+                        .Where(fixer => ContainsFixableId(fixer, id))
                         .ToImmutableArray());
+            }
+
+            static bool ContainsFixableId(CodeFixProvider fixer, string id)
+            {
+                // The unnecessary imports diagnostic and fixer use a special diagnostic id.
+                if (id == "IDE0005" && fixer.FixableDiagnosticIds.Contains("RemoveUnnecessaryImportsFixable"))
+                {
+                    return true;
+                }
+
+                return fixer.FixableDiagnosticIds.Contains(id);
             }
         }
 
@@ -290,6 +302,13 @@ namespace Microsoft.CodeAnalysis.Tools.Analyzers
                 var project = solution.GetProject(projectId);
                 if (project is null)
                 {
+                    continue;
+                }
+
+                // Skip if the project does not contain any of the formattable paths.
+                if (!project.Documents.Any(d => d.FilePath is not null && formattablePaths.Contains(d.FilePath)))
+                {
+                    projectAnalyzers.Add(projectId, ImmutableArray<DiagnosticAnalyzer>.Empty);
                     continue;
                 }
 
