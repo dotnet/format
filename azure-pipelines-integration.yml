@@ -53,13 +53,13 @@ jobs:
         _repoName: "dotnet/aspnetcore"
         _targetSolution: "AspNetCore.sln"
         _branchName: "main"
-        _sha: "6f668d8666c730291f7b71c5380c89427e4130ee"
+        _sha: "94f1088552518b7b0f5695c12194b7081d98d191"
       efcore:
         _repo: "https://github.com/dotnet/efcore"
         _repoName: "dotnet/efcore"
         _targetSolution: "All.sln"
         _branchName: "main"
-        _sha: "ecfc1ced12714a972f538a071d23cdf34aafbb2e"
+        _sha: "0ee3ac8de9349f7f9571ed1e50dbb65f9fee3734"
       razor-tooling:
         _repo: "https://github.com/dotnet/razor"
         _repoName: "dotnet/razor"
