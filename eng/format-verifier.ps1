@@ -14,6 +14,8 @@ if ($stage -eq "prepare") {
 }
 
 $currentLocation = Get-Location
+$dotnetPath = Join-Path $currentLocation ".dotnet"
+$parentDotNetPath = Join-Path $dotnetPath "dotnet.exe"
 
 if (!(Test-Path $testPath)) {
     New-Item -ItemType Directory -Force -Path $testPath | Out-Null
@@ -49,8 +51,11 @@ try {
         .\eng\common\Build.ps1 -restore
     }
 
-    $dotnetPath = Join-Path $repoPath ".dotnet"
-    $parentDotNetPath = Join-Path $dotnetPath "dotnet.exe"
+    # project-system doesn't use Arcade so we may not have installed a local .dotnet sdk.
+    if (Test-Path '.\.dotnet') {
+        $dotnetPath = Join-Path $repoPath ".dotnet"
+        $parentDotNetPath = Join-Path $dotnetPath "dotnet.exe"
+    }
 
     $Env:DOTNET_ROOT = $dotnetPath
 
