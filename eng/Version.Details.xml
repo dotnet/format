@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Dependencies>
   <ProductDependencies>
-    <Dependency Name="Microsoft.CodeAnalysis" Version="4.8.0-3.23472.8">
+    <Dependency Name="Microsoft.CodeAnalysis" Version="4.8.0-3.23472.9">
       <Uri>https://github.com/dotnet/roslyn</Uri>
-      <Sha>bd04e91055ca89257cd06b070a0b26ad8d351235</Sha>
+      <Sha>e44edf5e83f4eff00b5b03e73607d410b1252135</Sha>
       <SourceBuild RepoName="roslyn" ManagedOnly="true" />
     </Dependency>
     <Dependency Name="Microsoft.SourceBuild.Intermediate.source-build-externals" Version="8.0.0-alpha.1.23221.1">
