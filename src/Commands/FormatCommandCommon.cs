@@ -99,6 +99,8 @@ namespace Microsoft.CodeAnalysis.Tools
             VerbosityOption.AcceptOnlyFromAmong(VerbosityLevels);
             BinarylogOption.AcceptLegalFilePathsOnly();
             ReportOption.AcceptLegalFilePathsOnly();
+            SlnOrProjectArgument.AcceptLegalFilePathsOnly();
+            SlnOrProjectArgument.PathIsNotOptionLike();
         }
 
         internal static async Task<int> FormatAsync(FormatOptions formatOptions, ILogger<Program> logger, CancellationToken cancellationToken)
@@ -149,6 +151,37 @@ namespace Microsoft.CodeAnalysis.Tools
         public static CliArgument<string> DefaultToCurrentDirectory(this CliArgument<string> arg)
         {
             arg.DefaultValueFactory = _ => EnsureTrailingSlash(Directory.GetCurrentDirectory());
+            return arg;
+        }
+
+        public static CliArgument<T> PathIsNotOptionLike<T>(this CliArgument<T> arg)
+        {
+            // Hyphens are valid path characters so options that exist in other subcommands or don't
+            // exist at all will be considered valid values for the ProjectOrSolution argument.
+            // This validator ensures that we show the user an "unrecognized command" message when
+            // they mistype or misuse options.
+
+            arg.Validators.Add(symbol =>
+            {
+                // Look at each token. In practice this should be a single token since the
+                // ProjectOrSolution argument accepts at most one value.
+                foreach (var token in symbol.Tokens)
+                {
+                    // If the path looks like an option and doesn't look like a relative path, ensure
+                    // a folder exists with the same name.
+                    if (token.Value.StartsWith('-') &&
+                        !token.Value.Contains('\\') &&
+                        !token.Value.Contains('/'))
+                    {
+                        var path = Path.GetFullPath(token.Value, Environment.CurrentDirectory);
+                        if (!Directory.Exists(path))
+                        {
+                            symbol.AddError(string.Format(Resources.Unrecognized_command_or_argument_0, token.Value));
+                        }
+                    }
+                }
+            });
+
             return arg;
         }
 
