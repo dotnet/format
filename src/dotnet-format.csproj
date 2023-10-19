@@ -26,6 +26,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Transitive dependency of Microsoft.CodeAnalysis.Workspaces.MSBuild. Need to explicitly provide a reference here to ensure
+         we can get the live version from source build rather than the 7.0.0 version from the transitive reference which leads to
+         a poison leak from source build reference packages. -->
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+
     <PackageReference Include="Microsoft.Build" ExcludeAssets="Runtime" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="Runtime" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Build.Locator" />
