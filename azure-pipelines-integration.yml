@@ -76,11 +76,11 @@ jobs:
         _useParentSdk: 0
   timeoutInMinutes: 60
   steps:
-    - script: eng\integration-test.cmd -repo '$(_repo)' -branchName '$(_branchName)' -sha '$(_sha)' -targetSolution '$(_targetSolution)' -useParentSdk '$(_useParentSdk)' -testPath '$(Agent.TempDirectory)\temp' -stage 'prepare'
+    - script: eng\integration-test.cmd -repo '$(_repo)' -branchName '$(_branchName)' -sha '$(_sha)' -targetSolution '$(_targetSolution)' -useParentSdk $(_useParentSdk) -testPath '$(Agent.TempDirectory)\temp' -stage 'prepare'
       displayName: Prepare $(_repoName) for formatting
 
-    - script: eng\integration-test.cmd -repo '$(_repo)' -branchName '$(_branchName)' -sha '$(_sha)' -targetSolution '$(_targetSolution)' -useParentSdk '$(_useParentSdk)' -testPath '$(Agent.TempDirectory)\temp' -stage 'format-workspace'
+    - script: eng\integration-test.cmd -repo '$(_repo)' -branchName '$(_branchName)' -sha '$(_sha)' -targetSolution '$(_targetSolution)' -useParentSdk $(_useParentSdk) -testPath '$(Agent.TempDirectory)\temp' -stage 'format-workspace'
       displayName: Run dotnet-format on $(_repoName) $(_targetSolution)
 
-    - script: eng\integration-test.cmd -repo '$(_repo)' -branchName '$(_branchName)' -sha '$(_sha)' -targetSolution '$(_targetSolution)' -useParentSdk '$(_useParentSdk)' -testPath '$(Agent.TempDirectory)\temp' -stage 'format-folder'
+    - script: eng\integration-test.cmd -repo '$(_repo)' -branchName '$(_branchName)' -sha '$(_sha)' -targetSolution '$(_targetSolution)' -useParentSdk $(_useParentSdk) -testPath '$(Agent.TempDirectory)\temp' -stage 'format-folder'
       displayName: Run dotnet-format on $(_repoName) repo folder
