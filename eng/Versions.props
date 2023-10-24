@@ -16,7 +16,6 @@
     <FlagNetStandard1XDependencies>true</FlagNetStandard1XDependencies>
     <StabilizePackageVersion Condition="'$(StabilizePackageVersion)' == ''">true</StabilizePackageVersion>
     <DotNetFinalVersionKind Condition="'$(StabilizePackageVersion)' == 'true'">release</DotNetFinalVersionKind>
-    <NoWarn Condition="'$(StabilizePackageVersion)' == 'true'">$(NoWarn);NU1507</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <!-- command-line-api -->
