@@ -2,12 +2,4 @@
 
   <Import Project="Sdk.targets" Sdk="Microsoft.DotNet.Arcade.Sdk" />
 
-  <!-- TODO: Remove when https://github.com/dotnet/arcade/pull/14139 is merged. -->
-  <ItemGroup>
-    <KnownFrameworkReference
-      Include="@(KnownFrameworkReference->WithMetadataValue('Identity', 'Microsoft.NETCore.App')->WithMetadataValue('TargetFramework', 'net8.0'))"
-      TargetFramework="$(NetCurrent)"
-      Condition="@(KnownFrameworkReference->WithMetadataValue('Identity', 'Microsoft.NETCore.App')->WithMetadataValue('TargetFramework', '$(NetCurrent)')) == ''" />
-  </ItemGroup>
-
 </Project>
