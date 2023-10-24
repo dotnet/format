@@ -10,4 +10,16 @@
     <RestoreUseStaticGraphEvaluation>true</RestoreUseStaticGraphEvaluation>
   </PropertyGroup>
 
+  <!-- TODO: Remove when https://github.com/dotnet/arcade/pull/14139 is merged. -->
+  <PropertyGroup>
+    <NetCurrent>net9.0</NetCurrent>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <KnownFrameworkReference
+      Include="@(KnownFrameworkReference->WithMetadataValue('Identity', 'Microsoft.NETCore.App')->WithMetadataValue('TargetFramework', 'net8.0'))"
+      TargetFramework="$(NetCurrent)"
+      Condition="@(KnownFrameworkReference->WithMetadataValue('Identity', 'Microsoft.NETCore.App')->WithMetadataValue('TargetFramework', '$(NetCurrent)')) == ''" />
+  </ItemGroup>
+
 </Project>
