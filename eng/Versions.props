@@ -14,6 +14,9 @@
     <UseVSTestRunner>true</UseVSTestRunner>
     <!-- Prohibit the usage of .NET Standard 1.x dependencies. -->
     <FlagNetStandard1XDependencies>true</FlagNetStandard1XDependencies>
+    <StabilizePackageVersion Condition="'$(StabilizePackageVersion)' == ''">true</StabilizePackageVersion>
+    <DotNetFinalVersionKind Condition="'$(StabilizePackageVersion)' == 'true'">release</DotNetFinalVersionKind>
+    <NoWarn Condition="'$(StabilizePackageVersion)' == 'true'">$(NoWarn);NU1507</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <!-- command-line-api -->
