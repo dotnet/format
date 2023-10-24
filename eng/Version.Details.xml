@@ -32,7 +32,6 @@
     <Dependency Name="Microsoft.Extensions.Logging" Version="9.0.0-alpha.1.23523.1">
       <Uri>https://github.com/dotnet/runtime</Uri>
       <Sha>2959e1acd09aec0f1e59db9cbe41f3701b0bd4dd</Sha>
-      <SourceBuild RepoName="runtime" />
     </Dependency>
     <Dependency Name="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.0-alpha.1.23523.1">
       <Uri>https://github.com/dotnet/runtime</Uri>
