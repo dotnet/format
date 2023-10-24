@@ -15,11 +15,4 @@
     <NetCurrent>net9.0</NetCurrent>
   </PropertyGroup>
 
-  <ItemGroup>
-    <KnownFrameworkReference
-      Include="@(KnownFrameworkReference->WithMetadataValue('Identity', 'Microsoft.NETCore.App')->WithMetadataValue('TargetFramework', 'net8.0'))"
-      TargetFramework="$(NetCurrent)"
-      Condition="@(KnownFrameworkReference->WithMetadataValue('Identity', 'Microsoft.NETCore.App')->WithMetadataValue('TargetFramework', '$(NetCurrent)')) == ''" />
-  </ItemGroup>
-
 </Project>
