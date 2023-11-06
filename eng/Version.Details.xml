@@ -25,17 +25,17 @@
       <Uri>https://github.com/dotnet/symreader</Uri>
       <Sha>27e584661980ee6d82c419a2a471ae505b7d122e</Sha>
     </Dependency>
-    <Dependency Name="Microsoft.Extensions.Logging" Version="9.0.0-alpha.1.23529.4">
+    <Dependency Name="Microsoft.Extensions.Logging" Version="9.0.0-alpha.1.23556.1">
       <Uri>https://github.com/dotnet/runtime</Uri>
-      <Sha>e5c631d28b985b773b28d0cb2346f49a92bd41dd</Sha>
+      <Sha>e733539a38458c5c3a64688b55a702444e470700</Sha>
     </Dependency>
-    <Dependency Name="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.0-alpha.1.23529.4">
+    <Dependency Name="Microsoft.Extensions.FileSystemGlobbing" Version="9.0.0-alpha.1.23556.1">
       <Uri>https://github.com/dotnet/runtime</Uri>
-      <Sha>e5c631d28b985b773b28d0cb2346f49a92bd41dd</Sha>
+      <Sha>e733539a38458c5c3a64688b55a702444e470700</Sha>
     </Dependency>
-    <Dependency Name="Microsoft.SourceBuild.Intermediate.runtime.linux-x64" Version="9.0.0-alpha.1.23529.4">
+    <Dependency Name="Microsoft.SourceBuild.Intermediate.runtime.linux-x64" Version="9.0.0-alpha.1.23556.1">
       <Uri>https://github.com/dotnet/runtime</Uri>
-      <Sha>e5c631d28b985b773b28d0cb2346f49a92bd41dd</Sha>
+      <Sha>e733539a38458c5c3a64688b55a702444e470700</Sha>
       <SourceBuild RepoName="runtime" />
     </Dependency>
     <Dependency Name="Microsoft.SourceBuild.Intermediate.command-line-api" Version="0.1.430701">
