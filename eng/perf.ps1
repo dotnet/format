@@ -45,17 +45,17 @@ try {
     
     if ($micro) {
         # Default case, run very small tests
-        Invoke-Expression 'dotnet run -c Release -f net9.0 --runtimes net9.0 --project dotnet-format.Performance.csproj -- --memory --join --filter Microsoft.CodeAnalysis.Tools.Perf.Micro*'
+        Invoke-Expression 'dotnet run -c Release -f net9.0 --runtimes net9.0 --project dotnet-format.PerformanceTests.csproj -- --memory --join --filter Microsoft.CodeAnalysis.Tools.Perf.Micro*'
         exit 0
     }
     
     if ($real) {
-        Invoke-Expression 'dotnet run -c Release -f net9.0 --runtimes net9.0 --project dotnet-format.Performance.csproj -- --memory --join --filter Microsoft.CodeAnalysis.Tools.Perf.Real*'
+        Invoke-Expression 'dotnet run -c Release -f net9.0 --runtimes net9.0 --project dotnet-format.TestsPerformance.csproj -- --memory --join --filter Microsoft.CodeAnalysis.Tools.Perf.Real*'
         exit 0
     }
     
     if ($all) {
-        Invoke-Expression 'dotnet run -c Release -f net9.0 --runtimes net9.0 --project dotnet-format.Performance.csproj -- --memory --join --filter *'
+        Invoke-Expression 'dotnet run -c Release -f net9.0 --runtimes net9.0 --project dotnet-format.PerformanceTests.csproj -- --memory --join --filter *'
         exit 0
     }
 }
