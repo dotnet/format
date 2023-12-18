@@ -11,7 +11,7 @@
     <RollForward>LatestMajor</RollForward>
     <!-- Tell arcade to not reference the Microsoft.NET.Test.Sdk or bring any xunit targets in. -->
     <ExcludeMicrosoftNetTestSdk>true</ExcludeMicrosoftNetTestSdk>
-    <TestRunnerName />
+    <TestRunnerName>BenchmarkDotNet</TestRunnerName>
   </PropertyGroup>
 
   <ItemGroup>
