@@ -50,7 +50,7 @@ try {
     }
     
     if ($real) {
-        Invoke-Expression 'dotnet run -c Release -f net9.0 --runtimes net9.0 --project dotnet-format.TestsPerformance.csproj -- --memory --join --filter Microsoft.CodeAnalysis.Tools.Perf.Real*'
+        Invoke-Expression 'dotnet run -c Release -f net9.0 --runtimes net9.0 --project dotnet-format.PerformanceTests.csproj -- --memory --join --filter Microsoft.CodeAnalysis.Tools.Perf.Real*'
         exit 0
     }
     
