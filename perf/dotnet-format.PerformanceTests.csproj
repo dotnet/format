@@ -9,6 +9,9 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <!-- Always run on the latest runtime installed. -->
     <RollForward>LatestMajor</RollForward>
+    <!-- Tell arcade to not reference the Microsoft.NET.Test.Sdk or bring any xunit targets in. -->
+    <ExcludeMicrosoftNetTestSdk>true</ExcludeMicrosoftNetTestSdk>
+    <TestRunnerName />
   </PropertyGroup>
 
   <ItemGroup>
