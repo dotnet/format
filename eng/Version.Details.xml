@@ -9,11 +9,6 @@
       <Sha>6f9d6569684cc17015aa6fc5f9d9a5f7580ade97</Sha>
     </Dependency>
     <!-- Necessary for source-build. This allows the live version of the package to be used by source-build. -->
-    <Dependency Name="Microsoft.Build.Framework" Version="17.3.2">
-      <Uri>https://github.com/dotnet/msbuild</Uri>
-      <Sha>561848881bab01749e6d8b03be2869a18ca944f7</Sha>
-    </Dependency>
-    <!-- Necessary for source-build. This allows the live version of the package to be used by source-build. -->
     <Dependency Name="Microsoft.Build.Tasks.Core" Version="17.3.2">
       <Uri>https://github.com/dotnet/msbuild</Uri>
       <Sha>561848881bab01749e6d8b03be2869a18ca944f7</Sha>
