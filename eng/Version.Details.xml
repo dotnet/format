@@ -45,18 +45,18 @@
       <Sha>6f9d6569684cc17015aa6fc5f9d9a5f7580ade97</Sha>
       <SourceBuild RepoName="runtime" />
     </Dependency>
-    <Dependency Name="Microsoft.SourceBuild.Intermediate.command-line-api" Version="0.1.506801">
+    <Dependency Name="Microsoft.SourceBuild.Intermediate.command-line-api" Version="0.1.510101">
       <Uri>https://github.com/dotnet/command-line-api</Uri>
-      <Sha>ecd2ce5eafbba3008a7d4f5d04b025d30928c812</Sha>
+      <Sha>3674f88896ded1be30c77b14196773372a2ddfac</Sha>
       <SourceBuild RepoName="command-line-api" ManagedOnly="true" />
     </Dependency>
-    <Dependency Name="System.CommandLine" Version="2.0.0-beta4.24068.1">
+    <Dependency Name="System.CommandLine" Version="2.0.0-beta4.24101.1">
       <Uri>https://github.com/dotnet/command-line-api</Uri>
-      <Sha>ecd2ce5eafbba3008a7d4f5d04b025d30928c812</Sha>
+      <Sha>3674f88896ded1be30c77b14196773372a2ddfac</Sha>
     </Dependency>
-    <Dependency Name="System.CommandLine.Rendering" Version="0.4.0-alpha.24068.1">
+    <Dependency Name="System.CommandLine.Rendering" Version="0.4.0-alpha.24101.1">
       <Uri>https://github.com/dotnet/command-line-api</Uri>
-      <Sha>ecd2ce5eafbba3008a7d4f5d04b025d30928c812</Sha>
+      <Sha>3674f88896ded1be30c77b14196773372a2ddfac</Sha>
     </Dependency>
   </ProductDependencies>
   <ToolsetDependencies>
