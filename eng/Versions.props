@@ -19,11 +19,12 @@
   </PropertyGroup>
   <PropertyGroup>
     <!-- command-line-api -->
-    <SystemCommandLineVersion>2.0.0-beta4.24059.2</SystemCommandLineVersion>
-    <SystemCommandLineRenderingVersion>0.4.0-alpha.24059.2</SystemCommandLineRenderingVersion>
+    <SystemCommandLineVersion>2.0.0-beta4.24102.1</SystemCommandLineVersion>
+    <SystemCommandLineRenderingVersion>0.4.0-alpha.24102.1</SystemCommandLineRenderingVersion>
     <!-- corefx -->
     <MicrosoftVisualBasicVersion>10.3.0</MicrosoftVisualBasicVersion>
     <!-- msbuild -->
+    <MicrosoftBuildTasksCoreVersion>17.3.2</MicrosoftBuildTasksCoreVersion>
     <MicrosoftBuildVersion>17.3.2</MicrosoftBuildVersion>
     <!-- nuget -->
     <!-- In order tests against the same version of NuGet as the SDK. We have to set this to match. -->
