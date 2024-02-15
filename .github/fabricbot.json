@@ -40,8 +40,7 @@
         "eventType": "pull_request",
         "eventNames": [
           "pull_request",
-          "issues",
-          "project_card"
+          "issues"
         ],
         "taskName": "Auto-approve auto-merge PRs",
         "actions": [
@@ -103,8 +102,7 @@
         "eventType": "pull_request",
         "eventNames": [
           "pull_request",
-          "issues",
-          "project_card"
+          "issues"
         ],
         "taskName": "Auto-approve maestro PRs",
         "actions": [
@@ -144,8 +142,7 @@
         "eventType": "pull_request",
         "eventNames": [
           "pull_request",
-          "issues",
-          "project_card"
+          "issues"
         ],
         "taskName": "Milestone tracking",
         "actions": [
@@ -191,8 +188,7 @@
         "eventType": "pull_request",
         "eventNames": [
           "pull_request",
-          "issues",
-          "project_card"
+          "issues"
         ],
         "taskName": "Auto-approve OneLoc PRs",
         "actions": [
@@ -500,8 +496,7 @@
         "eventType": "pull_request",
         "eventNames": [
           "pull_request",
-          "issues",
-          "project_card"
+          "issues"
         ],
         "taskName": "Label Community Pull Requests",
         "actions": [
