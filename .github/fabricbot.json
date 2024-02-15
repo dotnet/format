@@ -12,6 +12,10 @@
           "operator": "and",
           "operands": [
             {
+              "name": "isPr",
+              "parameters": {}
+            },
+            {
               "name": "labelAdded",
               "parameters": {
                 "user": "dotnet-maestro[bot]",
@@ -63,6 +67,10 @@
         "conditions": {
           "operator": "and",
           "operands": [
+            {
+              "name": "isPr",
+              "parameters": {}
+            },
             {
               "name": "isAction",
               "parameters": {
@@ -126,6 +134,10 @@
           "operator": "and",
           "operands": [
             {
+              "name": "isPr",
+              "parameters": {}
+            },
+            {
               "name": "prTargetsBranch",
               "parameters": {
                 "branchName": "main"
@@ -165,6 +177,10 @@
         "conditions": {
           "operator": "and",
           "operands": [
+            {
+              "name": "isPr",
+              "parameters": {}
+            },
             {
               "name": "isActivitySender",
               "parameters": {
@@ -356,6 +372,10 @@
           "operator": "and",
           "operands": [
             {
+              "name": "isIssue",
+              "parameters": {}
+            },
+            {
               "name": "isOpen",
               "parameters": {}
             },
@@ -392,6 +412,10 @@
         "conditions": {
           "operator": "and",
           "operands": [
+            {
+              "name": "isPr",
+              "parameters": {}
+            },
             {
               "name": "isAction",
               "parameters": {
