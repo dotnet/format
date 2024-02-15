@@ -3,32 +3,6 @@
   "tasks": [
     {
       "taskType": "trigger",
-      "capabilityId": "AutoMerge",
-      "subCapability": "AutoMerge",
-      "version": "1.0",
-      "id": "JrwlBTuoi",
-      "config": {
-        "mergeType": "merge",
-        "label": "auto-merge",
-        "taskName": "Auto merge PRs",
-        "minMinutesOpen": "10",
-        "deleteBranches": true,
-        "requireAllStatuses": false,
-        "requireAllStatuses_exemptList": [
-          "codecov",
-          "dependabot",
-          "DotNet Maestro - Int",
-          "DotNet Maestro",
-          "msftbot"
-        ],
-        "removeLabelOnPush": true,
-        "minimumNumberOfCheckRuns": 0,
-        "silentMode": true
-      },
-      "disabled": false
-    },
-    {
-      "taskType": "trigger",
       "capabilityId": "IssueResponder",
       "subCapability": "PullRequestResponder",
       "version": "1.0",
