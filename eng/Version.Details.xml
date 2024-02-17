@@ -34,14 +34,14 @@
       <Uri>https://github.com/dotnet/msbuild</Uri>
       <Sha>d6990bcfaf520c0d215a194fad0617f7efad68b4</Sha>
     </Dependency>
-    <Dependency Name="Microsoft.CodeAnalysis" Version="4.10.0-2.24115.8">
+    <Dependency Name="Microsoft.CodeAnalysis" Version="4.10.0-2.24116.4">
       <Uri>https://github.com/dotnet/roslyn</Uri>
-      <Sha>d3a41ae7c758b1195f64dc5f57a6eafc8d959469</Sha>
+      <Sha>f656544b1a42c3d212362dab79829e0b3abe30f4</Sha>
     </Dependency>
     <!-- Intermediate is necessary for source build. -->
-    <Dependency Name="Microsoft.SourceBuild.Intermediate.roslyn" Version="4.10.0-2.24115.8">
+    <Dependency Name="Microsoft.SourceBuild.Intermediate.roslyn" Version="4.10.0-2.24116.4">
       <Uri>https://github.com/dotnet/roslyn</Uri>
-      <Sha>d3a41ae7c758b1195f64dc5f57a6eafc8d959469</Sha>
+      <Sha>f656544b1a42c3d212362dab79829e0b3abe30f4</Sha>
       <SourceBuild RepoName="roslyn" ManagedOnly="true" />
     </Dependency>
     <!-- Intermediate is necessary for source build. -->
