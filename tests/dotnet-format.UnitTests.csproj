@@ -14,15 +14,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzer.Testing" />
-
-    <!-- The package "Microsoft.CodeAnalysis.Analyzer.Testing" brings in v5.3 of these NuGet dependencies. In order to
-         test against the same verion of NuGet as our configured SDK, we must set the version to be the same. -->
-    <PackageReference Include="NuGet.Common" />
-    <PackageReference Include="NuGet.Configuration" />
-    <PackageReference Include="NuGet.Frameworks" />
-    <PackageReference Include="NuGet.Packaging" />
-    <PackageReference Include="NuGet.Protocol" />
-    <PackageReference Include="NuGet.Versioning" />
   </ItemGroup>
 
   <ItemGroup>

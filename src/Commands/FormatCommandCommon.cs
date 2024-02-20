@@ -115,14 +115,6 @@ namespace Microsoft.CodeAnalysis.Tools
                 }
 
                 logger.LogTrace(Resources.The_dotnet_CLI_version_is_0, dotnetVersion);
-
-                if (!TryLoadMSBuild(out var msBuildPath))
-                {
-                    logger.LogError(Resources.Unable_to_locate_MSBuild_Ensure_the_NET_SDK_was_installed_with_the_official_installer);
-                    return UnableToLocateMSBuildExitCode;
-                }
-
-                logger.LogTrace(Resources.Using_msbuildexe_located_in_0, msBuildPath);
             }
 
             var formatResult = await CodeFormatter.FormatWorkspaceAsync(
@@ -373,34 +365,6 @@ namespace Microsoft.CodeAnalysis.Tools
             catch
             {
                 dotnetVersion = null;
-                return false;
-            }
-        }
-
-        internal static bool TryLoadMSBuild([NotNullWhen(returnValue: true)] out string? msBuildPath)
-        {
-            try
-            {
-                // Get the global.json pinned SDK or latest instance.
-                var msBuildInstance = Build.Locator.MSBuildLocator.QueryVisualStudioInstances()
-                    .Where(instance => instance.Version.Major >= 6)
-                    .FirstOrDefault();
-                if (msBuildInstance is null)
-                {
-                    msBuildPath = null;
-                    return false;
-                }
-
-                msBuildPath = Path.EndsInDirectorySeparator(msBuildInstance.MSBuildPath)
-                    ? msBuildInstance.MSBuildPath
-                    : msBuildInstance.MSBuildPath + Path.DirectorySeparatorChar;
-
-                Build.Locator.MSBuildLocator.RegisterMSBuildPath(msBuildPath);
-                return true;
-            }
-            catch
-            {
-                msBuildPath = null;
                 return false;
             }
         }

@@ -24,7 +24,6 @@ namespace Microsoft.CodeAnalysis.Tools.Perf.Real
         public void RealWorldSolutionIterationSetup()
         {
             SolutionPathSetter.SetCurrentDirectory();
-            MSBuildRegister.RegisterInstance(Environment.CurrentDirectory);
         }
 
         [Benchmark(Description = "Formatting Solution")]

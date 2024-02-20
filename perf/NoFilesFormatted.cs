@@ -23,7 +23,6 @@ namespace Microsoft.CodeAnalysis.Tools.Perf
         public void NoFilesFormattedSetup()
         {
             SolutionPathSetter.SetCurrentDirectory();
-            MSBuildRegister.RegisterInstance(Environment.CurrentDirectory);
         }
 
         [Benchmark(Description = "No Files are Formatted (folder)")]
