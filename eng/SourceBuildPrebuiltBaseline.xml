@@ -17,6 +17,11 @@
     <UsagePattern IdentityGlob="Microsoft.Build.Utilities.Core/17.7.2" />
     <UsagePattern IdentityGlob="Microsoft.NET.StringTools/17.7.2" />
     <UsagePattern IdentityGlob="Microsoft.VisualStudio.Setup.Configuration.Interop/3.2.2146" />
+    <UsagePattern IdentityGlob="System.Configuration.ConfigurationManager/8.0*" />
+    <UsagePattern IdentityGlob="System.Diagnostics.EventLog/8.0*" />
+    <UsagePattern IdentityGlob="System.Security.Cryptography.ProtectedData/8.0*" />
+    <UsagePattern IdentityGlob="System.Security.Permissions/8.0*" />
+    <UsagePattern IdentityGlob="System.Windows.Extensions/8.0*" />
   </IgnorePatterns>
   <Usages>
     <Usage Id="System.Composition" Version="7.0.0" />
