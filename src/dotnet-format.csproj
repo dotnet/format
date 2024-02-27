@@ -35,9 +35,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
 
-    <!-- Included with Microsoft.CodeAnalysis.dll for Razor support -->
-    <PackageReference Include="Microsoft.CodeAnalysis.ExternalAccess.RazorCompiler" ExcludeAssets="compile" />
-
     <!-- Loaded dynamically -->
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
     <PackageReference Include="Microsoft.CodeAnalysis.Features" />
@@ -52,7 +49,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="dotnet-format.UnitTests" />
-    <InternalsVisibleTo Include="dotnet-format.Performance" />
+    <InternalsVisibleTo Include="dotnet-format.PerformanceTests" />
   </ItemGroup>
 
   <ItemGroup>
