@@ -3,32 +3,6 @@
   "tasks": [
     {
       "taskType": "trigger",
-      "capabilityId": "AutoMerge",
-      "subCapability": "AutoMerge",
-      "version": "1.0",
-      "id": "JrwlBTuoi",
-      "config": {
-        "mergeType": "merge",
-        "label": "auto-merge",
-        "taskName": "Auto merge PRs",
-        "minMinutesOpen": "10",
-        "deleteBranches": true,
-        "requireAllStatuses": false,
-        "requireAllStatuses_exemptList": [
-          "codecov",
-          "dependabot",
-          "DotNet Maestro - Int",
-          "DotNet Maestro",
-          "msftbot"
-        ],
-        "removeLabelOnPush": true,
-        "minimumNumberOfCheckRuns": 0,
-        "silentMode": true
-      },
-      "disabled": false
-    },
-    {
-      "taskType": "trigger",
       "capabilityId": "IssueResponder",
       "subCapability": "PullRequestResponder",
       "version": "1.0",
@@ -37,6 +11,10 @@
         "conditions": {
           "operator": "and",
           "operands": [
+            {
+              "name": "isPr",
+              "parameters": {}
+            },
             {
               "name": "labelAdded",
               "parameters": {
@@ -66,8 +44,7 @@
         "eventType": "pull_request",
         "eventNames": [
           "pull_request",
-          "issues",
-          "project_card"
+          "issues"
         ],
         "taskName": "Auto-approve auto-merge PRs",
         "actions": [
@@ -90,6 +67,10 @@
         "conditions": {
           "operator": "and",
           "operands": [
+            {
+              "name": "isPr",
+              "parameters": {}
+            },
             {
               "name": "isAction",
               "parameters": {
@@ -129,8 +110,7 @@
         "eventType": "pull_request",
         "eventNames": [
           "pull_request",
-          "issues",
-          "project_card"
+          "issues"
         ],
         "taskName": "Auto-approve maestro PRs",
         "actions": [
@@ -154,6 +134,10 @@
           "operator": "and",
           "operands": [
             {
+              "name": "isPr",
+              "parameters": {}
+            },
+            {
               "name": "prTargetsBranch",
               "parameters": {
                 "branchName": "main"
@@ -170,8 +154,7 @@
         "eventType": "pull_request",
         "eventNames": [
           "pull_request",
-          "issues",
-          "project_card"
+          "issues"
         ],
         "taskName": "Milestone tracking",
         "actions": [
@@ -195,6 +178,10 @@
           "operator": "and",
           "operands": [
             {
+              "name": "isPr",
+              "parameters": {}
+            },
+            {
               "name": "isActivitySender",
               "parameters": {
                 "user": "dotnet-bot"
@@ -217,8 +204,7 @@
         "eventType": "pull_request",
         "eventNames": [
           "pull_request",
-          "issues",
-          "project_card"
+          "issues"
         ],
         "taskName": "Auto-approve OneLoc PRs",
         "actions": [
@@ -386,6 +372,10 @@
           "operator": "and",
           "operands": [
             {
+              "name": "isIssue",
+              "parameters": {}
+            },
+            {
               "name": "isOpen",
               "parameters": {}
             },
@@ -422,6 +412,10 @@
         "conditions": {
           "operator": "and",
           "operands": [
+            {
+              "name": "isPr",
+              "parameters": {}
+            },
             {
               "name": "isAction",
               "parameters": {
@@ -526,8 +520,7 @@
         "eventType": "pull_request",
         "eventNames": [
           "pull_request",
-          "issues",
-          "project_card"
+          "issues"
         ],
         "taskName": "Label Community Pull Requests",
         "actions": [
