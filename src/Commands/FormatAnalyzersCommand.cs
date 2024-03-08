@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.IO;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -35,7 +36,16 @@ namespace Microsoft.CodeAnalysis.Tools.Commands
                 var formatOptions = parseResult.ParseVerbosityOption(FormatOptions.Instance);
                 var logger = new SystemConsole().SetupLogging(minimalLogLevel: formatOptions.LogLevel, minimalErrorLevel: LogLevel.Warning);
                 formatOptions = parseResult.ParseCommonOptions(formatOptions, logger);
-                formatOptions = parseResult.ParseWorkspaceOptions(formatOptions);
+
+                try
+                {
+                    formatOptions = parseResult.ParseWorkspaceOptions(formatOptions);
+                }
+                catch (FileNotFoundException fex)
+                {
+                    logger.LogError(fex.Message);
+                    return UnhandledExceptionExitCode;
+                }
 
                 if (parseResult.GetResult(SeverityOption) is not null &&
                     parseResult.GetValue(SeverityOption) is string { Length: > 0 } analyzerSeverity)
