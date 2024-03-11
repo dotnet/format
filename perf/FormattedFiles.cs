@@ -23,7 +23,6 @@ namespace Microsoft.CodeAnalysis.Tools.Perf.Micro
         public void NoFilesFormattedSetup()
         {
             SolutionPathSetter.SetCurrentDirectory();
-            MSBuildRegister.RegisterInstance(Environment.CurrentDirectory);
         }
 
         [Benchmark(Description = "Whitespace Formatting (folder)")]

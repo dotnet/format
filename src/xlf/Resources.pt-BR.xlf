@@ -372,11 +372,6 @@
         <target state="new">Unable to fix {0}. No associated code fix found.</target>
         <note />
       </trans-unit>
-      <trans-unit id="Unable_to_locate_MSBuild_Ensure_the_NET_SDK_was_installed_with_the_official_installer">
-        <source>Unable to locate MSBuild. Ensure the .NET SDK was installed with the official installer.</source>
-        <target state="translated">Não é possível localizar o MSBuild. Verifique se o SDK do .NET foi instalado com o instalador oficial.</target>
-        <note />
-      </trans-unit>
       <trans-unit id="Unable_to_locate_dotnet_CLI_Ensure_that_it_is_on_the_PATH">
         <source>Unable to locate dotnet CLI. Ensure that it is on the PATH.</source>
         <target state="translated">Não é possível localizar a CLI do dotnet. Verifique se está no CAMINHO.</target>
