@@ -9,7 +9,7 @@
     <NoWarn>$(NoWarn);8002</NoWarn>
     <Description>Command line tool for formatting C# and Visual Basic code files based on .editorconfig settings.</Description>
     <RollForward>LatestMajor</RollForward>
-
+    <NETStandardLibraryVersion>2.0.3</NETStandardLibraryVersion>
     <IsPackable>true</IsPackable>
     <PackAsTool>true</PackAsTool>
     <PackageIcon>Icon.png</PackageIcon>
