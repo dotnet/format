@@ -114,6 +114,10 @@ extends:
       - template: /eng/common/templates-official/job/publish-build-assets.yml@self
         parameters:
           publishUsingPipelines: true
+          pool:
+            name: NetCore1ESPool-Publishing-Internal
+            image: windows.vs2019.amd64
+            os: windows
           dependsOn:
           - OfficialBuild
           - Source_Build_Managed
