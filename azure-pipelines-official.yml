@@ -54,16 +54,16 @@ extends:
             targetPath: '$(Build.SourcesDirectory)\artifacts\TestResults\$(BuildConfiguration)'
             artifactName: 'TestResults'
             publishLocation: Container
-          - output: pipelineArtifact
+          - output: buildArtifacts
             displayName: 'Publish Packages'
             condition: succeeded()
-            targetPath: '$(Build.SourcesDirectory)\artifacts\packages\$(BuildConfiguration)'
-            artifactName: 'PackageArtifacts'
-          - output: pipelineArtifact
+            PathtoPublish: '$(Build.SourcesDirectory)\artifacts\packages\$(BuildConfiguration)'
+            ArtifactName: 'PackageArtifacts'
+          - output: buildArtifacts
             displayName: 'Publish Asset Manifests'
             condition: succeeded()
-            targetPath: '$(Build.SourcesDirectory)/artifacts/log/$(BuildConfiguration)/AssetManifest'
-            artifactName: AssetManifests
+            PathtoPublish: '$(Build.SourcesDirectory)/artifacts/log/$(BuildConfiguration)/AssetManifest'
+            ArtifactName: AssetManifests
           - output: pipelineArtifact
             displayName: 'Publish MicroBuild Artifacts'
             condition: succeededOrFailed()
