@@ -27,6 +27,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsDependencyInjectionVersion)" />
     <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="$(MicrosoftExtensionsDependencyInjectionVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(MicrosoftExtensionsDependencyInjectionVersion)" />
+    <PackageVersion Include="NETStandard.Library" Version="2.0.3" />
     <PackageVersion Include="NuGet.Common" Version="$(NuGetVersion)" />
     <PackageVersion Include="NuGet.Configuration" Version="$(NuGetVersion)" />
     <PackageVersion Include="NuGet.Frameworks" Version="$(NuGetVersion)" />

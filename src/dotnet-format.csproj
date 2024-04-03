@@ -55,6 +55,9 @@
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" />
     <PackageReference Include="Microsoft.Extensions.Logging" />
 
+    <!-- Lift dependency of NETStandard.Library.NETFramework to version produced in SBRP. -->
+    <PackageReference Include="NETStandard.Library" ExcludeAssets="All" />
+
     <!--
       Explicit System.Text.Json package reference is required for source-build to pick up the live package.
       Avoids picking up an old version via transitive dependency from Microsoft.Build or Microsoft.CodeAnalysis.Workspaces.MSBuild.
