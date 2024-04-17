@@ -5,9 +5,9 @@
       <Uri>https://dev.azure.com/dnceng/internal/_git/dotnet-runtime</Uri>
       <Sha>5535e31a712343a63f5d7d796cd874e563e5ac14</Sha>
     </Dependency>
-    <Dependency Name="Microsoft.CodeAnalysis" Version="4.10.0-3.24212.1">
+    <Dependency Name="Microsoft.CodeAnalysis" Version="4.10.0-3.24216.12">
       <Uri>https://github.com/dotnet/roslyn</Uri>
-      <Sha>0b1fefc344701f2669b2190fbfda5ca588083605</Sha>
+      <Sha>3af0081a6e811b78d37c62e479914f7f4cfb0d1a</Sha>
       <SourceBuild RepoName="roslyn" ManagedOnly="true" />
     </Dependency>
     <Dependency Name="Microsoft.SourceBuild.Intermediate.source-build-externals" Version="8.0.0-alpha.1.23502.1">
