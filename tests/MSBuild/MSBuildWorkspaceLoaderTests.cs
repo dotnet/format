@@ -18,6 +18,13 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.MSBuild
 {
     public class MSBuildWorkspaceLoaderTests
     {
+        // Microsoft.CodeAnalysis.CSharp.ErrorCode
+        private const string ERR_NameNotInContext = "CS0103";
+        private const string ERR_NoEntryPoint = "CS5001";
+
+        // Microsoft.CodeAnalysis.VisualBasic.ERRID
+        private const string ERR_UndefinedType1 = "BC30002";
+
         private static string ProjectsPath => TestProjectsPathHelper.GetProjectsDirectory();
 
         protected ITestOutputHelper TestOutputHelper { get; set; }
@@ -30,14 +37,20 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.MSBuild
         [MSBuildTheory(typeof(WindowsOnly))]
         [InlineData("winforms")]
         [InlineData("winformslib")]
-        // Skip="https://github.com/dotnet/format/issues/1402"
-        // [InlineData("wpf")]
-        // [InlineData("wpfusercontrollib")]
-        // [InlineData("wpflib")]
-        // [InlineData("wpfcustomcontrollib")]
+        [InlineData("wpf")]
+        [InlineData("wpfusercontrollib")]
+        [InlineData("wpflib")]
+        [InlineData("wpfcustomcontrollib")]
         public async Task CSharpTemplateProject_WindowsOnly_LoadWithNoDiagnostics(string templateName)
         {
-            await AssertTemplateProjectLoadsCleanlyAsync(templateName, LanguageNames.CSharp);
+            var ignoredDiagnostics = templateName switch
+            {
+                "wpf" => new string[] { ERR_NoEntryPoint, ERR_NameNotInContext },
+                "wpfusercontrollib" => new string[] { ERR_NameNotInContext },
+                _ => Array.Empty<string>(),
+            };
+
+            await AssertTemplateProjectLoadsCleanlyAsync(templateName, LanguageNames.CSharp, ignoredDiagnostics);
         }
 
         [MSBuildTheory]
@@ -46,11 +59,7 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.MSBuild
         [InlineData("webapi")]
         [InlineData("razor")]
         [InlineData("mvc")]
-        [InlineData("angular")]
-        [InlineData("react")]
-        // Skip="https://github.com/dotnet/format/issues/1402"
-        // [InlineData("reactredux")]
-        [InlineData("blazorserver")]
+        [InlineData("blazor")]
         [InlineData("blazorwasm")]
         [InlineData("classlib")]
         [InlineData("console")]
@@ -61,7 +70,12 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.MSBuild
         [InlineData("xunit")]
         public async Task CSharpTemplateProject_LoadWithNoDiagnostics(string templateName)
         {
-            await AssertTemplateProjectLoadsCleanlyAsync(templateName, LanguageNames.CSharp);
+            var ignoredDiagnostics = templateName switch
+            {
+                _ => Array.Empty<string>(),
+            };
+
+            await AssertTemplateProjectLoadsCleanlyAsync(templateName, LanguageNames.CSharp, ignoredDiagnostics);
         }
 
         [MSBuildTheory]
@@ -72,7 +86,13 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.MSBuild
         [InlineData("xunit")]
         public async Task VisualBasicTemplateProject_LoadWithNoDiagnostics(string templateName)
         {
-            await AssertTemplateProjectLoadsCleanlyAsync(templateName, LanguageNames.VisualBasic, ignoredDiagnostics: new[] { "BC30002" });
+            var ignoredDiagnostics = (templateName, isWindows: OperatingSystem.IsWindows()) switch
+            {
+                (_, isWindows: false) => new string[] { ERR_UndefinedType1 },
+                _ => Array.Empty<string>(),
+            };
+
+            await AssertTemplateProjectLoadsCleanlyAsync(templateName, LanguageNames.VisualBasic, ignoredDiagnostics);
         }
 
         private async Task AssertTemplateProjectLoadsCleanlyAsync(string templateName, string languageName, string[] ignoredDiagnostics = null)

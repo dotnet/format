@@ -1,12 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <TargetFrameworks>net6.0</TargetFrameworks>
+    <TargetFramework>$(NetCurrent)</TargetFramework>
     <OutputType>Exe</OutputType>
-    <LangVersion>10.0</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <Configuration>Release</Configuration>
     <!-- Copy nuget assemblies to build directory. -->
@@ -16,13 +12,16 @@
     <RollForward>LatestMajor</RollForward>
     <ExcludeFromSourceBuild>true</ExcludeFromSourceBuild>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" />
     <PackageReference Include="BenchmarkDotNet.Annotations" />
     <!-- Lift dependency of NETStandard.Library.NETFramework to version produced in SBRP. -->
     <PackageReference Include="NETStandard.Library" ExcludeAssets="All" />
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\src\dotnet-format.csproj" />
   </ItemGroup>
+
 </Project>
