@@ -48,6 +48,8 @@
 
     <PackageReference Include="System.CommandLine" />
     <PackageReference Include="System.CommandLine.Rendering" />
+
+    <PackageReference Include="System.Text.Json" ExcludeAssets="Runtime" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
