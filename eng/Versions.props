@@ -24,7 +24,7 @@
     <!-- corefx -->
     <MicrosoftVisualBasicVersion>10.3.0</MicrosoftVisualBasicVersion>
     <!-- msbuild -->
-    <MicrosoftBuildVersion>17.3.2</MicrosoftBuildVersion>
+    <MicrosoftBuildVersion>17.3.4</MicrosoftBuildVersion>
     <!-- netstandard -->
     <NETStandardLibraryVersion>2.0.3</NETStandardLibraryVersion>
     <!-- nuget -->
