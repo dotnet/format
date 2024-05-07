@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <!-- In order tests against the same version of NuGet as the SDK. We have to set this to match. -->
-    <NuGetVersion>6.7.0-preview.2.44</NuGetVersion>
+    <NuGetVersion>6.6.2-rc.1</NuGetVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +27,7 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="$(MicrosoftExtensionsDependencyInjectionVersion)" />
     <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="$(MicrosoftExtensionsDependencyInjectionVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="$(MicrosoftExtensionsDependencyInjectionVersion)" />
+    <PackageVersion Include="NETStandard.Library" Version="2.0.3" />
     <PackageVersion Include="NuGet.Common" Version="$(NuGetVersion)" />
     <PackageVersion Include="NuGet.Configuration" Version="$(NuGetVersion)" />
     <PackageVersion Include="NuGet.Frameworks" Version="$(NuGetVersion)" />
