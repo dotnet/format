@@ -21,11 +21,18 @@ namespace Microsoft.CodeAnalysis.Tools.Tests.Utilities
         {
             if (Interlocked.Exchange(ref s_registered, 1) == 0)
             {
-                var msBuildInstance = Build.Locator.MSBuildLocator.QueryVisualStudioInstances().First();
-                s_msBuildPath = Path.EndsInDirectorySeparator(msBuildInstance.MSBuildPath)
-                    ? msBuildInstance.MSBuildPath
-                    : msBuildInstance.MSBuildPath + Path.DirectorySeparatorChar;
-                Build.Locator.MSBuildLocator.RegisterMSBuildPath(s_msBuildPath);
+                if (Build.Locator.MSBuildLocator.CanRegister)
+                {
+                    var msBuildInstance = Build.Locator.MSBuildLocator.QueryVisualStudioInstances().First();
+                    s_msBuildPath = Path.EndsInDirectorySeparator(msBuildInstance.MSBuildPath)
+                        ? msBuildInstance.MSBuildPath
+                        : msBuildInstance.MSBuildPath + Path.DirectorySeparatorChar;
+                    Build.Locator.MSBuildLocator.RegisterMSBuildPath(s_msBuildPath);
+                }
+                else
+                {
+                    s_msBuildPath = "MSBuild could not be registered.";
+                }
             }
 
             return s_msBuildPath!;
