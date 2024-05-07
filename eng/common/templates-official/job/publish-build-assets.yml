@@ -60,10 +60,9 @@ jobs:
       os: windows
     # If it's not devdiv, it's dnceng
     ${{ if ne(variables['System.TeamProject'], 'DevDiv') }}:
-      name: $(DncEngInternalBuildPool)
-      image: 1es-windows-2022
+      name: NetCore1ESPool-Publishing-Internal
+      image: windows.vs2019.amd64
       os: windows
-
   steps:
   - ${{ if and(eq(parameters.runAsPublic, 'false'), ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
     - task: DownloadBuildArtifacts@0
@@ -74,14 +73,8 @@ jobs:
         checkDownloadedFiles: true
       condition: ${{ parameters.condition }}
       continueOnError: ${{ parameters.continueOnError }}
-    
-    - task: NuGetAuthenticate@1
 
-    - task: PowerShell@2 
-      displayName: Enable cross-org NuGet feed authentication 
-      inputs: 
-        filePath: $(Build.SourcesDirectory)/eng/common/enable-cross-org-publishing.ps1 
-        arguments: -token $(dn-bot-all-orgs-artifact-feeds-rw) 
+    - task: NuGetAuthenticate@1
 
     - task: PowerShell@2
       displayName: Publish Build Assets
@@ -90,12 +83,12 @@ jobs:
         arguments: -task PublishBuildAssets -restore -msbuildEngine dotnet
           /p:ManifestsPath='$(Build.StagingDirectory)/Download/AssetManifests'
           /p:BuildAssetRegistryToken=$(MaestroAccessToken)
-          /p:MaestroApiEndpoint=https://maestro.dot.net
+          /p:MaestroApiEndpoint=https://maestro-prod.westus2.cloudapp.azure.com
           /p:PublishUsingPipelines=${{ parameters.publishUsingPipelines }}
           /p:OfficialBuildId=$(Build.BuildNumber)
       condition: ${{ parameters.condition }}
       continueOnError: ${{ parameters.continueOnError }}
-    
+
     - task: powershell@2
       displayName: Create ReleaseConfigs Artifact
       inputs:
@@ -106,7 +99,7 @@ jobs:
           Add-Content -Path $filePath -Value $(BARBuildId)
           Add-Content -Path $filePath -Value "$(DefaultChannels)"
           Add-Content -Path $filePath -Value $(IsStableBuild)
-    
+
     - task: 1ES.PublishBuildArtifacts@1
       displayName: Publish ReleaseConfigs Artifact
       inputs:
@@ -132,7 +125,7 @@ jobs:
 
     - task: 1ES.PublishBuildArtifacts@1
       displayName: Publish SymbolPublishingExclusionsFile Artifact
-      condition: eq(variables['SymbolExclusionFile'], 'true') 
+      condition: eq(variables['SymbolExclusionFile'], 'true')
       inputs:
         PathtoPublish: '$(Build.SourcesDirectory)/eng/SymbolPublishingExclusionsFile.txt'
         PublishLocation: Container
@@ -148,7 +141,7 @@ jobs:
         displayName: Publish Using Darc
         inputs:
           filePath: $(Build.SourcesDirectory)/eng/common/post-build/publish-using-darc.ps1
-          arguments: -BuildId $(BARBuildId) 
+          arguments: -BuildId $(BARBuildId)
             -PublishingInfraVersion 3
             -AzdoToken '$(publishing-dnceng-devdiv-code-r-build-re)'
             -MaestroToken '$(MaestroApiAccessToken)'
