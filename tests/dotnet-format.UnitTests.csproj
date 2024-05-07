@@ -15,8 +15,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzer.Testing" />
 
-    <!-- The package "Microsoft.CodeAnalysis.Analyzer.Testing" brings in v5.3 of these NuGet dependencies. In order to
-         test against the same verion of NuGet as our configured SDK, we must set the version to be the same. -->
+    <!-- Lift dependency of NETStandard.Library.NETFramework to version produced in SBRP. -->
+    <PackageReference Include="NETStandard.Library" ExcludeAssets="All" />
+
+    <!--
+      The package "Microsoft.CodeAnalysis.Analyzer.Testing" brings in v5.3 of these NuGet dependencies. In order to
+      test against the same verion of NuGet as our configured SDK, we must set the version to be the same.
+     -->
     <PackageReference Include="NuGet.Common" />
     <PackageReference Include="NuGet.Configuration" />
     <PackageReference Include="NuGet.Frameworks" />
