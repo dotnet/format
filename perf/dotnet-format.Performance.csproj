@@ -16,6 +16,8 @@
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" />
     <PackageReference Include="BenchmarkDotNet.Annotations" />
+    <!-- Lift dependency of NETStandard.Library.NETFramework to version produced in SBRP. -->
+    <PackageReference Include="NETStandard.Library" ExcludeAssets="All" />
   </ItemGroup>
 
   <ItemGroup>

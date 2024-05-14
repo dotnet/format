@@ -5,9 +5,35 @@
       <Uri>https://dev.azure.com/dnceng/internal/_git/dotnet-runtime</Uri>
       <Sha>5535e31a712343a63f5d7d796cd874e563e5ac14</Sha>
     </Dependency>
-    <Dependency Name="Microsoft.CodeAnalysis" Version="4.8.0-7.24067.24">
+    <!-- Necessary for source-build. This allows the live version of the package to be used by source-build. -->
+    <Dependency Name="Microsoft.Build.Tasks.Core" Version="17.7.2">
+      <Uri>https://github.com/dotnet/msbuild</Uri>
+      <Sha>d6990bcfaf520c0d215a194fad0617f7efad68b4</Sha>
+    </Dependency>
+    <!-- Necessary for source-build. This allows the live version of the package to be used by source-build. -->
+    <Dependency Name="Microsoft.Build" Version="17.7.2">
+      <Uri>https://github.com/dotnet/msbuild</Uri>
+      <Sha>d6990bcfaf520c0d215a194fad0617f7efad68b4</Sha>
+    </Dependency>
+    <Dependency Name="Microsoft.Build.Framework" Version="17.7.2">
+      <Uri>https://github.com/dotnet/msbuild</Uri>
+      <Sha>d6990bcfaf520c0d215a194fad0617f7efad68b4</Sha>
+    </Dependency>
+    <Dependency Name="Microsoft.Build.Tasks.Core" Version="17.7.2">
+      <Uri>https://github.com/dotnet/msbuild</Uri>
+      <Sha>d6990bcfaf520c0d215a194fad0617f7efad68b4</Sha>
+    </Dependency>
+    <Dependency Name="Microsoft.Build.Utilities.Core" Version="17.7.2">
+      <Uri>https://github.com/dotnet/msbuild</Uri>
+      <Sha>d6990bcfaf520c0d215a194fad0617f7efad68b4</Sha>
+    </Dependency>
+    <Dependency Name="Microsoft.NET.StringTools" Version="17.7.2">
+      <Uri>https://github.com/dotnet/msbuild</Uri>
+      <Sha>d6990bcfaf520c0d215a194fad0617f7efad68b4</Sha>
+    </Dependency>
+    <Dependency Name="Microsoft.CodeAnalysis" Version="4.10.0-3.24230.3">
       <Uri>https://github.com/dotnet/roslyn</Uri>
-      <Sha>263571123fc3dc4a638e071234ac9fbf91913962</Sha>
+      <Sha>abc35d6d16eb3c0c0aafd67734f01217047a3c90</Sha>
       <SourceBuild RepoName="roslyn" ManagedOnly="true" />
     </Dependency>
     <Dependency Name="Microsoft.SourceBuild.Intermediate.source-build-externals" Version="8.0.0-alpha.1.23502.1">
@@ -57,9 +83,9 @@
     </Dependency>
   </ProductDependencies>
   <ToolsetDependencies>
-    <Dependency Name="Microsoft.DotNet.Arcade.Sdk" Version="8.0.0-beta.24113.2">
+    <Dependency Name="Microsoft.DotNet.Arcade.Sdk" Version="8.0.0-beta.24225.1">
       <Uri>https://github.com/dotnet/arcade</Uri>
-      <Sha>da98edc4c3ea539f109ea320672136ceb32591a7</Sha>
+      <Sha>67d23f4ba1813b315e7e33c71d18b63475f5c5f8</Sha>
       <SourceBuild RepoName="arcade" ManagedOnly="true" />
     </Dependency>
     <Dependency Name="Microsoft.DotNet.XliffTasks" Version="1.0.0-beta.23475.1" CoherentParentDependency="Microsoft.DotNet.Arcade.Sdk">

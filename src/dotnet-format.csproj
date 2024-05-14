@@ -35,9 +35,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
 
-    <!-- Included with Microsoft.CodeAnalysis.dll for Razor support -->
-    <PackageReference Include="Microsoft.CodeAnalysis.ExternalAccess.RazorCompiler" ExcludeAssets="compile" />
-
     <!-- Loaded dynamically -->
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
     <PackageReference Include="Microsoft.CodeAnalysis.Features" />
@@ -45,6 +42,9 @@
 
     <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" />
     <PackageReference Include="Microsoft.Extensions.Logging" />
+
+    <!-- Lift dependency of NETStandard.Library.NETFramework to version produced in SBRP. -->
+    <PackageReference Include="NETStandard.Library" ExcludeAssets="All" />
 
     <PackageReference Include="System.CommandLine" />
     <PackageReference Include="System.CommandLine.Rendering" />
