@@ -10,6 +10,7 @@
          When a newer version is picked up, the intermediate should be utilized. -->
     <UsagePattern IdentityGlob="Microsoft.CodeAnalysis.AnalyzerUtilities/*3.3.0*" />
 
+    <UsagePattern IdentityGlob="System.Text.Json/8.0*" />
     <!-- Transitive dependency of Roslyn -->
     <UsagePattern IdentityGlob="Microsoft.Build/17.7.2" />
     <UsagePattern IdentityGlob="Microsoft.Build.Framework/17.7.2" />
