@@ -2,7 +2,7 @@
 # This file should be removed as part of this issue: https://github.com/dotnet/arcade/issues/4080
 #
 # What the script does is iterate over all package sources in the pointed NuGet.config and add a credential entry
-# under <packageSourceCredentials> for each Maestro managed private feed. Two additional credential
+# under <packageSourceCredentials> for each Maestro managed private feed. Two additional credential 
 # entries are also added for the two private static internal feeds: dotnet3-internal and dotnet3-internal-transport.
 #
 # This script needs to be called in every job that will restore packages and which the base repo has
@@ -37,7 +37,7 @@ Set-StrictMode -Version 2.0
 # Add source entry to PackageSources
 function AddPackageSource($sources, $SourceName, $SourceEndPoint, $creds, $Username, $pwd) {
     $packageSource = $sources.SelectSingleNode("add[@key='$SourceName']")
-
+    
     if ($packageSource -eq $null)
     {
         $packageSource = $doc.CreateElement("add")
@@ -81,7 +81,7 @@ function AddCredential($creds, $source, $username, $pwd) {
         $passwordElement.SetAttribute("key", "ClearTextPassword")
         $sourceElement.AppendChild($passwordElement) | Out-Null
     }
-
+    
     $passwordElement.SetAttribute("value", $pwd)
 }
 
@@ -89,7 +89,7 @@ function InsertMaestroPrivateFeedCredentials($Sources, $Creds, $Username, $pwd) 
     $maestroPrivateSources = $Sources.SelectNodes("add[contains(@key,'darc-int')]")
 
     Write-Host "Inserting credentials for $($maestroPrivateSources.Count) Maestro's private feeds."
-
+    
     ForEach ($PackageSource in $maestroPrivateSources) {
         Write-Host "`tInserting credential for Maestro's feed:" $PackageSource.Key
         AddCredential -Creds $creds -Source $PackageSource.Key -Username $Username -pwd $pwd
