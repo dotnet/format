@@ -14,6 +14,7 @@
     <UsagePattern IdentityGlob="Microsoft.Build.Framework/17.4.0" />
     <UsagePattern IdentityGlob="Microsoft.Build.Tasks.Core/17.4.0" />
     <UsagePattern IdentityGlob="Microsoft.Build.Utilities.Core/17.4.0" />
+    <UsagePattern IdentityGlob="System.Text.Json/8.0*" />
   </IgnorePatterns>
   <Usages>
     <Usage Id="System.Composition" Version="7.0.0" />
