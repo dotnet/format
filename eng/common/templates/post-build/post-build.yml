@@ -271,7 +271,7 @@ stages:
           arguments: >
             -BuildId $(BARBuildId)
             -PublishingInfraVersion ${{ parameters.publishingInfraVersion }}
-            -AzdoToken '$(publishing-dnceng-devdiv-code-r-build-re)'
+            -AzdoToken '$(System.AccessToken)'
             -WaitPublishingFinish true
             -ArtifactsPublishingAdditionalParameters '${{ parameters.artifactsPublishingAdditionalParameters }}'
             -SymbolPublishingAdditionalParameters '${{ parameters.symbolPublishingAdditionalParameters }}'
