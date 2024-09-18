@@ -15,7 +15,7 @@
     </Dependency>
     <Dependency Name="System.Text.Json" Version="6.0.10">
       <Uri>https://dev.azure.com/dnceng/internal/_git/dotnet-runtime</Uri>
-      <Sha>7442e7d200fd02d8d0bf7ba1de30ecfd453bb2e6</Sha>
+      <Sha>b357f86ce3bce7c232ea242074b17bebdc50b543</Sha>
     </Dependency>
   </ProductDependencies>
   <ToolsetDependencies>
