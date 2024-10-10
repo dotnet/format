@@ -13,9 +13,9 @@
       <Uri>https://github.com/dotnet/command-line-api</Uri>
       <Sha>c776cd4e906b669b9cce1017fee7d0ba9845d163</Sha>
     </Dependency>
-    <Dependency Name="System.Text.Json" Version="6.0.8">
-      <Uri>https://github.com/dotnet/runtime</Uri>
-      <Sha>3241df7f2b0f3e2dada8d07229723c79fdbe4991</Sha>
+    <Dependency Name="System.Text.Json" Version="6.0.10">
+      <Uri>https://dev.azure.com/dnceng/internal/_git/dotnet-runtime</Uri>
+      <Sha>b357f86ce3bce7c232ea242074b17bebdc50b543</Sha>
     </Dependency>
   </ProductDependencies>
   <ToolsetDependencies>

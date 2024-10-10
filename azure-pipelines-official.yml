@@ -111,6 +111,9 @@ extends:
         - script: eng\common\cibuild.cmd -configuration Release -prepareMachine /p:Test=false
           displayName: Windows Build
       - template: /eng/common/templates-official/jobs/source-build.yml@self
+        parameters:
+          enableInternalSources: true
+
       - template: /eng/common/templates-official/job/publish-build-assets.yml@self
         parameters:
           publishUsingPipelines: true
