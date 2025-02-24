@@ -31,7 +31,7 @@
       <Uri>https://github.com/dotnet/msbuild</Uri>
       <Sha>d6990bcfaf520c0d215a194fad0617f7efad68b4</Sha>
     </Dependency>
-    <Dependency Name="Microsoft.CodeAnalysis" Version="4.8.0-7.25118.1">
+    <Dependency Name="Microsoft.CodeAnalysis" Version="4.8.0-7.25123.12">
       <Uri>https://github.com/dotnet/roslyn</Uri>
       <Sha>75daaaa1e94f7ad1a50384cae7e561ab4d9667ec</Sha>
       <SourceBuild RepoName="roslyn" ManagedOnly="true" />
