@@ -31,11 +31,11 @@
     <!-- In order tests against the same version of NuGet as the SDK. We have to set this to match. -->
     <NuGetVersion>6.8.1-rc.2</NuGetVersion>
     <!-- roslyn -->
-    <MicrosoftCodeAnalysisVersion>4.8.0-7.24225.6</MicrosoftCodeAnalysisVersion>
+    <MicrosoftCodeAnalysisVersion>4.11.0-3.24554.2</MicrosoftCodeAnalysisVersion>
     <!-- roslyn-sdk -->
     <MicrosoftCodeAnalysisAnalyzerTestingVersion>1.1.2-beta1.22216.1</MicrosoftCodeAnalysisAnalyzerTestingVersion>
     <!-- runtime -->
-    <SystemTextJsonVersion>8.0.4</SystemTextJsonVersion>
+    <SystemTextJsonVersion>8.0.5</SystemTextJsonVersion>
     <MicrosoftBclAsyncInterfacesVersion>8.0.0</MicrosoftBclAsyncInterfacesVersion>
     <MicrosoftExtensionsFileSystemGlobbingVersion>8.0.0</MicrosoftExtensionsFileSystemGlobbingVersion>
     <MicrosoftExtensionsLoggingVersion>8.0.0</MicrosoftExtensionsLoggingVersion>
