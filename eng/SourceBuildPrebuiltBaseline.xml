@@ -12,14 +12,15 @@
 
     <UsagePattern IdentityGlob="System.Text.Json/8.0*" />
     <!-- Transitive dependency of Roslyn -->
-    <UsagePattern IdentityGlob="Microsoft.Build/17.7.2" />
-    <UsagePattern IdentityGlob="Microsoft.Build.Framework/17.7.2" />
-    <UsagePattern IdentityGlob="Microsoft.Build.Tasks.Core/17.7.2" />
-    <UsagePattern IdentityGlob="Microsoft.Build.Utilities.Core/17.7.2" />
-    <UsagePattern IdentityGlob="Microsoft.NET.StringTools/17.7.2" />
+    <UsagePattern IdentityGlob="Microsoft.Build/17.11.31" />
+    <UsagePattern IdentityGlob="Microsoft.Build.Framework/17.11.31" />
+    <UsagePattern IdentityGlob="Microsoft.Build.Tasks.Core/17.11.31" />
+    <UsagePattern IdentityGlob="Microsoft.Build.Utilities.Core/17.11.31" />
+    <UsagePattern IdentityGlob="Microsoft.NET.StringTools/17.11.31" />
     <UsagePattern IdentityGlob="Microsoft.VisualStudio.Setup.Configuration.Interop/3.2.2146" />
     <UsagePattern IdentityGlob="System.Configuration.ConfigurationManager/7.0*" />
     <UsagePattern IdentityGlob="System.Diagnostics.EventLog/7.0*" />
+    <UsagePattern IdentityGlob="System.Formats.Asn1/8.0.1" />
     <UsagePattern IdentityGlob="System.Reflection.MetadataLoadContext/7.0*" />
     <UsagePattern IdentityGlob="System.Security.Cryptography.ProtectedData/7.0*" />
   </IgnorePatterns>
