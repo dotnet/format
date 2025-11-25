@@ -7,7 +7,6 @@
     <!-- Copy nuget assemblies to build directory so that Microsoft.CodeAnalysis.Features.* can be located when running tests. -->
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
-    <RollForward>LatestMajor</RollForward>
     <ExcludeFromSourceBuild>true</ExcludeFromSourceBuild>
     <DefaultExcludesInProjectFolder>$(DefaultExcludesInProjectFolder);binaries\**;projects\**</DefaultExcludesInProjectFolder>
   </PropertyGroup>
