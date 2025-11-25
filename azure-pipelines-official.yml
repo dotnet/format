@@ -40,7 +40,12 @@ extends:
             signing:
               enabled: true
               feedSource: https://dnceng.pkgs.visualstudio.com/_packaging/MicroBuildToolset/nuget/v3/index.json
-              signType: $(SignType)
+              # Set signType to real if the build is a CI, otherwise use test
+              ${{ if eq(variables['Build.Reason'], 'IndividualCI') }}:
+                signType: $(SignType)
+                signWithProd: true
+              ${{ else }}:
+                signType: test
           outputs:
           - output: pipelineArtifact
             displayName: 'Publish Logs'
