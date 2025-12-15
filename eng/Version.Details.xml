@@ -31,9 +31,9 @@
       <Uri>https://github.com/dotnet/msbuild</Uri>
       <Sha>d6990bcfaf520c0d215a194fad0617f7efad68b4</Sha>
     </Dependency>
-    <Dependency Name="Microsoft.CodeAnalysis" Version="4.11.0-3.25569.22">
+    <Dependency Name="Microsoft.CodeAnalysis" Version="4.11.0-3.25610.12">
       <Uri>https://github.com/dotnet/roslyn</Uri>
-      <Sha>3fb752d448006a3144a60ccf181d745e555422f9</Sha>
+      <Sha>2061ab37b1bfbf06b378405fa1ac9d2cc54d4bd7</Sha>
       <SourceBuild RepoName="roslyn" ManagedOnly="true" />
     </Dependency>
     <Dependency Name="Microsoft.SourceBuild.Intermediate.source-build-externals" Version="8.0.0-alpha.1.23502.1">
