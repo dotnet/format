@@ -79,6 +79,9 @@ try {
 
             if ($stage -eq "format-workspace") {
                 Write-Output "$(Get-Date) - $solutionFile - Formatting Workspace"
+                # Output command before running it
+                Write-Output $parentDotNetPath "$currentLocation/artifacts/bin/dotnet-format/Release/net8.0/dotnet-format.dll" $solution --no-restore -v diag --verify-no-changes
+
                 $output = & $parentDotNetPath "$currentLocation/artifacts/bin/dotnet-format/Release/net8.0/dotnet-format.dll" $solution --no-restore -v diag --verify-no-changes | Out-String
                 Write-Output $output.TrimEnd()
 
