@@ -31,9 +31,9 @@
       <Uri>https://github.com/dotnet/msbuild</Uri>
       <Sha>d6990bcfaf520c0d215a194fad0617f7efad68b4</Sha>
     </Dependency>
-    <Dependency Name="Microsoft.CodeAnalysis" Version="4.11.0-3.25569.22">
+    <Dependency Name="Microsoft.CodeAnalysis" Version="4.11.0-3.26075.8">
       <Uri>https://github.com/dotnet/roslyn</Uri>
-      <Sha>3fb752d448006a3144a60ccf181d745e555422f9</Sha>
+      <Sha>5b7bb34da7347ba7d0863e6c911db69662fa824e</Sha>
       <SourceBuild RepoName="roslyn" ManagedOnly="true" />
     </Dependency>
     <Dependency Name="Microsoft.SourceBuild.Intermediate.source-build-externals" Version="8.0.0-alpha.1.23502.1">
@@ -83,9 +83,9 @@
     </Dependency>
   </ProductDependencies>
   <ToolsetDependencies>
-    <Dependency Name="Microsoft.DotNet.Arcade.Sdk" Version="8.0.0-beta.25571.1">
+    <Dependency Name="Microsoft.DotNet.Arcade.Sdk" Version="8.0.0-beta.25611.2">
       <Uri>https://github.com/dotnet/arcade</Uri>
-      <Sha>be61e5dbdc68d586c5a479486c2342f0f4161c38</Sha>
+      <Sha>4b01306353c43c151d713d152f48a4d523c41960</Sha>
       <SourceBuild RepoName="arcade" ManagedOnly="true" />
     </Dependency>
     <Dependency Name="Microsoft.DotNet.XliffTasks" Version="1.0.0-beta.23475.1" CoherentParentDependency="Microsoft.DotNet.Arcade.Sdk">
