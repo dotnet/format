@@ -41,10 +41,10 @@
       <Sha>ed17956dbc31097b7ba6a66be086f4a70a97d84f</Sha>
       <SourceBuild RepoName="source-build-externals" ManagedOnly="true" />
     </Dependency>
-    <Dependency Name="Microsoft.SourceBuild.Intermediate.source-build-reference-packages" Version="8.0.0-alpha.1.23471.1">
-      <Uri>https://github.com/dotnet/source-build-reference-packages</Uri>
-      <Sha>7b55da982fc6e71c1776c4de89111aee0eecb45a</Sha>
-      <SourceBuild RepoName="source-build-reference-packages" ManagedOnly="true" />
+    <Dependency Name="Microsoft.SourceBuild.Intermediate.source-build-assets" Version="8.0.0-alpha.1.26208.5">
+      <Uri>https://github.com/dotnet/source-build-assets</Uri>
+      <Sha>e726d9647b47c6635533d8eebfc2992749128d7e</Sha>
+      <SourceBuild RepoName="source-build-assets" ManagedOnly="true" />
     </Dependency>
     <Dependency Name="Microsoft.SourceBuild.Intermediate.symreader" Version="2.0.0-beta-23228-04">
       <Uri>https://github.com/dotnet/symreader</Uri>
