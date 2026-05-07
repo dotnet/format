@@ -29,7 +29,7 @@
     <NETStandardLibraryVersion>2.0.3</NETStandardLibraryVersion>
     <!-- nuget -->
     <!-- In order tests against the same version of NuGet as the SDK. We have to set this to match. -->
-    <NuGetVersion>6.8.1-rc.2</NuGetVersion>
+    <NuGetVersion>6.8.2-rc.3</NuGetVersion>
     <!-- roslyn -->
     <MicrosoftCodeAnalysisVersion>4.8.0-7.26112.7</MicrosoftCodeAnalysisVersion>
     <!-- roslyn-sdk -->
