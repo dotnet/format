@@ -83,9 +83,9 @@
     </Dependency>
   </ProductDependencies>
   <ToolsetDependencies>
-    <Dependency Name="Microsoft.DotNet.Arcade.Sdk" Version="8.0.0-beta.25611.2">
+    <Dependency Name="Microsoft.DotNet.Arcade.Sdk" Version="8.0.0-beta.26278.3">
       <Uri>https://github.com/dotnet/arcade</Uri>
-      <Sha>4b01306353c43c151d713d152f48a4d523c41960</Sha>
+      <Sha>4b95fb1a9307265eb75f62d4937be50e6786e94e</Sha>
       <SourceBuild RepoName="arcade" ManagedOnly="true" />
     </Dependency>
     <Dependency Name="Microsoft.DotNet.XliffTasks" Version="1.0.0-beta.23475.1" CoherentParentDependency="Microsoft.DotNet.Arcade.Sdk">
