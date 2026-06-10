@@ -7,8 +7,7 @@ resources:
 
 # Branches that trigger a build on commit
 trigger:
-- main
-- release/*
+- release/8.0.*
 - internal/release/*
 
 schedules:
