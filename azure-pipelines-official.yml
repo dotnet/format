@@ -45,7 +45,7 @@ extends:
       displayName: Build and Test
       pool:
         name: NetCore1ESPool-Svc-Internal
-        demands: ImageOverride -equals windows.vs2022preview.amd64
+        demands: ImageOverride -equals windows.vs2022.amd64
       jobs:
       - job: OfficialBuild
         displayName: Official Build
