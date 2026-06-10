@@ -10,6 +10,18 @@ trigger:
 - main
 - release/*
 - internal/release/*
+
+schedules:
+  - cron: "0 8 23-29 * 0"
+    displayName: "Monthly smoke test"
+    branches:
+      include:
+        - release/8.0.*
+      exclude:
+        - ""
+    always: true # Run even if there have been no source code changes since the last successful scheduled run
+    batch: false # Do not run the pipeline if the previously scheduled run is in-progress
+
 variables:
 - group: AzureDevOps-Artifact-Feeds-Pats
 extends:
@@ -22,7 +34,7 @@ extends:
         os: windows
     pool:
       name: netcore1espool-internal
-      image: windows.vs2022preview.amd64
+      image: windows.vs2022.amd64
       os: windows
     customBuildTags:
     - ES365AIMigrationTooling
