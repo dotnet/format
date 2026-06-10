@@ -96,7 +96,15 @@ extends:
             arguments: -ConfigFile $(Build.SourcesDirectory)/NuGet.config -Password $Env:Token
           env:
             Token: $(dn-bot-dnceng-artifact-feeds-rw)
-        - script: eng\common\CIBuild.cmd -configuration $(BuildConfiguration) /p:OfficialBuildId=$(Build.BuildNumber) /p:VisualStudioDropName=$(VisualStudioDropName) /p:DotNetSignType=$(SignType) /p:DotNetFinalVersionKind=$(_additionalBuildArgs) /p:DotnetPublishUsingPipelines=true
+        - script: >
+            eng\common\CIBuild.cmd
+            -configuration $(BuildConfiguration)
+            /p:Test=false
+            /p:OfficialBuildId=$(Build.BuildNumber)
+            /p:VisualStudioDropName=$(VisualStudioDropName)
+            /p:DotNetSignType=$(SignType)
+            /p:DotNetFinalVersionKind=$(_additionalBuildArgs)
+            /p:DotnetPublishUsingPipelines=true
           displayName: Build
         - template: /eng/common/templates-official/steps/generate-sbom.yml@self
         - task: PublishTestResults@2
