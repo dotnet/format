@@ -7,8 +7,7 @@ resources:
 
 # Branches that trigger a build on commit
 trigger:
-- main
-- release/*
+- release/8.0.*
 - internal/release/*
 
 schedules:
@@ -43,7 +42,7 @@ extends:
       displayName: Build and Test
       pool:
         name: NetCore1ESPool-Svc-Internal
-        demands: ImageOverride -equals windows.vs2022preview.amd64
+        demands: ImageOverride -equals windows.vs2022.amd64
       jobs:
       - job: OfficialBuild
         displayName: Official Build
