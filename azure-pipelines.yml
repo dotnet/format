@@ -1,14 +1,15 @@
 # Branches that trigger a build on commit
 trigger:
-- main
-- feature/*
-- release/*
+- release/8.0.*
 
 # Branches that trigger builds on PR
 pr:
-- main
-- feature/*
-- release/*
+  branches:
+    include:
+      - release/8.0.*
+  paths:
+    exclude:
+      - azure-pipelines-official.yml
 
 jobs:
 
